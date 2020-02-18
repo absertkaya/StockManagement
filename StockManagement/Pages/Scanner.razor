@@ -1,0 +1,46 @@
+﻿@page "/scanner"
+@inject IJSRuntime JSRuntime
+
+<h1 class="title">Scan barcode from Video Camera</h1>
+
+<div>
+    <button @ref="startButton" id="startButton">Start</button>
+    <button @ref="resetButton" id="resetButton">Reset</button>
+</div>
+
+<div>
+    <video @ref="video" id="video" width="600" height="400" style="border: 1px solid gray"></video>
+</div>
+
+<div @ref="sourceSelectPanel" id="sourceSelectPanel">
+    <label for="sourceSelect">Verander videobron:</label>
+    <select @ref="sourceSelect" id="sourceSelect" style="max-width:400px">
+    </select>
+</div>
+
+<p>Geef barcode handmatig in:</p>
+<form method="post">
+    <p>
+        Barcode:
+        <input @ref="result" type="text" id="result" />
+    </p>
+    <input type="submit" value="Geef in" />
+</form>
+
+<button>Sla over</button>
+
+
+@code {
+    private ElementReference startButton;
+    private ElementReference resetButton;
+    private ElementReference video;
+    private ElementReference sourceSelectPanel;
+    private ElementReference sourceSelect;
+    private ElementReference result;
+
+    protected override async Task OnAfterRenderAsync(bool firstrender)
+    {
+        if (firstrender)
+            await JSRuntime.InvokeVoidAsync("JsFunctions.scanner");
+    }
+}

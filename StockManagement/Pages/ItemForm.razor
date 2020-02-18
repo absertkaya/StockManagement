@@ -1,0 +1,123 @@
+﻿@page "/itemform"
+@using StockManagement.Domain;
+@using StockManagement.Domain.IRepositories;
+@using  StockManagement.Data.Repositories;
+@inject NavigationManager NavigationManager
+<h1>ItemFormPage</h1>
+
+<EditForm Model="@_item" OnValidSubmit="HandleValidSubmit">
+    <p>
+        Categorie:
+        <select @onchange="FetchDescriptions">
+            <option value="" selected hidden>Kies een categorie</option>
+            @if (_categories != null)
+            {
+                @foreach (Category cat in _categories)
+                {
+                    <option value=@cat.Id>@cat.CategoryName</option>
+                }
+            }
+        </select>
+    </p>
+    <p>
+        Item:
+        <select @bind="_selectedItem">
+            <option value="" selected hidden>Kies een item</option>
+            @if (_items != null)
+            {
+                @foreach (Item item in _items)
+                {
+                    <option value=@item.Id>@item.Description</option>
+                }
+            }
+        </select>
+    </p>
+    <p>
+        Leverancier:
+        <select @bind="_selectedSupplier">
+            <option value="" selected hidden>Kies een leverancier</option>
+            @if (_suppliers != null)
+            {
+                @foreach (Supplier supplier in _suppliers)
+                {
+                    <option value=@supplier.Id>@supplier.SupplierName</option>
+                }
+            }
+        </select>
+    </p>
+    <p>
+        Gebruiker:
+        <select @bind="_selectedUser">
+            <option value="" selected hidden>Kies een gebruiker</option>
+            @if (_suppliers != null)
+            {
+                @foreach (ADUser user in _users)
+                {
+                    <option value=@user.Id>@(user.FirstName + " " + user.LastName)</option>
+                }
+            }
+        </select>
+    </p>
+    <p>
+        Defect?
+        <InputCheckbox @bind-Value="_isDefective" />
+    </p>
+    <p>
+        Opmerkingen:
+        <InputTextArea @bind-Value="_comment"></InputTextArea>
+    </p>
+
+    <button type="submit">Update</button>
+
+</EditForm>
+
+
+@code {
+    private Item _item = new Item();
+
+    private IList<Category> _categories;
+    private IList<Item> _items;
+    private IList<Supplier> _suppliers;
+    private IList<ADUser> _users;
+
+    private int _selectedCategory;
+    private int _selectedItem;
+    private int _selectedSupplier;
+    private int _selectedUser;
+    private bool _isDefective;
+    private string _comment;
+
+    protected override async Task OnInitializedAsync()
+    {
+        using (RepositoryBase _repo = new RepositoryBase())
+        {
+            _categories = await _repo.GetAll<Category>();
+            _suppliers = await _repo.GetAll<Supplier>();
+            _users = await _repo.GetAll<ADUser>();
+        }
+    }
+
+    public async Task FetchDescriptions(ChangeEventArgs e)
+    {
+        using (ItemRepository _repo = new ItemRepository())
+        {
+            _selectedCategory = int.Parse(e.Value.ToString());
+            _items = await _repo.GetByCategory(_selectedCategory);
+        }
+
+    }
+
+    private void HandleValidSubmit()
+    {
+        using (ItemRepository _repo = new ItemRepository())
+        {
+            _item.Category = _categories.FirstOrDefault(c => _selectedCategory == c.Id);
+            _item.ADUser = _users.FirstOrDefault(u => _selectedUser == u.Id);
+            _item.Supplier = _suppliers.FirstOrDefault(s => _selectedSupplier == s.Id);
+            _item.IsDefective = _isDefective;
+            _item.Comment = _comment;
+            _repo.Save(_item);
+        }
+        NavigationManager.NavigateTo("updatesucces");
+    }
+}
