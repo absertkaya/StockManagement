@@ -1,5 +1,6 @@
 ﻿@page "/scanner"
 @inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <h1 class="title">Scan barcode from Video Camera</h1>
 
@@ -19,18 +20,21 @@
 </div>
 
 <p>Geef barcode handmatig in:</p>
-<form method="post">
+<EditForm OnValidSubmit="HandleValidSubmit">
     <p>
         Barcode:
-        <input @ref="result" type="text" id="result" />
+        <InputText @bind-Value="_serialnr" @ref="result" type="text" id="result" />
     </p>
-    <input type="submit" value="Geef in" />
-</form>
+    <button type="submit">Geef in</button>
+</EditForm>
 
 <button>Sla over</button>
 
 
 @code {
+
+    private string _serialnr;
+
     private ElementReference startButton;
     private ElementReference resetButton;
     private ElementReference video;
@@ -42,5 +46,10 @@
     {
         if (firstrender)
             await JSRuntime.InvokeVoidAsync("JsFunctions.scanner");
+    }
+
+    private void HandleValidSubmit()
+    {
+        NavigationManager.NavigateTo("itemform/" + _serialnr);
     }
 }
