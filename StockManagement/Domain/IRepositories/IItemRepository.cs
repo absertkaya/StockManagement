@@ -7,6 +7,10 @@ namespace StockManagement.Domain.IRepositories
 {
     public interface IItemRepository : IRepository
     {
-        Task<IList<Item>> GetByCategory(int id);
+        Task<IList<Product>> GetByCategory(int id);
+        Item GetBySerialNr(string serialnr);
+        Task<object[]> GetAmountInStock(int id);
+        bool GetItemInStock(string serialnr);
+        Task<int> GetAmountInStockValue(int id);
     }
 }

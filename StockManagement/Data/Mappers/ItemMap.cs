@@ -18,13 +18,10 @@ namespace StockManagement.Data.Mappers
             Table("Item");
             Id(x => x.Id).GeneratedBy.Increment();
             Map(x => x.SerialNumber);
-            Map(x => x.ProductNumber);
-            Map(x => x.Description);
             Map(x => x.Comment);
-            Map(x => x.AmountInStock);
-            References(x => x.Category);
-            References(x => x.Supplier);
+            Map(x => x.InStock);
             References(x => x.ADUser);
+            References(x => x.Product);
         }
     }
 }

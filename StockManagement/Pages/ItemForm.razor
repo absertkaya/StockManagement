@@ -1,16 +1,17 @@
-﻿@page "/itemform"
-@page "/itemform/{serialnr}"
+﻿@page "/itemform/{method}"
+@page "/itemform/{method}/{serialnr}"
 @using StockManagement.Domain;
 @using StockManagement.Domain.IRepositories;
-@using  StockManagement.Data.Repositories;
+@inject IItemRepository  Repository
 @inject NavigationManager NavigationManager
 <h1>ItemFormPage</h1>
 
-<EditForm Model="@_item" OnValidSubmit="HandleValidSubmit">
+<EditForm EditContext="@_editContext" OnValidSubmit="HandleValidSubmit">
     <p>
         Categorie:
         <select @onchange="FetchDescriptions">
             <option value="" selected hidden>Kies een categorie</option>
+
             @if (_categories != null)
             {
                 @foreach (Category cat in _categories)
@@ -22,11 +23,11 @@
     </p>
     <p>
         Item:
-        <select @bind="_selectedItem">
-            <option value="" selected hidden>Kies een item</option>
-            @if (_items != null)
+        <select @bind="_selectedDescription">
+            <option value="" selected hidden>Kies een omschrijving</option>
+            @if (_descriptions != null)
             {
-                @foreach (Item item in _items)
+                @foreach (Product item in _descriptions)
                 {
                     <option value=@item.Id>@item.Description</option>
                 }
@@ -68,7 +69,15 @@
         <InputTextArea @bind-Value="_comment"></InputTextArea>
     </p>
 
-    <button type="submit">Update</button>
+    @if (Method == "in")
+    {
+        <button type="submit">Voeg toe</button>
+    }
+    else if (Method == "out")
+    {
+        <button type="submit">Verwijder</button>
+    }
+
 
 </EditForm>
 
@@ -77,52 +86,58 @@
 
     [Parameter]
     public string SerialNr { get; set; }
+    [Parameter]
+    public string Method { get; set; }
 
-    private Item _item = new Item();
+    private Item _item;
+    private EditContext _editContext;
 
     private IList<Category> _categories;
-    private IList<Item> _items;
+    private IList<Product> _descriptions;
     private IList<Supplier> _suppliers;
     private IList<ADUser> _users;
 
     private int _selectedCategory;
-    private int _selectedItem;
+    private int _selectedDescription;
     private int _selectedSupplier;
     private int _selectedUser;
     private bool _isDefective;
     private string _comment;
 
+    protected override void OnInitialized()
+    {
+        _item = Repository.GetBySerialNr(SerialNr);
+        if (_item == null)
+        {
+            _item = new Item();
+        }
+        _editContext = new EditContext(_item);
+    }
+
     protected override async Task OnInitializedAsync()
     {
-        using (RepositoryBase _repo = new RepositoryBase())
-        {
-            _categories = await _repo.GetAll<Category>();
-            _suppliers = await _repo.GetAll<Supplier>();
-            _users = await _repo.GetAll<ADUser>();
-        }
+        _categories = await Repository.GetAll<Category>();
+        _suppliers = await Repository.GetAll<Supplier>();
+        _users = await Repository.GetAll<ADUser>();
     }
 
     public async Task FetchDescriptions(ChangeEventArgs e)
     {
-        using (ItemRepository _repo = new ItemRepository())
-        {
-            _selectedCategory = int.Parse(e.Value.ToString());
-            _items = await _repo.GetByCategory(_selectedCategory);
-        }
-
+        _selectedCategory = int.Parse(e.Value.ToString());
+        _descriptions = await Repository.GetByCategory(_selectedCategory);
     }
 
     private void HandleValidSubmit()
     {
-        using (ItemRepository _repo = new ItemRepository())
-        {
-            _item.Category = _categories.FirstOrDefault(c => _selectedCategory == c.Id);
-            _item.ADUser = _users.FirstOrDefault(u => _selectedUser == u.Id);
-            _item.Supplier = _suppliers.FirstOrDefault(s => _selectedSupplier == s.Id);
-            _item.IsDefective = _isDefective;
-            _item.Comment = _comment;
-            _repo.Save(_item);
-        }
-        NavigationManager.NavigateTo("updatesucces");
+        _item.SerialNumber = SerialNr;
+        _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
+        _item.ADUser = _users.FirstOrDefault(u => _selectedUser == u.Id);
+        _item.IsDefective = _isDefective;
+        _item.Comment = _comment;
+        _item.InStock = (Method == "in");
+
+        Repository.Save(_item);
+        NavigationManager.NavigateTo("updatesucces/" + Method + "/" + _selectedDescription, true);
+
     }
 }
