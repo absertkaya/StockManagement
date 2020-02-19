@@ -1,0 +1,76 @@
+﻿@page "/beheer"
+@using  StockManagement.Domain
+@using  StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
+@inject NavigationManager NavigationManager
+<h3>Beheer</h3>
+<div class="form-group">
+    <button class="btn btn-primary" @onclick="Add">Voeg toe</button>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Id</th>
+            <th>Productnaam</th>
+            <th>Productnummer</th>
+            <th>Category</th>
+            <th>Aantal in stock</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    @if (_products != null)
+    {
+        @foreach (Product prod in _products)
+        {
+            <tr>
+                <td>@prod.Id</td>
+                <td>@prod.Description</td>
+                <td>@prod.ProductNumber</td>
+                <td>@prod.Category.CategoryName</td>
+                <td>@prod.AmountInStock</td>
+                <td>
+                    <div>
+                        <button class="btn btn-success"><i class="oi oi-plus"></i></button>
+                        <button @onclick="@(() => Edit(@prod.Id))" class="btn btn-primary"><i class="oi oi-pencil"></i></button>
+                        <button @onclick="@(() => Delete(@prod.Id))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        }
+    }
+
+</table>
+
+@code {
+
+    private IList<Product> _products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _products = await Repository.GetAll<Product>();
+        foreach (Product prod in _products)
+        {
+            prod.AmountInStock = await Repository.GetAmountInStockValue(prod.Id);
+        }
+    }
+
+    private void Add()
+    {
+        NavigationManager.NavigateTo("/productscanner");
+    }
+
+    private void Edit(int id)
+    {
+        NavigationManager.NavigateTo("/productform/id/" + id);
+    }
+
+    private void Delete(int id)
+    {
+        Repository.Delete(_products.FirstOrDefault(p => p.Id == id));
+        NavigationManager.NavigateTo("/beheer", true);
+    }
+
+
+}

@@ -30,6 +30,7 @@ namespace StockManagement
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<IRepository, RepositoryBase>();
+            services.AddScoped<IItemRepository, ItemRepository>();
         }
          
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)//, IMapperSession session)

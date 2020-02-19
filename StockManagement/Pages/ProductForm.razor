@@ -1,0 +1,88 @@
+﻿@page "/productform"
+@page "/productform/{productnr}"
+@page "/productform/id/{id:int}"
+@using StockManagement.Domain
+@using StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
+@inject NavigationManager NavigationManager
+<h3>ProductForm</h3>
+
+<div class="form-group">
+    <label for="description">Productnaam</label>
+    <input @bind="@_description" type="text" class="form-control" id="description" placeholder="Productnaam">
+</div>
+<div class="form-group">
+    <label for="productnr">Productnummer</label>
+    <input @bind="@_productnr" type="text" class="form-control" id="productnr" placeholder="Productnummer">
+</div>
+<div class="form-group">
+    <label for="category">Category</label>
+    <select @bind="_selectedCategory" id="category" class="form-control">
+        <option value="" selected hidden>Kies een categorie</option>
+        @if (_categories != null)
+        {
+            @foreach (Category cat in _categories)
+            {
+                <option value=@cat.Id>@cat.CategoryName</option>
+            }
+        }
+    </select>
+</div>
+<div class="form-group">
+    @if (Id == null)
+    {
+        <button @onclick="Submit" class="btn btn-primary">Voeg toe</button>
+    }
+    else
+    {
+        <button @onclick="Submit" class="btn btn-primary">Update</button>
+    }
+
+    <button @onclick="Back" class="btn btn-secondary">Terug</button>
+</div>
+
+
+@code {
+    [Parameter]
+    public string ProductNr { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    private IList<Category> _categories;
+    private Product _product = new Product();
+
+    private int _selectedCategory;
+    private string _description;
+    private string _productnr;
+
+    protected override void OnInitialized() {
+        _productnr = ProductNr;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _categories = await Repository.GetAll<Category>();
+        if (Id != null)
+        {
+            _product = (Product) await Repository.GetById(typeof(Product), Id);
+            _description = _product.Description;
+            _productnr = _product.ProductNumber;
+            _selectedCategory = _product.Category.Id;
+        }
+    }
+
+    private void Submit()
+    {
+        _product.ProductNumber = _productnr;
+        _product.Description = _description;
+        _product.Category = _categories.FirstOrDefault(c => c.Id == _selectedCategory);
+        Repository.Save(_product);
+        NavigationManager.NavigateTo("/beheer", true);
+    }
+
+    private void Back()
+    {
+        NavigationManager.NavigateTo("/beheer");
+    }
+}

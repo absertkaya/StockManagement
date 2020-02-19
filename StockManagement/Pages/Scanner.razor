@@ -1,39 +1,64 @@
-﻿@page "/scanner"
+﻿@page "/scanner/{method}"
+@using StockManagement.Domain
+@using  StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
 
-<h1 class="title">Scan barcode from Video Camera</h1>
+@if (Method == "in")
+{
+    <h1 class="title">Plaats in stock</h1>
+}
+else if (Method == "out")
+{
+    <h1 class="title">Haal uit stock</h1>
+}
 
-<div>
-    <button @ref="startButton" id="startButton">Start</button>
-    <button @ref="resetButton" id="resetButton">Reset</button>
+
+<div class="form-group">
+    <button class="btn btn-primary" @ref="startButton" id="startButton">Start</button>
+    <button class="btn btn-secondary" @ref="resetButton" id="resetButton">Reset</button>
 </div>
 
 <div>
-    <video @ref="video" id="video" width="600" height="400" style="border: 1px solid gray"></video>
+    <video class="embed-responsive-item" @ref="video" id="video"></video>
 </div>
 
-<div @ref="sourceSelectPanel" id="sourceSelectPanel">
-    <label for="sourceSelect">Verander videobron:</label>
-    <select @ref="sourceSelect" id="sourceSelect" style="max-width:400px">
+<div class="form-group" @ref="sourceSelectPanel" id="sourceSelectPanel">
+    <label for="sourceSelect">Verander videobron</label>
+    <select class="form-control" @ref="sourceSelect" id="sourceSelect">
     </select>
 </div>
+<div class="form-group">
+    <label for="result">Productnummer</label>
+    <input class="form-control" @bind="_serialnr" @ref="result" type="text" id="result" />
+</div>
+@if (_invalidSerialNr)
+{
+    <p class="text-danger">Dit item bestaat niet.</p>
+}
 
-<p>Geef barcode handmatig in:</p>
-<EditForm OnValidSubmit="HandleValidSubmit">
-    <p>
-        Barcode:
-        <InputText @bind-Value="_serialnr" @ref="result" type="text" id="result" />
-    </p>
-    <button type="submit">Geef in</button>
-</EditForm>
+@if (_notInStock)
+{
+    <p class="text-danger">Dit item is niet in stock.</p>
+}
+<button class="btn btn-primary" @onclick="Submit">Geef in</button>
 
-<button>Sla over</button>
 
+
+
+@if (Method == "in")
+{
+    <button class="btn btn-secondary" @onclick="Skip">Sla over</button>
+
+}
 
 @code {
 
     private string _serialnr;
+
+    private bool _notInStock = false;
+    private bool _invalidSerialNr = false;
 
     private ElementReference startButton;
     private ElementReference resetButton;
@@ -42,14 +67,48 @@
     private ElementReference sourceSelect;
     private ElementReference result;
 
+    [Parameter]
+    public string Method { get; set; }
+
     protected override async Task OnAfterRenderAsync(bool firstrender)
     {
         if (firstrender)
             await JSRuntime.InvokeVoidAsync("JsFunctions.scanner");
     }
 
-    private void HandleValidSubmit()
+    private void Submit()
     {
-        NavigationManager.NavigateTo("itemform/" + _serialnr);
+        _notInStock = false;
+        _invalidSerialNr = false;
+        if (Method == "out")
+        {
+            try
+            {
+                bool inStock = Repository.GetItemInStock(_serialnr);
+                if (!inStock)
+                {
+                    _notInStock = true;
+                }
+                else
+                {
+                    NavigationManager.NavigateTo("itemform/out/" + _serialnr);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                _invalidSerialNr = true;
+            }
+
+        }
+        else if (Method == "in")
+        {
+            NavigationManager.NavigateTo("itemform/in/" + _serialnr);
+        }
+
+    }
+
+    private void Skip()
+    {
+        NavigationManager.NavigateTo("itemform/" + Method);
     }
 }

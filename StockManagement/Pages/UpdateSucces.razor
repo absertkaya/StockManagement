@@ -1,11 +1,52 @@
-﻿@page "/updatesucces"
+﻿@page "/updatesucces/{method}/{id:int}"
+@using StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
+@inject NavigationManager NavigationManager
 <h3>UpdateSucces</h3>
 
 <h1>De lijst is geüpdate</h1>
-<p>Dit product heeft nog x aantal stuks</p>
-<button>Item toevoegen</button>
+@if (Method == "in")
+{
+    <p>Er werd een item toegevoegd.</p>
+}
+else if (Method == "out")
+{
+    <p>Er werd een item verwijderd.</p>
+}
+<p>Dit product heeft nog @_amountInStock aantal items in stock</p>
+
+@if (Method == "in")
+ {
+    <button @onclick="Add">Item toevoegen</button>
+ }
+else if (Method == "out")
+{
+<button @onclick="Remove">Item verwijderen</button>
+}
+
+
 <button>Terug naar hooftmenu</button>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
+    [Parameter]
+    public string Method { get; set; }
 
+    private int _amountInStock;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _amountInStock = await Repository.GetAmountInStockValue(Id);
+    }
+
+    private void Add()
+    {
+        NavigationManager.NavigateTo("scanner/in");
+    }
+
+    private void Remove()
+    {
+        NavigationManager.NavigateTo("scanner/out");
+    }
 }
