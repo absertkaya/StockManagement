@@ -12,7 +12,6 @@ namespace StockManagement.Domain
         public virtual Category Category { get; set; }
         public virtual string ProductNumber { get; set; }
         public virtual int AmountInStock { get; set; }
-        public virtual Supplier Supplier { get; set; }
         public virtual IList<Item> Items { get; set; }
     }
 }

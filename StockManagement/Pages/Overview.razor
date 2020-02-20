@@ -1,0 +1,36 @@
+﻿@page "/overzicht"
+@using StockManagement.Domain
+@using StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
+@inject NavigationManager NavigationManager
+<h3>Overzicht</h3>
+
+<div class="row">
+    @if (_categories != null)
+    {
+        <div class="col col-sm-6 col-md-4 col-lg-3">
+            <img class="img-fluid border rounded" src="/images/categories/users.jpg" />
+        </div>
+        @foreach (Category cat in _categories)
+        {
+            <div class="col col-sm-6 col-md-4 col-lg-3">
+                <img @onclick="@(() => GetProductList(@cat.Id))" class="img-fluid border rounded" src="/images/categories/@(cat.Id).jpg" />
+            </div>
+        }
+
+    }
+</div>
+
+@code {
+    private IList<Category> _categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _categories = await Repository.GetAll<Category>();
+    }
+
+    private void GetProductList(int id)
+    {
+        NavigationManager.NavigateTo("/productlijst/" + id);
+    }
+}

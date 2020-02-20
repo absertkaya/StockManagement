@@ -20,8 +20,10 @@ namespace StockManagement.Data.Mappers
             Map(x => x.SerialNumber);
             Map(x => x.Comment);
             Map(x => x.InStock);
+            Map(x => x.IsDefective);
             References(x => x.ADUser);
             References(x => x.Product);
+            References(x => x.Supplier);
         }
     }
 }

@@ -63,9 +63,9 @@
                             codeReader.decodeOnceFromVideoDevice(selectedDeviceId, 'video').then((result) => {
                                 console.log(result)
                                 document.getElementById('result').value = result.text
+                                document.getElementById('result').dispatchEvent(new Event("change"))
                             }).catch((err) => {
                                 console.error(err)
-                                document.getElementById('result').value = err
                             })
                             console.log(`Started continous decode from camera with id ${selectedDeviceId}`)
                         })

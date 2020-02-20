@@ -49,5 +49,11 @@ namespace StockManagement.Data.Repositories
                  .Add(Restrictions.Eq("InStock", true));
             return (await crit.ListAsync<Item>()).Count;
         }
+
+        public virtual async Task<IList<Item>> GetByProduct(int productid)
+        {
+            var crit = _session.CreateCriteria<Item>().Add(Restrictions.Eq("Product.Id", productid));
+            return await crit.ListAsync<Item>();
+        }
     }
 }

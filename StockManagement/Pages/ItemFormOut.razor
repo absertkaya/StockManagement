@@ -1,0 +1,73 @@
+﻿@page "/itemform/out/{serialnr}"
+@using StockManagement.Domain;
+@using StockManagement.Domain.IRepositories;
+@inject IItemRepository  Repository
+@inject NavigationManager NavigationManager
+
+<h1>Haal item uit stock</h1>
+
+<EditForm EditContext="@_editContext" OnValidSubmit="HandleValidSubmit">
+    <div class="form-group">
+        <label for="serialnr">Serienummer</label>
+        <input class="form-control" type="text" @bind="SerialNr" />
+    </div>
+    <div class="form-group">
+        <label for="user">Gebruiker</label>
+        <select id="gebruiker" class="form-control" @bind="_selectedUser">
+            <option value="" selected hidden>Kies een gebruiker</option>
+            @if (_users != null)
+            {
+                @foreach (ADUser user in _users)
+                {
+                    <option value=@user.Id>@(user.FirstName + " " + user.LastName)</option>
+                }
+            }
+        </select>
+    </div>
+    <button class="btn btn-primary" type="submit">Verwijder</button>
+</EditForm>
+
+
+@code {
+
+    [Parameter]
+    public string SerialNr { get; set; }
+
+    private Item _item;
+    private EditContext _editContext;
+
+    private IList<ADUser> _users;
+
+    private int _selectedUser;
+    private bool _invalidSerialnr;
+
+    protected override void OnInitialized()
+    {
+        _item = Repository.GetBySerialNr(SerialNr);
+        _editContext = new EditContext(_item);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _users = await Repository.GetAll<ADUser>();
+    }
+
+    private void HandleValidSubmit()
+    {
+        ADUser user = _users.FirstOrDefault(u => _selectedUser == u.Id);
+        _item.ADUser = user;
+        _item.InStock = false;
+
+        ItemUser history = new ItemUser()
+        {
+            User = user,
+            FromDate = DateTime.Now
+        };
+
+        Repository.Save(_item);
+
+
+
+        NavigationManager.NavigateTo("updatesucces/out/" + _item.Product?.Description, true);
+    }
+}

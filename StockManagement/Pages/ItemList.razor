@@ -1,0 +1,82 @@
+﻿@page "/itemlijst/{id:int}"
+@using StockManagement.Domain
+@using StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
+@inject NavigationManager NavigationManager
+
+<h3>@_productName</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Id</th>
+            <th>Serienummer</th>
+            <th>Gebruiker</th>
+            <th>Geruiker ID</th>
+            <th>In stock?</th>
+            <th>Is defect?</th>
+            <th>Opmerkingen</th>
+        </tr>
+    </thead>
+
+    @if (_items != null)
+    {
+        @foreach (Item item in _items)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.SerialNumber</td>
+
+                @if (item.ADUser != null)
+                {
+                    <td>@(item.ADUser.LastName + " " + item.ADUser.FirstName)</td>
+                    <td>@(item.ADUser.Id)</td>
+                }
+                else
+                {
+                    <td>/</td>
+                    <td>/</td>
+                }
+
+                <td>
+                    @if (item.InStock)
+                    {
+                        <button class="btn btn-success"><i class="oi oi-circle-check"></i></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-danger"><i class="oi oi-circle-x"></i></button>
+                    }
+                </td>
+                <td>
+                    @if (item.IsDefective)
+                    {
+                        <button class="btn btn-success"><i class="oi oi-circle-check"></i></button>
+                    }
+                    else
+                    {
+                        <button class="btn btn-danger"><i class="oi oi-circle-x"></i></button>
+                    }
+                </td>
+                <td>@item.Comment</td>
+            </tr>
+        }
+    }
+
+</table>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private IList<Item> _items;
+    private string _productName;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Product prod = (Product) await Repository.GetById(typeof(Product), Id);
+
+        _productName = prod.Description;
+        _items = prod.Items;
+    }
+}

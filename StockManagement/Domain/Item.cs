@@ -14,5 +14,6 @@ namespace StockManagement.Domain
         public virtual bool IsDefective { get; set; }
         public virtual string SerialNumber { get; set; }
         public virtual bool InStock { get; set; }
+        public virtual Supplier Supplier { get; set; }
     }
 }

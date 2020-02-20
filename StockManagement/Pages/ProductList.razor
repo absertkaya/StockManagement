@@ -1,0 +1,59 @@
+﻿@page "/productlijst/{id:int}"
+@using StockManagement.Domain
+@using StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
+@inject NavigationManager NavigationManager
+
+<h3>@_category</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Id</th>
+            <th>Productnaam</th>
+            <th>Productnummer</th>
+            <th>Category</th>
+            <th>Aantal in stock</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    @if (_products != null)
+    {
+        @foreach (Product prod in _products)
+        {
+            <tr>
+                <td>@prod.Id</td>
+                <td>@prod.Description</td>
+                <td>@prod.ProductNumber</td>
+                <td>@prod.Category.CategoryName</td>
+                <td>@prod.AmountInStock</td>
+                <td><button class="btn btn-primary" @onclick="@(() => GetItems(prod.Id))"><i class="oi oi-magnifying-glass"></i></button></td>
+            </tr>
+        }
+    }
+
+</table>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private IList<Product> _products;
+    private string _category;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _category = ((Category) await Repository.GetById(typeof(Category), Id)).CategoryName;
+        _products = await Repository.GetByCategory(Id);
+        foreach (Product prod in _products)
+        {
+            prod.AmountInStock = await Repository.GetAmountInStockValue(prod.Id);
+        }
+    }
+
+    private void GetItems(int id)
+    {
+        NavigationManager.NavigateTo("/itemlijst/" + id);
+    }
+}

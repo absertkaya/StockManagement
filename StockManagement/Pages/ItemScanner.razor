@@ -30,7 +30,7 @@ else if (Method == "out")
     </select>
 </div>
 <div class="form-group">
-    <label for="result">Productnummer</label>
+    <label for="result">Serienummer</label>
     <input class="form-control" @bind="_serialnr" @ref="result" type="text" id="result" />
 </div>
 @if (_invalidSerialNr)
@@ -96,6 +96,7 @@ else if (Method == "out")
             }
             catch (ArgumentException ex)
             {
+                Console.WriteLine(ex);
                 _invalidSerialNr = true;
             }
 

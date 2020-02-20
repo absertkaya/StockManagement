@@ -32,8 +32,8 @@
                 <td>@prod.AmountInStock</td>
                 <td>
                     <div>
-                        <button @onclick() class="btn btn-success"><i class="oi oi-plus"></i></button>
-                        <button class="btn btn-success"><i class="oi oi-plus"></i></button>
+                        <button @onclick="@(() => AddItem(@prod.Id))" class="btn btn-success"><i class="oi oi-plus"></i></button>
+                        <button @onclick="@(() => RemoveItem(@prod.Id))" class="btn btn-secondary"><i class="oi oi-minus"></i></button>
                         <button @onclick="@(() => Edit(@prod.Id))" class="btn btn-primary"><i class="oi oi-pencil"></i></button>
                         <button @onclick="@(() => Delete(@prod.Id))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
                     </div>
@@ -64,12 +64,12 @@
 
     private void AddItem(int id)
     {
-
+        NavigationManager.NavigateTo("/scanner/in");
     }
 
-    private void Remove()
+    private void RemoveItem(int id)
     {
-
+        NavigationManager.NavigateTo("/scanner/out");
     }
 
     private void Edit(int id)

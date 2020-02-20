@@ -17,9 +17,10 @@ namespace StockManagement.Data
             {
 
                 List<Category> cats = new List<Category> { 
-                    new Category { CategoryName = "Categorie A" },
-                    new Category { CategoryName = "Categorie B" },
-                    new Category { CategoryName = "Categorie C" }
+                    new Category { CategoryName = "Monitors" },
+                    new Category { CategoryName = "Laptops" },
+                    new Category { CategoryName = "IPads" },
+                    new Category { CategoryName = "Switches" }
                 };
                 cats.ForEach(c => repo.Save(c));
                 List<Supplier> sups = new List<Supplier> { 
@@ -28,9 +29,9 @@ namespace StockManagement.Data
                     new Supplier { SupplierName = "Leverancier C" } 
                 };
                 sups.ForEach(s => repo.Save(s));
-
+                Random rand = new Random();
                 List<Product> descs = new List<Product>();
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 30; i++)
                 {
                     
                     if (i < 5)
@@ -38,7 +39,6 @@ namespace StockManagement.Data
                         Product desc = new Product() { 
                             ProductNumber = "00"+i,
                             Category = cats[i % cats.Count], 
-                            Supplier =  sups[i%sups.Count], 
                             Description = "Product " + i
                         };
                         descs.Add(desc);
@@ -47,7 +47,8 @@ namespace StockManagement.Data
 
                     Item item = new Item {
                         SerialNumber = "00" + i, Comment = "Comment " + i,
-                        Product = descs[i % descs.Count],
+                        Product = descs[rand.Next(i) % descs.Count],
+                        Supplier = sups[i % sups.Count],
                         InStock = true
                     };
                     ADUser user = new ADUser { FirstName = "FirstName " + i, LastName = "LastName" };
