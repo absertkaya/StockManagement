@@ -14,7 +14,7 @@
     </div>
     <div class="form-group">
         <label for="category">Category</label>
-        <select id="category" class="form-control" value="@_selectedCategory" @onchange="@(() => FetchDescriptions(_selectedCategory))">
+        <select id="category" class="form-control" value="@_selectedCategory" @onchange="FireChange">
             <option value="" selected hidden>Kies een categorie</option>
 
             @if (_categories != null)
@@ -77,8 +77,8 @@
     private IList<Supplier> _suppliers;
     private IList<ADUser> _users;
 
-    private int _selectedCategory;
-    private int _selectedDescription;
+    private int? _selectedCategory;
+    private int? _selectedDescription;
     private int? _selectedSupplier;
     private bool _isDefective;
     private string _comment;
@@ -100,7 +100,7 @@
         } else
         {
             _selectedCategory = _item.Product.Category.Id;
-            await FetchDescriptions(_selectedCategory);
+            await FetchDescriptions();
             _selectedSupplier = _item.Supplier?.Id;
             _isDefective = _item.IsDefective;
             _comment = _item.Comment;
@@ -108,11 +108,19 @@
 
     }
 
-    public async Task FetchDescriptions(int id)
+    public async Task FireChange(ChangeEventArgs e)
     {
-        _selectedCategory = id;
-        _descriptions = await Repository.GetByCategory(_selectedCategory);
-        _selectedDescription = _item.Product.Id;
+        _selectedCategory = int.Parse(e.Value.ToString());
+        await FetchDescriptions();
+    }
+
+    public async Task FetchDescriptions()
+    {
+        if (_selectedCategory != null)
+        {
+            _descriptions = await Repository.GetByCategory((int)_selectedCategory);
+            _selectedDescription = _item.Product?.Id;
+        }
     }
 
     private void HandleValidSubmit()

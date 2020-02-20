@@ -24,7 +24,7 @@
             }
         </select>
     </div>
-    <button class="btn btn-primary" type="submit">Verwijder</button>
+    <button class="btn btn-primary" type="submit">Haal uit</button>
 </EditForm>
 
 
@@ -68,6 +68,6 @@
 
 
 
-        NavigationManager.NavigateTo("updatesucces/out/" + _item.Product?.Description, true);
+        NavigationManager.NavigateTo("updatesucces/out/" + _item.Product?.Id, true);
     }
 }

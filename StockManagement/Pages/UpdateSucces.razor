@@ -2,7 +2,7 @@
 @using StockManagement.Domain.IRepositories
 @inject IItemRepository Repository
 @inject NavigationManager NavigationManager
-<h3>UpdateSucces</h3>
+<h3>Succes</h3>
 
 <h1>De lijst is geüpdate</h1>
 @if (Method == "in")
@@ -17,15 +17,15 @@ else if (Method == "out")
 
 @if (Method == "in")
  {
-    <button @onclick="Add">Item toevoegen</button>
+    <button class="btn btn-primary" @onclick="Add">Item in stock plaatsen</button>
  }
 else if (Method == "out")
 {
-<button @onclick="Remove">Item verwijderen</button>
+<button class="btn btn-primary" @onclick="Remove">Item uit stock halen</button>
 }
 
 
-<button>Terug naar hooftmenu</button>
+<button class="btn btn-secondary">Terug naar hooftmenu</button>
 
 @code {
     [Parameter]

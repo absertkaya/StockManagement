@@ -24,11 +24,17 @@ namespace StockManagement.Data
                 };
                 cats.ForEach(c => repo.Save(c));
                 List<Supplier> sups = new List<Supplier> { 
-                    new Supplier { SupplierName = "Leverancier A" },
-                    new Supplier { SupplierName = "Leverancier B" },
-                    new Supplier { SupplierName = "Leverancier C" } 
+                    new Supplier { SupplierName = "bol.com" },
+                    new Supplier { SupplierName = "coolblue" },
+                    new Supplier { SupplierName = "Megekko" } 
                 };
                 sups.ForEach(s => repo.Save(s));
+                List<ADUser> users = new List<ADUser> {
+                    new ADUser { FirstName = "Baki", LastName = "Sertkaya" },
+                    new ADUser { FirstName = "Max", LastName = "Verstraeten" },
+                    new ADUser { FirstName = "Lars", LastName = "van den Heede" }
+                };
+                users.ForEach(s => repo.Save(s));
                 Random rand = new Random();
                 List<Product> descs = new List<Product>();
                 for (int i = 0; i < 30; i++)
@@ -51,8 +57,6 @@ namespace StockManagement.Data
                         Supplier = sups[i % sups.Count],
                         InStock = true
                     };
-                    ADUser user = new ADUser { FirstName = "FirstName " + i, LastName = "LastName" };
-                    repo.Save(user);
                     repo.Save(item);
                 }
             }

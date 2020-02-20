@@ -11,6 +11,7 @@
         <tr>
             <th>Id</th>
             <th>Serienummer</th>
+            <th>Leverancier</th>
             <th>Gebruiker</th>
             <th>Geruiker ID</th>
             <th>In stock?</th>
@@ -26,6 +27,7 @@
             <tr>
                 <td>@item.Id</td>
                 <td>@item.SerialNumber</td>
+                <td>@item.Supplier?.SupplierName</td>
 
                 @if (item.ADUser != null)
                 {
