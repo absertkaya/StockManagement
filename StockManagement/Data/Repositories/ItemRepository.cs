@@ -55,5 +55,14 @@ namespace StockManagement.Data.Repositories
             var crit = _session.CreateCriteria<Item>().Add(Restrictions.Eq("Product.Id", productid));
             return await crit.ListAsync<Item>();
         }
+
+        public virtual async Task<ItemUser> GetLastUse(int userid, int itemid)
+        {
+            var crit = _session.CreateCriteria<ItemUser>()
+                .Add(Restrictions.Eq("User.Id", userid))
+                .Add(Restrictions.Eq("Item.Id", itemid))
+                .Add(Restrictions.Eq("ToDate", null));
+            return await crit.UniqueResultAsync<ItemUser>();
+        }
     }
 }

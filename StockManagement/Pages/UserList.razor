@@ -1,0 +1,50 @@
+﻿@page "/gebruikers"
+
+@using StockManagement.Domain
+@using StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
+@inject NavigationManager NavigationManager
+
+<h3>Gebruikers</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Id</th>
+            <th>Voornaam</th>
+            <th>Familienaam</th>
+            <th>Rol</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    @if (_users != null)
+    {
+        @foreach (ADUser user in _users)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.FirstName</td>
+                <td>@user.LastName</td>
+                <td>@user.UserRole.ToString()</td>
+                <td><button class="btn btn-primary" @onclick="(() => GetUser(user.Id))"><i class="oi oi-magnifying-glass"></i></button></td>
+            </tr>
+        }
+    }
+
+</table>
+
+@code {
+
+    private IList<ADUser> _users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _users = await Repository.GetAll<ADUser>();
+    }
+
+    private void GetUser(int id)
+    {
+        NavigationManager.NavigateTo("/gebruiker/" + id);
+    }
+}

@@ -11,5 +11,13 @@ namespace StockManagement.Domain
         public virtual IList<Item> Items { get; set; }
         public virtual string FirstName { get; set; }
         public virtual string LastName { get; set; }
+        public virtual UserRole UserRole { get; set; }
+
+        public ADUser()
+        {
+            UserRole = UserRole.BOER;
+        }
+
+
     }
 }

@@ -15,6 +15,11 @@ namespace StockManagement.Data.Mappers
             Id(x => x.Id).GeneratedBy.Increment();
             Map(x => x.LastName);
             Map(x => x.FirstName);
+            Map(x => x.UserRole);
+            HasMany(x => x.Items)
+                .Inverse()
+                .Cascade
+                .Evict();
         }
     }
 }

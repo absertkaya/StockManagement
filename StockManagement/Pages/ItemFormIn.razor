@@ -123,8 +123,15 @@
         }
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
+        if (_item.ADUser != null)
+        {
+            ItemUser lastUse = await Repository.GetLastUse(_item.Id, _item.ADUser.Id);
+            lastUse.Close();
+            Repository.Save(lastUse);
+        }
+
         _item.SerialNumber = SerialNr;
         _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
         _item.Supplier = _suppliers.FirstOrDefault(i => _selectedSupplier == i.Id);

@@ -61,12 +61,11 @@
         ItemUser history = new ItemUser()
         {
             User = user,
-            FromDate = DateTime.Now
+            Item = _item
         };
 
+        Repository.Save(history);
         Repository.Save(_item);
-
-
 
         NavigationManager.NavigateTo("updatesucces/out/" + _item.Product?.Id, true);
     }

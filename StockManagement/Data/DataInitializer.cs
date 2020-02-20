@@ -30,8 +30,8 @@ namespace StockManagement.Data
                 };
                 sups.ForEach(s => repo.Save(s));
                 List<ADUser> users = new List<ADUser> {
-                    new ADUser { FirstName = "Baki", LastName = "Sertkaya" },
-                    new ADUser { FirstName = "Max", LastName = "Verstraeten" },
+                    new ADUser { FirstName = "Baki", LastName = "Sertkaya", UserRole = UserRole.KONING},
+                    new ADUser { FirstName = "Max", LastName = "Verstraeten", UserRole = UserRole.RIDDER },
                     new ADUser { FirstName = "Lars", LastName = "van den Heede" }
                 };
                 users.ForEach(s => repo.Save(s));

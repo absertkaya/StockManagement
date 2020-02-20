@@ -12,6 +12,16 @@ namespace StockManagement.Domain
         public virtual ADUser User { get; set; }
         public virtual ADUser AssignedBy { get; set; }
         public virtual DateTime FromDate { get; set; }
-        public virtual DateTime ToDate { get; set; }
+        public virtual DateTime? ToDate { get; set; }
+
+        public ItemUser()
+        {
+            FromDate = DateTime.Now;
+        }
+
+        public virtual void Close()
+        {
+            ToDate = DateTime.Now;
+        }
     }
 }

@@ -14,5 +14,7 @@ namespace StockManagement.Domain.IRepositories
         bool GetItemInStock(string serialnr);
         Task<int> GetAmountInStockValue(int id);
 
+        Task<ItemUser> GetLastUse(int userid, int itemid);
+
     }
 }

@@ -9,7 +9,7 @@
     @if (_categories != null)
     {
         <div class="col col-sm-6 col-md-4 col-lg-3">
-            <img class="img-fluid border rounded" src="/images/categories/users.jpg" />
+            <img @onclick="@(() => GetUsers())" class="img-fluid border rounded" src="/images/categories/users.jpg" />
         </div>
         @foreach (Category cat in _categories)
         {
@@ -32,5 +32,10 @@
     private void GetProductList(int id)
     {
         NavigationManager.NavigateTo("/productlijst/" + id);
+    }
+
+    private void GetUsers()
+    {
+        NavigationManager.NavigateTo("/gebruikers");
     }
 }
