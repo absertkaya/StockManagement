@@ -32,6 +32,7 @@
                 <td>@prod.AmountInStock</td>
                 <td>
                     <div>
+                        <button @onclick() class="btn btn-success"><i class="oi oi-plus"></i></button>
                         <button class="btn btn-success"><i class="oi oi-plus"></i></button>
                         <button @onclick="@(() => Edit(@prod.Id))" class="btn btn-primary"><i class="oi oi-pencil"></i></button>
                         <button @onclick="@(() => Delete(@prod.Id))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
@@ -59,6 +60,16 @@
     private void Add()
     {
         NavigationManager.NavigateTo("/productscanner");
+    }
+
+    private void AddItem(int id)
+    {
+
+    }
+
+    private void Remove()
+    {
+
     }
 
     private void Edit(int id)
