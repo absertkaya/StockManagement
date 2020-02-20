@@ -8,13 +8,19 @@
 <div class="row">
     @if (_categories != null)
     {
-        <div class="col col-sm-6 col-md-4 col-lg-3">
+    <div class="col col-sm-6 col-md-4 col-lg-3">
+        <figure class="figure">
             <img @onclick="@(() => GetUsers())" class="img-fluid border rounded" src="/images/categories/users.jpg" />
-        </div>
+            <figcaption class="figure-caption">Gebruikers</figcaption>
+        </figure>
+    </div>
         @foreach (Category cat in _categories)
         {
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <img @onclick="@(() => GetProductList(@cat.Id))" class="img-fluid border rounded" src="/images/categories/@(cat.Id).jpg" />
+                <figure class="figure">
+                    <img @onclick="@(() => GetProductList(@cat.Id))" class="img-fluid border rounded" src="/images/categories/@(cat.Id).jpg" />
+                    <figcaption class="figure-caption">@cat.CategoryName</figcaption>
+                </figure>
             </div>
         }
 

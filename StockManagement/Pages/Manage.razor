@@ -5,7 +5,8 @@
 @inject NavigationManager NavigationManager
 <h3>Beheer</h3>
 <div class="form-group">
-    <button class="btn btn-primary" @onclick="Add">Voeg toe</button>
+    <button class="btn btn-success" @onclick="AddProduct"><i class="oi oi-plus"></i>Product</button>
+    <button class="btn btn-success" @onclick="AddCategory"><i class="oi oi-plus"></i>Categorie</button>
 </div>
 
 <table class="table table-bordered table-striped">
@@ -57,9 +58,14 @@
         }
     }
 
-    private void Add()
+    private void AddProduct()
     {
         NavigationManager.NavigateTo("/productscanner");
+    }
+
+    private void AddCategory()
+    {
+        NavigationManager.NavigateTo("/categorie");
     }
 
     private void AddItem(int id)
