@@ -1,4 +1,5 @@
-﻿using System;
+﻿using StockManagement.Graph;
+using System;
 
 namespace StockManagement.Domain
 {

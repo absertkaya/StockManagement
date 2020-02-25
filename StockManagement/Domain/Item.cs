@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using StockManagement.Graph;
+using System.Collections.Generic;
 
 namespace StockManagement.Domain
 {

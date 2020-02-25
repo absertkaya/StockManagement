@@ -3,50 +3,27 @@
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
 @using StockManagement.Graph
+@inject IJSRuntime JSRuntime
 @inject IConfiguration _configuration
 @inject ProtectedApiCallHelper ProtectedApiCallHelper
-<AuthorizeView>
-    <!-- Show this section if the user is logged in -->
-    <Authorized>
-        <br />
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-12">
-                    <label><b>Select User:</b></label>
-                    <select class="form-control"
-                            @bind="@UserId">
-                        @foreach (var user in
-                        colGraphUsers.OrderBy(x => x.DisplayName))
-                        {
-                            <option value="@user.Id">
-                                @user.DisplayName
-                            </option>
-                        }
-                    </select>
-                </div>
-            </div>
-        </div>
-    </Authorized>
-    <!-- Show this section if the user is not logged in -->
-    <NotAuthorized>
-        <p>You must be logged in to use this page</p>
-    </NotAuthorized>
-</AuthorizeView>
+<div class="form-group">
+    <label>Gebruiker</label>
+    <select class="form-control" @bind="@UserId">
+        <option value="" hidden selected>Kies een gebruiker</option>
+        @foreach (var user in
+        _colGraphUsers.OrderBy(x => x.DisplayName))
+        {
+            <option value="@user.Id">
+                @user.DisplayName
+            </option>
+        }
+    </select>
+</div>
+
+
 @code {
-    string strError = "";
-    string UserId = "";
-    int intStartMonth = 1;
-    int intStartDay = 1;
-    int intStartYear = 2019;
-    int intEndMonth = 1;
-    int intEndDay = 1;
-    int intEndYear = 2019;
-    List<GraphUser> colGraphUsers = new List<GraphUser>();
-    List<Calendar> colCalendars = new List<Calendar>();
-    DateTime StartDateValue, EndDateValue;
-    List<int> colMonths = Enumerable.Range(1, 12).ToList();
-    List<int> colDays = Enumerable.Range(1, 31).ToList();
-    List<string> colYears = new List<string>() { "2018", "2019", "2020", "2021" };
+    public string UserId { get; set; }
+    private List<GraphUser> _colGraphUsers = new List<GraphUser>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -56,11 +33,6 @@
         .WithTenantId(_configuration["AzureAd:TenantId"])
         .WithClientSecret(_configuration["AzureAd:ClientSecret"])
         .Build();
-        // With client credentials flows the scopes is ALWAYS of the shape
-        // "resource/.default", as the
-        // application permissions need to be set statically
-        // (in the portal or by PowerShell),
-        // and then granted by a tenant administrator
         string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
         AuthenticationResult result = null;
         result = await confidentialClientApplication.AcquireTokenForClient(scopes)
@@ -69,27 +41,36 @@
         var apiCaller = new ProtectedApiCallHelper(httpClient);
         await apiCaller
         .CallWebApiAndProcessResultASync(
-        "https://graph.microsoft.com/v1.0/users",
+        "https://graph.microsoft.com/v1.0/users/me",
         result.AccessToken,
         DisplayUsers
         );
     }
+
+    public GraphUser GetSelectedUser()
+    {
+        return _colGraphUsers.FirstOrDefault(u => u.Id == UserId);
+    }
+
     private void DisplayUsers(JObject result)
     {
-        colGraphUsers = new List<GraphUser>();
+        _colGraphUsers = new List<GraphUser>();
         foreach (JProperty child in result.Properties()
             .Where(p => !p.Name.StartsWith("@")))
         {
-            colGraphUsers.AddRange(
+            _colGraphUsers.AddRange(
                 child.Value.ToObject<List<GraphUser>>()
                 );
         }
         // If there are users set the first as the default
-        if (colGraphUsers.Count > 0)
+        if (_colGraphUsers.Count > 0)
         {
-            UserId = colGraphUsers
+            UserId = _colGraphUsers
                 .OrderBy(x => x.DisplayName)
                 .FirstOrDefault().Id;
         }
     }
+
+
+
 }

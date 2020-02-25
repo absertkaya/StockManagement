@@ -8,7 +8,7 @@ namespace StockManagement.Data.Mappers
         public ADUserMap()
         {
             Table("ADUser");
-            Id(x => x.Id).GeneratedBy.Increment();
+            Id(x => x.Id);
             Map(x => x.LastName);
             Map(x => x.FirstName);
             Map(x => x.UserRole);

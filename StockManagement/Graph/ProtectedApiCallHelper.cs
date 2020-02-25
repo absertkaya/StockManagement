@@ -53,6 +53,7 @@ namespace StockManagement.Graph
                     string json = await response.Content.ReadAsStringAsync();
                     JObject result = JsonConvert.DeserializeObject(json) as JObject;
                     processResult(result);
+                    
                 }
                 else
                 {

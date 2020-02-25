@@ -43,7 +43,7 @@
         _users = await Repository.GetAll<ADUser>();
     }
 
-    private void GetUser(int id)
+    private void GetUser(string id)
     {
         NavigationManager.NavigateTo("/gebruiker/" + id);
     }

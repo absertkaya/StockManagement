@@ -7,6 +7,8 @@ namespace StockManagement.Graph
 {
     public class GraphUser
     {
+        public string Id { get; set; }
+
         public string[] BusinessPhones { get; set; }
         public string DisplayName { get; set; }
         public string GivenName { get; set; }
@@ -17,6 +19,5 @@ namespace StockManagement.Graph
         public string PreferredLanguage { get; set; }
         public string Surname { get; set; }
         public string UserPrincipalName { get; set; }
-        public string Id { get; set; }
     }
 }

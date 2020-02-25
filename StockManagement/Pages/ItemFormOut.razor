@@ -1,6 +1,7 @@
 ﻿@page "/itemform/out/{serialnr}"
 @using StockManagement.Domain;
 @using StockManagement.Domain.IRepositories;
+@using StockManagement.Graph
 @inject IItemRepository  Repository
 @inject NavigationManager NavigationManager
 
@@ -11,20 +12,10 @@
         <label for="serialnr">Serienummer</label>
         <input class="form-control" type="text" @bind="SerialNr" />
     </div>
-    <div class="form-group">
-        <label for="user">Gebruiker</label>
-        <select id="gebruiker" class="form-control" @bind="_selectedUser">
-            <option value="" selected hidden>Kies een gebruiker</option>
-            @if (_users != null)
-            {
-                @foreach (ADUser user in _users)
-                {
-                    <option value=@user.Id>@(user.FirstName + " " + user.LastName)</option>
-                }
-            }
-        </select>
-    </div>
-    @if  (_submitFail)
+    <UserSelectBox @ref="_userSelect">
+
+    </UserSelectBox>
+    @if (_submitFail)
     {
         <p class="text-danger">Ongeldige invoergegevens</p>
     }
@@ -37,13 +28,16 @@
     [Parameter]
     public string SerialNr { get; set; }
 
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+
+    private UserSelectBox _userSelect;
+
     private Item _item;
     private EditContext _editContext;
     private bool _submitFail;
 
-    private IList<ADUser> _users;
-
-    private int _selectedUser;
     private bool _invalidSerialnr;
 
     protected override void OnInitialized()
@@ -52,30 +46,43 @@
         _editContext = new EditContext(_item);
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        _users = await Repository.GetAll<ADUser>();
-    }
-
-    private void Submit()
+    private async Task Submit()
     {
         try
         {
-            ADUser user = _users.FirstOrDefault(u => _selectedUser == u.Id);
-            _item.ADUser = user;
+            GraphUser graphUser = _userSelect.GetSelectedUser();
+            ADUser aduser = (ADUser)await Repository.GetById(typeof(ADUser), graphUser.Id);
+            if (aduser == null)
+            {
+                aduser = new ADUser(graphUser);
+                Repository.Save(aduser);
+            }
+            _item.ADUser = aduser;
             _item.InStock = false;
+
+
+            var authState = await authenticationStateTask;
+            var assigner = authState.User;
+
+            ADUser adAssigner = (ADUser) await Repository.GetById(typeof(ADUser), assigner.Identity.Name);
+            if (adAssigner == null)
+            {
+
+            }
 
             ItemUser history = new ItemUser()
             {
-                User = user,
-                Item = _item
-            };
+                User = aduser,
+                Item = _item,
+                //AssignedBy =
+        };
 
             Repository.Save(history);
             Repository.Save(_item);
 
             NavigationManager.NavigateTo("updatesucces/out/" + _item.Product?.Id, true);
-        } catch (Exception ex)
+        }
+        catch (Exception ex)
         {
             _submitFail = true;
         }

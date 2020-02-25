@@ -13,7 +13,7 @@ namespace StockManagement.Domain.IRepositories
         Task<int> GetAmountInStockValue(int id);
 
         Task<IList<Item>> GetItemsByUser(int id);
-        Task<ItemUser> GetLastUse(int userid, int itemid);
+        Task<ItemUser> GetLastUse(string userid, int itemid);
         Task<IList<ItemUser>> GetItemUsersByUser(int id);
         Task<IList<ItemUser>> GetItemUsersByItem(int id);
     }

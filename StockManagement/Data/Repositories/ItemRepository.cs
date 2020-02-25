@@ -56,7 +56,7 @@ namespace StockManagement.Data.Repositories
             return await crit.ListAsync<Item>();
         }
 
-        public virtual async Task<ItemUser> GetLastUse(int userid, int itemid)
+        public virtual async Task<ItemUser> GetLastUse(string userid, int itemid)
         {
             var crit = _session.CreateCriteria<ItemUser>()
                 .Add(Restrictions.Eq("User.Id", userid))

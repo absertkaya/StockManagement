@@ -27,9 +27,9 @@ namespace StockManagement.Data
                 };
                 sups.ForEach(s => repo.Save(s));
                 List<ADUser> users = new List<ADUser> {
-                    new ADUser { FirstName = "Baki", LastName = "Sertkaya", UserRole = UserRole.KONING, Office = "Melle", OfficeRole = "Stagiair"},
-                    new ADUser { FirstName = "Max", LastName = "Verstraeten", UserRole = UserRole.RIDDER, Office = "Melle", OfficeRole = "Stagiair" },
-                    new ADUser { FirstName = "Lars", LastName = "van den Heede", Office = "Melle", OfficeRole = "Stagiair" }
+                    new ADUser { Id= "a", FirstName = "Baki", LastName = "Sertkaya", UserRole = UserRole.KONING, Office = "Melle", OfficeRole = "Stagiair"},
+                    new ADUser { Id="b", FirstName = "Max", LastName = "Verstraeten", UserRole = UserRole.RIDDER, Office = "Melle", OfficeRole = "Stagiair" },
+                    new ADUser { Id="c", FirstName = "Lars", LastName = "van den Heede", Office = "Melle", OfficeRole = "Stagiair" }
                 };
                 users.ForEach(s => repo.Save(s));
                 Random rand = new Random();
