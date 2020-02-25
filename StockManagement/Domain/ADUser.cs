@@ -13,7 +13,6 @@ namespace StockManagement.Domain
         public virtual string MobilePhone { get; set; }
         public virtual string Office { get; set; }
         public virtual string LastName { get; set; }
-        public virtual UserRole UserRole { get; set; }
         public virtual IList<Item> Items { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }
 

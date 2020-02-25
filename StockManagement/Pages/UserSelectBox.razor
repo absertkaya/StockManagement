@@ -2,8 +2,7 @@
 @using Microsoft.Identity.Client;
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
-@using StockManagement.Graph
-@inject IJSRuntime JSRuntime
+@using StockManagement.Graph;
 @inject IConfiguration _configuration
 @inject ProtectedApiCallHelper ProtectedApiCallHelper
 <div class="form-group">
@@ -41,7 +40,7 @@
         var apiCaller = new ProtectedApiCallHelper(httpClient);
         await apiCaller
         .CallWebApiAndProcessResultASync(
-        "https://graph.microsoft.com/v1.0/users/me",
+        "https://graph.microsoft.com/v1.0/users",
         result.AccessToken,
         DisplayUsers
         );

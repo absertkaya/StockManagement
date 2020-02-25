@@ -65,14 +65,14 @@ namespace StockManagement.Data.Repositories
             return await crit.UniqueResultAsync<ItemUser>();
         }
 
-        public virtual async Task<IList<Item>> GetItemsByUser(int id)
+        public virtual async Task<IList<Item>> GetItemsByUser(string id)
         {
             var crit = _session.CreateCriteria<Item>()
                 .Add(Restrictions.Eq("ADUser.Id", id));
             return await crit.ListAsync<Item>();
         }
 
-        public virtual async Task<IList<ItemUser>> GetItemUsersByUser(int id)
+        public virtual async Task<IList<ItemUser>> GetItemUsersByUser(string id)
         {
             var crit = _session.CreateCriteria<ItemUser>()
                 .Add(Restrictions.Eq("User.Id", id));

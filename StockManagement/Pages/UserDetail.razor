@@ -1,4 +1,4 @@
-﻿@page "/gebruiker/{id:int}"
+﻿@page "/gebruiker/{id}"
 @using StockManagement.Domain
 @using StockManagement.Domain.IRepositories
 @inject IItemRepository Repository
@@ -94,7 +94,7 @@
 
 @code {
     [Parameter]
-    public int Id { get; set; }
+    public string Id { get; set; }
 
     private IList<Item> _items;
     private IList<ItemUser> _itemusers;

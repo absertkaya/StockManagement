@@ -11,7 +11,8 @@ namespace StockManagement.Data.Mappers
             Id(x => x.Id);
             Map(x => x.LastName);
             Map(x => x.FirstName);
-            Map(x => x.UserRole);
+            Map(x => x.Mail);
+            Map(x => x.MobilePhone);
             Map(x => x.Office);
             Map(x => x.OfficeRole);
             HasMany(x => x.Items)

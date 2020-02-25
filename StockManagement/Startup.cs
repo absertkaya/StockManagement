@@ -39,6 +39,7 @@ namespace StockManagement
 
             services.AddScoped<IRepository, RepositoryBase>();
             services.AddScoped<IItemRepository, ItemRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddHttpClient<ProtectedApiCallHelper>();
             services.AddRazorPages();
             services.AddServerSideBlazor();

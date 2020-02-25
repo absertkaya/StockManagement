@@ -48,23 +48,12 @@ namespace StockManagement.Graph
                 new AuthenticationHeaderValue("bearer", accessToken);
                 HttpResponseMessage response =
                 await HttpClient.GetAsync(webApiUrl);
-                if (response.IsSuccessStatusCode)
-                {
+
                     string json = await response.Content.ReadAsStringAsync();
                     JObject result = JsonConvert.DeserializeObject(json) as JObject;
                     processResult(result);
-                    
-                }
-                else
-                {
-                    string content =
-                    await response.Content.ReadAsStringAsync();
-                    // Note that if you got reponse.Code == 403 
-                    // and reponse.content.code == "Authorization_RequestDenied"
-                    // this is because the tenant admin as not granted 
-                    // consent for the application to call the Web API
-                    Console.WriteLine($"Content: {content}");
-                }
+
+
             }
         }
     }

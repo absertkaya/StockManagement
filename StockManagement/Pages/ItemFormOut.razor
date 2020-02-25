@@ -2,7 +2,8 @@
 @using StockManagement.Domain;
 @using StockManagement.Domain.IRepositories;
 @using StockManagement.Graph
-@inject IItemRepository  Repository
+@inject IUserRepository UserRepository
+@inject IItemRepository Repository
 @inject NavigationManager NavigationManager
 
 <h1>Haal item uit stock</h1>
@@ -64,17 +65,12 @@
             var authState = await authenticationStateTask;
             var assigner = authState.User;
 
-            ADUser adAssigner = (ADUser) await Repository.GetById(typeof(ADUser), assigner.Identity.Name);
-            if (adAssigner == null)
-            {
-
-            }
-
+            ADUser adAssigner = UserRepository.GetByEmail(assigner.Identity.Name);
             ItemUser history = new ItemUser()
             {
                 User = aduser,
                 Item = _item,
-                //AssignedBy =
+                AssignedBy = adAssigner
         };
 
             Repository.Save(history);

@@ -9,9 +9,8 @@
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
         <tr>
-            <th>Gebruiker ID</th>
-            <th>Voornaam</th>
-            <th>Familienaam</th>
+            <th>Gebruiker</th>
+            <th>Toegewezen door</th>
             <th>Van</th>
             <th>Tot</th>
         </tr>
@@ -22,9 +21,8 @@
             @foreach (ItemUser iu in _itemusers)
             {
                 <tr>
-                    <td>@iu.Item.SerialNumber</td>
-                    <td>@iu.User.FirstName</td>
-                    <td>@iu.User.LastName</td>
+                    <td>@iu.User.Mail</td>
+                    <td>@iu.AssignedBy.Mail</td>
                     <td>@iu.FromDate</td>
                     <td>@iu.ToDate</td>
                 </tr>

@@ -10,7 +10,7 @@
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
         <tr>
-            <th>Id</th>
+            <th>Email</th>
             <th>Voornaam</th>
             <th>Familienaam</th>
             <th>Rol</th>
@@ -23,10 +23,10 @@
         @foreach (ADUser user in _users)
         {
             <tr>
-                <td>@user.Id</td>
+                <td>@user.Mail</td>
                 <td>@user.FirstName</td>
                 <td>@user.LastName</td>
-                <td>@user.UserRole.ToString()</td>
+                <td>@user.OfficeRole</td>
                 <td><button class="btn btn-primary" @onclick="(() => GetUser(user.Id))"><i class="oi oi-magnifying-glass"></i></button></td>
             </tr>
         }
