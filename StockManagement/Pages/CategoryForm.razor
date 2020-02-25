@@ -1,7 +1,68 @@
 ﻿@page "/categorie"
+@page "/categorie/{id:int}"
+@using StockManagement.Domain
+@using StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
+@inject NavigationManager NavigationManager
 
 <h3>CategoryForm</h3>
 
+<div class="form-group">
+    <label for="category">Categorienaam</label>
+    <input @bind="@_categoryName" type="text" class="form-control" id="category" placeholder="Categorienaam">
+</div>
+<div class="form-group">
+    <label for="imgurl">AfbeeldingURL</label>
+    <input @bind="@_imgurl" type="text" class="form-control" id="imgurl" placeholder="URL">
+</div>
+
+@if(_submitFail)
+{
+    <p class="text-danger">Ongeldige invoergegevens</p>
+}
+
+<div class="form-group">
+    @if (Id == null)
+    {
+        <button @onclick="Submit" class="btn btn-primary">Voeg toe</button>
+    }
+    else
+    {
+        <button @onclick="Submit" class="btn btn-primary">Update</button>
+    }
+
+    <button @onclick="Back" class="btn btn-secondary">Terug</button>
+</div>
+
+
 @code {
 
+    [Parameter]
+    public int? Id { get; set; }
+
+    private string _categoryName;
+    private string _imgurl;
+    private Category _category = new Category();
+
+    private bool _submitFail;
+
+    private void Submit()
+    {
+        try
+        {
+            _category.CategoryName = _categoryName;
+            _category.ImgURL = _imgurl;
+            Repository.Save(_category);
+            NavigationManager.NavigateTo("/beheer", true);
+        } catch(Exception ex)
+        {
+            _submitFail = true;
+        }
+
+    }
+
+    private void Back()
+    {
+        NavigationManager.NavigateTo("/beheer");
+    }
 }

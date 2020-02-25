@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace StockManagement.Domain
 {
@@ -12,6 +9,10 @@ namespace StockManagement.Domain
         public virtual string FirstName { get; set; }
         public virtual string LastName { get; set; }
         public virtual UserRole UserRole { get; set; }
+        public virtual string Office { get; set; }
+        public virtual string OfficeRole { get; set; }
+
+        public virtual IList<ItemUser> ItemUsers { get; set; }
 
         public ADUser()
         {

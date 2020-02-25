@@ -1,10 +1,10 @@
-﻿using System;
+﻿using NHibernate.Criterion;
+using StockManagement.Domain;
+using StockManagement.Domain.IRepositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using StockManagement.Domain.IRepositories;
-using StockManagement.Domain;
-using NHibernate.Criterion;
 namespace StockManagement.Data.Repositories
 {
     public class ItemRepository : RepositoryBase, IItemRepository
@@ -20,7 +20,7 @@ namespace StockManagement.Data.Repositories
         {
             var crit = _session.CreateCriteria<Item>()
                 .Add(Restrictions.Eq("Product.Id", productId))
-                .Add(Restrictions.Eq("InStock",true));
+                .Add(Restrictions.Eq("InStock", true));
             IList<Item> items = await crit.ListAsync<Item>();
             return new object[] { items[0].Product.Description, items.Count };
         }
@@ -63,6 +63,27 @@ namespace StockManagement.Data.Repositories
                 .Add(Restrictions.Eq("Item.Id", itemid))
                 .Add(Restrictions.Eq("ToDate", null));
             return await crit.UniqueResultAsync<ItemUser>();
+        }
+
+        public virtual async Task<IList<Item>> GetItemsByUser(int id)
+        {
+            var crit = _session.CreateCriteria<Item>()
+                .Add(Restrictions.Eq("ADUser.Id", id));
+            return await crit.ListAsync<Item>();
+        }
+
+        public virtual async Task<IList<ItemUser>> GetItemUsersByUser(int id)
+        {
+            var crit = _session.CreateCriteria<ItemUser>()
+                .Add(Restrictions.Eq("User.Id", id));
+            return await crit.ListAsync<ItemUser>();
+        }
+
+        public virtual async Task<IList<ItemUser>> GetItemUsersByItem(int id)
+        {
+            var crit = _session.CreateCriteria<ItemUser>()
+                .Add(Restrictions.Eq("Item.Id", id));
+            return await crit.ListAsync<ItemUser>();
         }
     }
 }

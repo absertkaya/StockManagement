@@ -1,7 +1,114 @@
 ﻿@page "/gebruiker/{id:int}"
+@using StockManagement.Domain
+@using StockManagement.Domain.IRepositories
+@inject IItemRepository Repository
+@inject NavigationManager NavigationManager
 
-<h3>UserDetail</h3>
+<h3>Gebruiker</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Id</th>
+            <th>Voornaam</th>
+            <th>Familienaam</th>
+            <th>Kantoor</th>
+            <th>Functie</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (_user != null)
+        {
+            <tr>
+                <th>@_user.Id</th>
+                <td>@_user.FirstName</td>
+                <td>@_user.LastName</td>
+                <td>@_user.Office</td>
+                <td>@_user.OfficeRole</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Items in gebruik</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Id</th>
+            <th>Serienummer</th>
+            <th>Productnummer</th>
+            <th>Productnaam</th>
+            <th>Van</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (_items != null)
+        {
+            @foreach (Item item in _items)
+            {
+                <tr>
+                    <th>@item.Id</th>
+                    <td>@item.SerialNumber</td>
+                    <td>@item.Product.ProductNumber</td>
+                    <td>@item.Product.Description</td>
+                    @if (_itemusers != null)
+                    {
+                        <td>@(GetFromDate(item))</td>
+                    }
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
+
+<h3>Historiek</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Serienummer</th>
+            <th>Productnummer</th>
+            <th>Productnaam</th>
+            <th>Van</th>
+            <th>Tot</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (_itemusers != null)
+        {
+            @foreach (ItemUser iu in _itemusers)
+            {
+                <tr>
+                    <td>@iu.Item.SerialNumber</td>
+                    <td>@iu.Item.Product.ProductNumber</td>
+                    <td>@iu.Item.Product.Description</td>
+                    <td>@iu.FromDate</td>
+                    <td>@iu.ToDate</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
 
 @code {
+    [Parameter]
+    public int Id { get; set; }
 
+    private IList<Item> _items;
+    private IList<ItemUser> _itemusers;
+    private ADUser _user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _itemusers = (IList<ItemUser>) await Repository.GetItemUsersByUser(Id);
+        _user = (ADUser) await Repository.GetById(typeof(ADUser), Id);
+        _items = (IList<Item>) await Repository.GetItemsByUser(Id);
+    }
+
+    private DateTime GetFromDate(Item item)
+    {
+        return _itemusers.FirstOrDefault(i => i.Item == item && i.User == _user && i.ToDate == null).FromDate;
+    }
 }

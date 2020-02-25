@@ -1,9 +1,5 @@
-﻿using StockManagement.Domain;
-using FluentNHibernate.Mapping;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FluentNHibernate.Mapping;
+using StockManagement.Domain;
 
 namespace StockManagement.Data.Mappers
 {
@@ -13,10 +9,10 @@ namespace StockManagement.Data.Mappers
         {
             Table("ItemUserMap");
             Id(x => x.Id).GeneratedBy.Increment();
-            Map(x => x.FromDate);
+            Map(x => x.FromDate).Not.Nullable();
             Map(x => x.ToDate);
-            References(x => x.User);
-            References(x => x.Item);
+            References(x => x.User).Not.Nullable();
+            References(x => x.Item).Not.Nullable();
         }
     }
 }

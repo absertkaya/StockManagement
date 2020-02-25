@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace StockManagement.Domain.IRepositories
@@ -14,7 +12,9 @@ namespace StockManagement.Domain.IRepositories
         bool GetItemInStock(string serialnr);
         Task<int> GetAmountInStockValue(int id);
 
+        Task<IList<Item>> GetItemsByUser(int id);
         Task<ItemUser> GetLastUse(int userid, int itemid);
-
+        Task<IList<ItemUser>> GetItemUsersByUser(int id);
+        Task<IList<ItemUser>> GetItemUsersByItem(int id);
     }
 }

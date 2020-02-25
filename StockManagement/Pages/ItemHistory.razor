@@ -1,0 +1,47 @@
+﻿@page "/itemhistoriek/{id:int}"
+@using StockManagement.Domain;
+@using StockManagement.Domain.IRepositories;
+@inject IItemRepository  Repository
+@inject NavigationManager NavigationManager
+
+<h3>Gebruikshistoriek</h3>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Gebruiker ID</th>
+            <th>Voornaam</th>
+            <th>Familienaam</th>
+            <th>Van</th>
+            <th>Tot</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (_itemusers != null)
+        {
+            @foreach (ItemUser iu in _itemusers)
+            {
+                <tr>
+                    <td>@iu.Item.SerialNumber</td>
+                    <td>@iu.User.FirstName</td>
+                    <td>@iu.User.LastName</td>
+                    <td>@iu.FromDate</td>
+                    <td>@iu.ToDate</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private IList<ItemUser> _itemusers;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _itemusers = (await Repository.GetItemUsersByItem(Id)).OrderByDescending(i => i.ToDate).ToList();
+    }
+
+}

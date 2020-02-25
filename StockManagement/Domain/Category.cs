@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace StockManagement.Domain
 {
@@ -9,5 +6,7 @@ namespace StockManagement.Domain
     {
         public virtual int Id { get; set; }
         public virtual string CategoryName { get; set; }
+        public virtual IList<Product> Products { get; set; }
+        public virtual string ImgURL { get; set; }
     }
 }

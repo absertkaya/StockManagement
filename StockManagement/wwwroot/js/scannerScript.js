@@ -7,6 +7,13 @@
             .then((videoInputDevices) => {
                 const sourceSelect = document.getElementById('sourceSelect')
                 selectedDeviceId = videoInputDevices[0].deviceId
+                codeReader.decodeOnceFromVideoDevice(selectedDeviceId, 'video').then((result) => {
+                    console.log(result)
+                    document.getElementById('result').value = result.text
+                    document.getElementById('result').dispatchEvent(new Event("change"))
+                }).catch((err) => {
+                    console.error(err)
+                })
                 if (videoInputDevices.length > 1) {
                     videoInputDevices.forEach((element) => {
                         const sourceOption = document.createElement('option')

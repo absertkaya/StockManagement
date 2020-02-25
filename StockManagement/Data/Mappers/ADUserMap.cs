@@ -1,13 +1,9 @@
 ﻿using FluentNHibernate.Mapping;
 using StockManagement.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StockManagement.Data.Mappers
 {
-    public class ADUserMap: ClassMap<ADUser>
+    public class ADUserMap : ClassMap<ADUser>
     {
         public ADUserMap()
         {
@@ -16,10 +12,15 @@ namespace StockManagement.Data.Mappers
             Map(x => x.LastName);
             Map(x => x.FirstName);
             Map(x => x.UserRole);
+            Map(x => x.Office);
+            Map(x => x.OfficeRole);
             HasMany(x => x.Items)
                 .Inverse()
                 .Cascade
-                .Evict();
+                .SaveUpdate();
+            HasMany(x => x.ItemUsers)
+                .Inverse()
+                .Cascade.All();
         }
     }
 }

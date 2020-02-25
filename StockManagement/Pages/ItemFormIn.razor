@@ -1,5 +1,6 @@
 ﻿@page "/itemform/in"
 @page "/itemform/in/{serialnr}"
+@page "/itemform/in/id/{id:int}"
 @using StockManagement.Domain;
 @using StockManagement.Domain.IRepositories;
 @inject IItemRepository  Repository
@@ -7,7 +8,7 @@
 
 <h1>Zet item in stock</h1>
 
-<EditForm Model="@_item" OnValidSubmit="HandleValidSubmit">
+
     <div class="form-group">
         <label for="serialnr">Serienummer</label>
         <input class="form-control" type="text" @bind="SerialNr"/>
@@ -58,19 +59,25 @@
     </div>
     <div class="form-group">
         <label for="comment">Opmerkingen</label>
-        <InputTextArea id="comment" class="form-control" @bind-Value="_comment"></InputTextArea>
+        <input id="comment" class="form-control" @bind="_comment"></input>
     </div>
 
-    <button class="btn btn-primary" type="submit">Voeg toe</button>
-</EditForm>
+    @if (_submitFail)
+    {
+        <p class="text-danger">Ongeldige invoergegevens</p>
+    }
 
+    <button class="btn btn-primary" @onclick="Submit">Voeg toe</button>
 
 @code {
 
     [Parameter]
     public string SerialNr { get; set; }
 
-    private Item _item = new Item();
+    [Parameter]
+    public int? Id { get; set; }
+
+    private Item _item;
 
     private IList<Category> _categories;
     private IList<Product> _descriptions;
@@ -83,6 +90,8 @@
     private bool _isDefective;
     private string _comment;
 
+    private bool _submitFail;
+
     private void CheckDefective()
     {
         _isDefective = !_isDefective;
@@ -90,10 +99,20 @@
 
     protected override async Task OnInitializedAsync()
     {
+
         _categories = await Repository.GetAll<Category>();
         _suppliers = await Repository.GetAll<Supplier>();
         _users = await Repository.GetAll<ADUser>();
-        _item = Repository.GetBySerialNr(SerialNr);
+        if (SerialNr != null)
+        {
+            _item = Repository.GetBySerialNr(SerialNr);
+        }
+        if (Id != null)
+        {
+            _item = (Item) await Repository.GetById(typeof(Item), Id);
+            SerialNr = _item.SerialNumber;
+        }
+
         if (_item == null)
         {
             _item = new Item();
@@ -107,6 +126,7 @@
         }
 
     }
+
 
     public async Task FireChange(ChangeEventArgs e)
     {
@@ -123,24 +143,31 @@
         }
     }
 
-    private async Task HandleValidSubmit()
+    private async Task Submit()
     {
         if (_item.ADUser != null)
         {
-            ItemUser lastUse = await Repository.GetLastUse(_item.Id, _item.ADUser.Id);
+            ItemUser lastUse = await Repository.GetLastUse(_item.ADUser.Id, _item.Id);
             lastUse.Close();
             Repository.Save(lastUse);
         }
 
-        _item.SerialNumber = SerialNr;
-        _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
-        _item.Supplier = _suppliers.FirstOrDefault(i => _selectedSupplier == i.Id);
-        _item.ADUser = null;
-        _item.IsDefective = _isDefective;
-        _item.Comment = _comment;
-        _item.InStock = true;
-        Repository.Save(_item);
-        NavigationManager.NavigateTo("updatesucces/in/" + _selectedDescription, true);
+        try
+        {
+            _item.SerialNumber = SerialNr;
+            _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
+            _item.Supplier = _suppliers.FirstOrDefault(i => _selectedSupplier == i.Id);
+            _item.ADUser = null;
+            _item.IsDefective = _isDefective;
+            _item.Comment = _comment;
+            _item.InStock = true;
+            Repository.Save(_item);
+            NavigationManager.NavigateTo("updatesucces/in/" + _selectedDescription, true);
+        } catch (Exception ex)
+        {
+            _submitFail = true;
+        }
+
 
     }
 }

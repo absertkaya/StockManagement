@@ -5,8 +5,44 @@
 @inject NavigationManager NavigationManager
 <h3>Beheer</h3>
 <div class="form-group">
-    <button class="btn btn-success" @onclick="AddProduct"><i class="oi oi-plus"></i>Product</button>
     <button class="btn btn-success" @onclick="AddCategory"><i class="oi oi-plus"></i>Categorie</button>
+</div>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th>Id</th>
+            <th>Categorienaam</th>
+            <th>Aantal producten</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    @if (_categories != null)
+    {
+        @foreach (Category cat in _categories)
+        {
+            <tr>
+                <td>@cat.Id</td>
+                <td>@cat.CategoryName</td>
+                @if (_products != null)
+                {
+                    <td>@GetAmountOfProducts(cat)</td>
+                }
+                <td>
+                    <div>
+                        <button @onclick="@(() => EditCategory(@cat.Id))" class="btn btn-secondary"><i class="oi oi-pencil"></i></button>
+                        <button @onclick="@(() => DeleteCategory(@cat.Id))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
+                    </div>
+                </td>
+            </tr>
+        }
+    }
+
+</table>
+
+<div class="form-group">
+    <button class="btn btn-success" @onclick="AddProduct"><i class="oi oi-plus"></i>Product</button>
 </div>
 
 <table class="table table-bordered table-striped">
@@ -33,10 +69,9 @@
                 <td>@prod.AmountInStock</td>
                 <td>
                     <div>
-                        <button @onclick="@(() => AddItem(@prod.Id))" class="btn btn-success"><i class="oi oi-plus"></i></button>
-                        <button @onclick="@(() => RemoveItem(@prod.Id))" class="btn btn-secondary"><i class="oi oi-minus"></i></button>
-                        <button @onclick="@(() => Edit(@prod.Id))" class="btn btn-primary"><i class="oi oi-pencil"></i></button>
-                        <button @onclick="@(() => Delete(@prod.Id))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
+                        <button class="btn btn-primary" @onclick="@(() => GetItems(prod.Id))"><i class="oi oi-magnifying-glass"></i></button>
+                        <button @onclick="@(() => EditProduct(@prod.Id))" class="btn btn-secondary"><i class="oi oi-pencil"></i></button>
+                        <button @onclick="@(() => DeleteProduct(@prod.Id))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
                     </div>
                 </td>
             </tr>
@@ -48,14 +83,21 @@
 @code {
 
     private IList<Product> _products;
+    private IList<Category> _categories;
 
     protected override async Task OnInitializedAsync()
     {
+        _categories = await Repository.GetAll<Category>();
         _products = await Repository.GetAll<Product>();
         foreach (Product prod in _products)
         {
             prod.AmountInStock = await Repository.GetAmountInStockValue(prod.Id);
         }
+    }
+
+    private int GetAmountOfProducts(Category cat)
+    {
+        return _products.Where(p => p.Category == cat).Count();
     }
 
     private void AddProduct()
@@ -78,16 +120,30 @@
         NavigationManager.NavigateTo("/scanner/out");
     }
 
-    private void Edit(int id)
+    private void EditProduct(int id)
     {
         NavigationManager.NavigateTo("/productform/id/" + id);
     }
 
-    private void Delete(int id)
+    private void EditCategory(int id)
+    {
+
+    }
+
+    private void DeleteProduct(int id)
     {
         Repository.Delete(_products.FirstOrDefault(p => p.Id == id));
         NavigationManager.NavigateTo("/beheer", true);
     }
 
+    private void DeleteCategory(int id)
+    {
+        Repository.Delete(_categories.FirstOrDefault(p => p.Id == id));
+        NavigationManager.NavigateTo("/beheer", true);
+    }
 
+    private void GetItems(int id)
+    {
+        NavigationManager.NavigateTo("/itemlijst/" + id);
+    }
 }

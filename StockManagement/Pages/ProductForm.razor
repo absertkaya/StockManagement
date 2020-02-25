@@ -5,8 +5,8 @@
 @using StockManagement.Domain.IRepositories
 @inject IItemRepository Repository
 @inject NavigationManager NavigationManager
-<h3>ProductForm</h3>
 
+<h3>ProductForm</h3>
 
 <div class="form-group">
     <label for="productnr">Productnummer</label>
@@ -29,6 +29,10 @@
         }
     </select>
 </div>
+@if  (_submitFail)
+{
+    <p class="text-danger">Ongeldige invoergegevens</p>
+}
 <div class="form-group">
     @if (Id == null)
     {
@@ -57,6 +61,8 @@
     private string _description;
     private string _productnr;
 
+    private bool _submitFail;
+
     protected override void OnInitialized() {
         _productnr = ProductNr;
     }
@@ -75,11 +81,18 @@
 
     private void Submit()
     {
-        _product.ProductNumber = _productnr;
-        _product.Description = _description;
-        _product.Category = _categories.FirstOrDefault(c => c.Id == _selectedCategory);
-        Repository.Save(_product);
-        NavigationManager.NavigateTo("/beheer", true);
+        try
+        {
+            _product.ProductNumber = _productnr;
+            _product.Description = _description;
+            _product.Category = _categories.FirstOrDefault(c => c.Id == _selectedCategory);
+            Repository.Save(_product);
+            NavigationManager.NavigateTo("/beheer", true);
+        } catch (Exception ex)
+        {
+            _submitFail = true;
+        }
+
     }
 
     private void Back()

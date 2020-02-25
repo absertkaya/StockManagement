@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace StockManagement.Domain
 {
@@ -15,5 +12,6 @@ namespace StockManagement.Domain
         public virtual string SerialNumber { get; set; }
         public virtual bool InStock { get; set; }
         public virtual Supplier Supplier { get; set; }
+        public virtual IList<ItemUser> ItemUsers { get; set; }
     }
 }

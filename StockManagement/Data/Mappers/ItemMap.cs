@@ -1,18 +1,11 @@
 ﻿using FluentNHibernate.Mapping;
-using NHibernate;
-using NHibernate.Mapping.ByCode;
-using NHibernate.Mapping.ByCode.Conformist;
 using StockManagement.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StockManagement.Data.Mappers
 {
     public class ItemMap : ClassMap<Item>
     {
-        
+
         public ItemMap()
         {
             Table("Item");
@@ -22,8 +15,11 @@ namespace StockManagement.Data.Mappers
             Map(x => x.InStock);
             Map(x => x.IsDefective);
             References(x => x.ADUser);
-            References(x => x.Product);
+            References(x => x.Product).Not.Nullable();
             References(x => x.Supplier);
+            HasMany(x => x.ItemUsers)
+                .Inverse()
+                .Cascade.All();
         }
     }
 }
