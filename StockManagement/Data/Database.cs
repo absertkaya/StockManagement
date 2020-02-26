@@ -1,5 +1,6 @@
 ﻿using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using Microsoft.Extensions.Configuration;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;
 
@@ -17,7 +18,7 @@ namespace StockManagement.Data
                 {
                     _sessionFactory = Fluently.Configure()
                                 .Database(MsSqlConfiguration.MsSql2012
-                                .ConnectionString("Server=tcp:vgdtest.database.windows.net,1433;Initial Catalog=StockManagement;Persist Security Info=False;User ID=vgdtest;Password=ugorKGiNOHULOdkq7nAL;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+                                .ConnectionString("Server=tcp:vgd-stockmanagement.database.windows.net,1433;Initial Catalog=stockmanagement-test;Persist Security Info=False;User ID=vgd-stockmanagement;Password=fwVhpN73gJ2gZJLvD25h;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
                                 .Mappings(m => m.FluentMappings.AddFromAssembly(new Database().GetType().Assembly))
                                 .CurrentSessionContext("call")
                                 .ExposeConfiguration(cfg => BuildSchema(cfg, true, true))

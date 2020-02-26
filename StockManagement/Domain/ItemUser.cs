@@ -1,5 +1,6 @@
 ﻿using StockManagement.Graph;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace StockManagement.Domain
 {

@@ -9,7 +9,6 @@ namespace StockManagement.Data.Repositories
     public class RepositoryBase : IRepository, IDisposable
     {
         protected ISession _session = null;
-        protected ITransaction _transaction = null;
         public RepositoryBase()
         {
             _session = Database.OpenSession();
@@ -19,26 +18,6 @@ namespace StockManagement.Data.Repositories
             _session = session;
         }
         #region Transaction and Session Management Methods
-        public void BeginTransaction()
-        {
-            _transaction = _session.BeginTransaction();
-        }
-        public void CommitTransaction()
-        {
-            _transaction.Commit();
-            CloseTransaction();
-        }
-        public void RollbackTransaction()
-        {
-            _transaction.Rollback();
-            CloseTransaction();
-            CloseSession();
-        }
-        private void CloseTransaction()
-        {
-            _transaction.Dispose();
-            _transaction = null;
-        }
         private void CloseSession()
         {
             _session.Close();
@@ -69,11 +48,7 @@ namespace StockManagement.Data.Repositories
         #endregion
         public void Dispose()
         {
-            if (_transaction != null)
-            {
 
-                CommitTransaction();
-            }
             if (_session != null)
             {
                 _session.Flush();

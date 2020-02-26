@@ -33,8 +33,7 @@
 
     private async Task ApiCall(string url)
     {
-        if (!string.IsNullOrEmpty(url) && url != _lastUrl)
-        {
+        
             IConfidentialClientApplication confidentialClientApplication =
                 ConfidentialClientApplicationBuilder
                 .Create(_configuration["AzureAd:ClientId"])
@@ -53,9 +52,9 @@
                     result.AccessToken
                     );
             DisplayUsers(res);
-            _lastUrl = res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString();
-            //await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
-
+        if (res.Properties().FirstOrDefault(p => p.Name == "@odata.nextLink") != null)
+        {
+            await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
         }
     }
 
@@ -82,8 +81,8 @@
         }
 
         _colGraphUsers = _colGraphUsers
-            .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && u.OfficeLocation != null)
-            .ToList();
+          .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && u.OfficeLocation != null)
+          .ToList();
 
         JSRuntime.InvokeVoidAsync("console.log", _colGraphUsers);
     }
