@@ -50,10 +50,12 @@ namespace StockManagement.Data.Repositories
         public virtual void Save(object obj)
         {
             _session.SaveOrUpdate(obj);
+            _session.Flush();
         }
         public virtual void Delete(object obj)
         {
             _session.Delete(obj);
+            _session.Flush();
         }
         public virtual async Task<object> GetById(Type objType, object objId)
         {

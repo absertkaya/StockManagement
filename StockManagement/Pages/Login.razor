@@ -50,14 +50,14 @@
             .ExecuteAsync();
         var httpClient = new HttpClient();
         var apiCaller = new ProtectedApiCallHelper(httpClient);
-        await apiCaller
+        var res = await apiCaller
             .CallWebApiAndProcessResultASync(
             $"https://graph.microsoft.com/v1.0/users/{user.Identity.Name}",
-            result.AccessToken,
-            SaveAndUpdateUser
+            result.AccessToken
             );
+            SaveAndUpdateUser(res);
         }
-
+        
     }
 
     private void SaveAndUpdateUser(JObject res)

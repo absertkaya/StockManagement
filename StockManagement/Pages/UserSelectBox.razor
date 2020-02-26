@@ -3,6 +3,7 @@
 @using Newtonsoft.Json;
 @using Newtonsoft.Json.Linq;
 @using StockManagement.Graph;
+@inject IJSRuntime JSRuntime
 @inject IConfiguration _configuration
 @inject ProtectedApiCallHelper ProtectedApiCallHelper
 <div class="form-group">
@@ -10,7 +11,7 @@
     <select class="form-control" @bind="@UserId">
         <option value="" hidden selected>Kies een gebruiker</option>
         @foreach (var user in
-        _colGraphUsers.OrderBy(x => x.DisplayName))
+       _colGraphUsers.OrderBy(x => x.DisplayName))
         {
             <option value="@user.Id">
                 @user.DisplayName
@@ -23,28 +24,41 @@
 @code {
     public string UserId { get; set; }
     private List<GraphUser> _colGraphUsers = new List<GraphUser>();
+    private string _lastUrl;
 
     protected override async Task OnInitializedAsync()
     {
-        IConfidentialClientApplication confidentialClientApplication =
-        ConfidentialClientApplicationBuilder
-        .Create(_configuration["AzureAd:ClientId"])
-        .WithTenantId(_configuration["AzureAd:TenantId"])
-        .WithClientSecret(_configuration["AzureAd:ClientSecret"])
-        .Build();
-        string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
-        AuthenticationResult result = null;
-        result = await confidentialClientApplication.AcquireTokenForClient(scopes)
-        .ExecuteAsync();
-        var httpClient = new HttpClient();
-        var apiCaller = new ProtectedApiCallHelper(httpClient);
-        await apiCaller
-        .CallWebApiAndProcessResultASync(
-        "https://graph.microsoft.com/v1.0/users",
-        result.AccessToken,
-        DisplayUsers
-        );
+        await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
     }
+
+    private async Task ApiCall(string url)
+    {
+        if (!string.IsNullOrEmpty(url) && url != _lastUrl)
+        {
+            IConfidentialClientApplication confidentialClientApplication =
+                ConfidentialClientApplicationBuilder
+                .Create(_configuration["AzureAd:ClientId"])
+                .WithTenantId(_configuration["AzureAd:TenantId"])
+                .WithClientSecret(_configuration["AzureAd:ClientSecret"])
+                .Build();
+            string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
+            AuthenticationResult result = null;
+            result = await confidentialClientApplication.AcquireTokenForClient(scopes)
+                .ExecuteAsync();
+            var httpClient = new HttpClient();
+            var apiCaller = new ProtectedApiCallHelper(httpClient);
+            var res = await apiCaller
+                .CallWebApiAndProcessResultASync(
+                    url,
+                    result.AccessToken
+                    );
+            DisplayUsers(res);
+            _lastUrl = res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString();
+            //await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
+
+        }
+    }
+
 
     public GraphUser GetSelectedUser()
     {
@@ -53,23 +67,24 @@
 
     private void DisplayUsers(JObject result)
     {
-        _colGraphUsers = new List<GraphUser>();
-        foreach (JProperty child in result.Properties()
-            .Where(p => !p.Name.StartsWith("@")))
+
+        foreach (JProperty child in result.Properties().Where(p => !p.Name.StartsWith("@")))
         {
             _colGraphUsers.AddRange(
                 child.Value.ToObject<List<GraphUser>>()
                 );
         }
-        // If there are users set the first as the default
         if (_colGraphUsers.Count > 0)
         {
             UserId = _colGraphUsers
                 .OrderBy(x => x.DisplayName)
                 .FirstOrDefault().Id;
         }
+
+        _colGraphUsers = _colGraphUsers
+            .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && u.OfficeLocation != null)
+            .ToList();
+
+        JSRuntime.InvokeVoidAsync("console.log", _colGraphUsers);
     }
-
-
-
 }

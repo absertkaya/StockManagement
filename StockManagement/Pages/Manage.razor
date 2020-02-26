@@ -40,6 +40,10 @@
     }
 
 </table>
+@if (_deleteFailCategory)
+{
+    <p class="text-danger">Verwijderen van categorie mislukt</p>
+}
 
 <div class="form-group">
     <button class="btn btn-success" @onclick="AddProduct"><i class="oi oi-plus"></i>Product</button>
@@ -79,12 +83,17 @@
     }
 
 </table>
-
+@if (_deleteFailProduct)
+{
+    <p class="text-danger">Verwijderen van product mislukt</p>
+}
 @code {
 
     private IList<Product> _products;
     private IList<Category> _categories;
 
+    private bool _deleteFailProduct;
+    private bool _deleteFailCategory;
     protected override async Task OnInitializedAsync()
     {
         _categories = await Repository.GetAll<Category>();
@@ -132,14 +141,30 @@
 
     private void DeleteProduct(int id)
     {
-        Repository.Delete(_products.FirstOrDefault(p => p.Id == id));
-        NavigationManager.NavigateTo("/beheer", true);
+        try
+        {
+            Repository.Delete(_products.FirstOrDefault(p => p.Id == id));
+            _products.Remove(_products.FirstOrDefault(p => p.Id == id));
+        }
+        catch (Exception ex)
+        {
+            _deleteFailProduct = true;
+        }
+
     }
 
     private void DeleteCategory(int id)
     {
-        Repository.Delete(_categories.FirstOrDefault(p => p.Id == id));
-        NavigationManager.NavigateTo("/beheer", true);
+        try
+        {
+            Repository.Delete(_categories.FirstOrDefault(p => p.Id == id));
+            _categories.Remove(_categories.FirstOrDefault(p => p.Id == id));
+            _products = _products.Where(p => p.Category.Id != id).ToList();
+        }
+        catch (Exception ex)
+        {
+            _deleteFailCategory = true;
+        }
     }
 
     private void GetItems(int id)

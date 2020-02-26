@@ -76,12 +76,19 @@
 
 </table>
 
+@if (_deleteFail)
+{
+    <p class="text-danger">Verwijderen van item mislukt</p>
+}
+
 @code {
     [Parameter]
     public int Id { get; set; }
 
     private IList<Item> _items;
     private string _productName;
+
+    private bool _deleteFail;
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,7 +110,13 @@
 
     private void DeleteItem(Item item)
     {
-        _items.Remove(item);
-        Repository.Delete(item);
+        try
+        {
+            Repository.Delete(item);
+            _items.Remove(item);
+        } catch (Exception ex)
+        {
+            _deleteFail = true;
+        }
     }
 }

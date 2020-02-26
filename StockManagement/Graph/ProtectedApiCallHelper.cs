@@ -29,10 +29,9 @@ namespace StockManagement.Graph
         /// security token to call the Web API</param>
         /// <param name="processResult">Callback used to process the result 
         /// of the call to the Web API</param>
-        public async Task CallWebApiAndProcessResultASync(
+        public async Task<JObject> CallWebApiAndProcessResultASync(
             string webApiUrl,
-            string accessToken,
-            Action<JObject> processResult)
+            string accessToken)
         {
             if (!string.IsNullOrEmpty(accessToken))
             {
@@ -48,13 +47,15 @@ namespace StockManagement.Graph
                 new AuthenticationHeaderValue("bearer", accessToken);
                 HttpResponseMessage response =
                 await HttpClient.GetAsync(webApiUrl);
-
+                if (response.IsSuccessStatusCode)
+                {
                     string json = await response.Content.ReadAsStringAsync();
                     JObject result = JsonConvert.DeserializeObject(json) as JObject;
-                    processResult(result);
-
-
+                    return result;
+                }
+                throw new Exception();
             }
+            throw new ArgumentException();
         }
     }
 }

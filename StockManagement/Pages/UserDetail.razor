@@ -9,9 +9,10 @@
 <table class="table table-bordered table-striped">
     <thead class="thead-dark">
         <tr>
-            <th>Id</th>
+            <th>Email</th>
             <th>Voornaam</th>
             <th>Familienaam</th>
+            <th>GSM</th>
             <th>Kantoor</th>
             <th>Functie</th>
         </tr>
@@ -20,9 +21,10 @@
         @if (_user != null)
         {
             <tr>
-                <th>@_user.Id</th>
+                <th>@_user.Mail</th>
                 <td>@_user.FirstName</td>
                 <td>@_user.LastName</td>
+                <td>@_user.MobilePhone</td>
                 <td>@_user.Office</td>
                 <td>@_user.OfficeRole</td>
             </tr>
