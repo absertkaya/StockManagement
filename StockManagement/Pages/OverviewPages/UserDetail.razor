@@ -1,8 +1,8 @@
-﻿@page "/gebruiker/{id}"
+﻿@inherits UserDetailBase
+
+@page "/gebruiker/{id}"
 @using StockManagement.Domain
 @using StockManagement.Domain.IRepositories
-@inject IItemRepository Repository
-@inject NavigationManager NavigationManager
 
 <h3>Gebruiker</h3>
 
@@ -95,22 +95,5 @@
 </table>
 
 @code {
-    [Parameter]
-    public string Id { get; set; }
 
-    private IList<Item> _items;
-    private IList<ItemUser> _itemusers;
-    private ADUser _user;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _itemusers = (IList<ItemUser>) await Repository.GetItemUsersByUser(Id);
-        _user = (ADUser) await Repository.GetById(typeof(ADUser), Id);
-        _items = (IList<Item>) await Repository.GetItemsByUser(Id);
-    }
-
-    private DateTime GetFromDate(Item item)
-    {
-        return _itemusers.FirstOrDefault(i => i.Item == item && i.User == _user && i.ToDate == null).FromDate;
-    }
 }

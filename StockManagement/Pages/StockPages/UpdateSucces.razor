@@ -1,7 +1,7 @@
-﻿@page "/updatesucces/{method}/{id:int}"
+﻿@inherits UpdateSuccesBase
+@page "/updatesucces/{method}/{id:int}"
 @using StockManagement.Domain.IRepositories
-@inject IItemRepository Repository
-@inject NavigationManager NavigationManager
+
 <h3>Succes</h3>
 
 <h1>De lijst is geüpdate</h1>
@@ -28,25 +28,5 @@ else if (Method == "out")
 <button class="btn btn-secondary">Terug naar hooftmenu</button>
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
-    [Parameter]
-    public string Method { get; set; }
 
-    private int _amountInStock;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _amountInStock = await Repository.GetAmountInStockValue(Id);
-    }
-
-    private void Add()
-    {
-        NavigationManager.NavigateTo("scanner/in");
-    }
-
-    private void Remove()
-    {
-        NavigationManager.NavigateTo("scanner/out");
-    }
 }

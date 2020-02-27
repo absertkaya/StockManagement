@@ -1,8 +1,8 @@
-﻿@page "/itemhistoriek/{id:int}"
+﻿@inherits ItemHistoryBase
+
 @using StockManagement.Domain;
-@using StockManagement.Domain.IRepositories;
-@inject IItemRepository  Repository
-@inject NavigationManager NavigationManager
+
+@page "/itemhistoriek/{id:int}"
 
 <h3>Gebruikshistoriek</h3>
 
@@ -32,14 +32,6 @@
 </table>
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
 
-    private IList<ItemUser> _itemusers;
-
-    protected override async Task OnInitializedAsync()
-    {
-        _itemusers = (await Repository.GetItemUsersByItem(Id)).OrderByDescending(i => i.ToDate).ToList();
-    }
 
 }

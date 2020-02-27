@@ -1,9 +1,9 @@
-﻿@page "/overzicht"
+﻿@inherits OverviewBase
+
+@page "/overzicht"
 
 @using StockManagement.Domain
-@using StockManagement.Domain.IRepositories
-@inject IItemRepository Repository
-@inject NavigationManager NavigationManager
+
 <h3>Overzicht</h3>
 
 <div class="row">
@@ -37,20 +37,5 @@
 </div>
 
 @code {
-    private IList<Category> _categories;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _categories = await Repository.GetAll<Category>();
-    }
-
-    private void GetProductList(int id)
-    {
-        NavigationManager.NavigateTo("/productlijst/" + id);
-    }
-
-    private void GetUsers()
-    {
-        NavigationManager.NavigateTo("/gebruikers");
-    }
 }

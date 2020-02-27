@@ -1,8 +1,8 @@
-﻿@page "/beheer"
-@using  StockManagement.Domain
-@using  StockManagement.Domain.IRepositories
-@inject IItemRepository Repository
-@inject NavigationManager NavigationManager
+﻿@inherits ManageBase
+@page "/beheer"
+
+@using StockManagement.Domain
+
 <h3>Beheer</h3>
 <div class="form-group">
     <button class="btn btn-success" @onclick="AddCategory"><i class="oi oi-plus"></i>Categorie</button>
@@ -87,88 +87,7 @@
 {
     <p class="text-danger">Verwijderen van product mislukt</p>
 }
+
 @code {
 
-    private IList<Product> _products;
-    private IList<Category> _categories;
-
-    private bool _deleteFailProduct;
-    private bool _deleteFailCategory;
-    protected override async Task OnInitializedAsync()
-    {
-        _categories = await Repository.GetAll<Category>();
-        _products = await Repository.GetAll<Product>();
-        foreach (Product prod in _products)
-        {
-            prod.AmountInStock = await Repository.GetAmountInStockValue(prod.Id);
-        }
-    }
-
-    private int GetAmountOfProducts(Category cat)
-    {
-        return _products.Where(p => p.Category == cat).Count();
-    }
-
-    private void AddProduct()
-    {
-        NavigationManager.NavigateTo("/productscanner");
-    }
-
-    private void AddCategory()
-    {
-        NavigationManager.NavigateTo("/categorie");
-    }
-
-    private void AddItem(int id)
-    {
-        NavigationManager.NavigateTo("/scanner/in");
-    }
-
-    private void RemoveItem(int id)
-    {
-        NavigationManager.NavigateTo("/scanner/out");
-    }
-
-    private void EditProduct(int id)
-    {
-        NavigationManager.NavigateTo("/productform/id/" + id);
-    }
-
-    private void EditCategory(int id)
-    {
-        NavigationManager.NavigateTo("/categorie/" + id);
-    }
-
-    private void DeleteProduct(int id)
-    {
-        try
-        {
-            Repository.Delete(_products.FirstOrDefault(p => p.Id == id));
-            _products.Remove(_products.FirstOrDefault(p => p.Id == id));
-        }
-        catch (Exception ex)
-        {
-            _deleteFailProduct = true;
-        }
-
-    }
-
-    private void DeleteCategory(int id)
-    {
-        try
-        {
-            Repository.Delete(_categories.FirstOrDefault(p => p.Id == id));
-            _categories.Remove(_categories.FirstOrDefault(p => p.Id == id));
-            _products = _products.Where(p => p.Category.Id != id).ToList();
-        }
-        catch (Exception ex)
-        {
-            _deleteFailCategory = true;
-        }
-    }
-
-    private void GetItems(int id)
-    {
-        NavigationManager.NavigateTo("/itemlijst/" + id);
-    }
 }

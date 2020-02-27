@@ -1,0 +1,40 @@
+﻿@inherits CategoryFormBase
+@page "/categorie"
+@page "/categorie/{id:int}"
+
+<h3>Nieuwe Categorie</h3>
+
+<EditForm EditContext="@_editContext" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="category">Categorienaam</label>
+        <InputText @bind-Value="@_category.CategoryName" type="text" class="form-control" id="category" placeholder="Categorienaam" />
+    </div>
+    <div class="form-group">
+        <label for="imgurl">AfbeeldingURL</label>
+        <InputText @bind-Value="@_category.ImgURL" type="text" class="form-control" id="imgurl" placeholder="URL" />
+    </div>
+    <div class="form-group">
+        @if (Id == null)
+        {
+            <button type="submit" class="btn btn-primary">Voeg toe</button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-primary">Update</button>
+        }
+
+        <button @onclick="Back" class="btn btn-secondary">Terug</button>
+    </div>
+</EditForm>
+
+@if (_submitFail)
+{
+    <p class="text-danger">Ongeldige invoergegevens</p>
+}
+
+@code {
+
+
+}

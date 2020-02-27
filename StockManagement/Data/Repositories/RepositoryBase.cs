@@ -34,7 +34,7 @@ namespace StockManagement.Data.Repositories
         public virtual void Delete(object obj)
         {
             _session.Delete(obj);
-            _session.Flush();
+           // _session.Flush();
         }
         public virtual async Task<object> GetById(Type objType, object objId)
         {

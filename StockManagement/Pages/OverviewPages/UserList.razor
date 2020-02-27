@@ -1,9 +1,9 @@
-﻿@page "/gebruikers"
+﻿@inherits UserListBase
+
+@page "/gebruikers"
 
 @using StockManagement.Domain
-@using StockManagement.Domain.IRepositories
-@inject IItemRepository Repository
-@inject NavigationManager NavigationManager
+
 
 <h3>Gebruikers</h3>
 
@@ -36,15 +36,5 @@
 
 @code {
 
-    private IList<ADUser> _users;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _users = await Repository.GetAll<ADUser>();
-    }
-
-    private void GetUser(string id)
-    {
-        NavigationManager.NavigateTo("/gebruiker/" + id);
-    }
 }

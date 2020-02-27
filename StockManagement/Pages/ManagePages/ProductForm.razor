@@ -1,0 +1,57 @@
+﻿@inherits ProductFormBase
+
+@using StockManagement.Domain
+
+@page "/productform"
+@page "/productform/{productnr}"
+@page "/productform/id/{id:int}"
+
+
+<h3>ProductForm</h3>
+<EditForm EditContext="@_editContext" OnValidSubmit="Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="productnr">Productnummer</label>
+        <InputText @bind-Value="@_product.ProductNumber" type="text" class="form-control" id="productnr" placeholder="Productnummer" />
+    </div>
+    <div class="form-group">
+        <label for="description">Productnaam</label>
+        <InputText @bind-Value="@_product.Description" type="text" class="form-control" id="description" placeholder="Productnaam" />
+    </div>
+    <div class="form-group">
+        <label for="category">Category</label>
+        <select  @onchange="SelectCategory" id="category" class="form-control">
+            <option value="" selected hidden>Kies een categorie</option>
+            @if (_categories != null)
+            {
+                @foreach (Category cat in _categories)
+                {
+                    <option value=@cat.Id>@cat.CategoryName</option>
+                }
+            }
+        </select>
+    </div>
+</EditForm>
+
+@if (_submitFail)
+{
+    <p class="text-danger">Fout bij het persisteren van de data</p>
+}
+<div class="form-group">
+    @if (Id == null)
+    {
+        <button @onclick="Submit" class="btn btn-primary">Voeg toe</button>
+    }
+    else
+    {
+        <button @onclick="Submit" class="btn btn-primary">Update</button>
+    }
+
+    <button @onclick="Back" class="btn btn-secondary">Terug</button>
+</div>
+
+
+@code {
+
+}

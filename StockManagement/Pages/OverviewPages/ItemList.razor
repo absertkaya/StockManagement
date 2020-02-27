@@ -1,8 +1,8 @@
-﻿@page "/itemlijst/{id:int}"
+﻿@inherits ItemListBase
+
+@page "/itemlijst/{id:int}"
 @using StockManagement.Domain
-@using StockManagement.Domain.IRepositories
-@inject IItemRepository Repository
-@inject NavigationManager NavigationManager
+
 
 <h3>@_productName</h3>
 
@@ -82,41 +82,5 @@
 }
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
 
-    private IList<Item> _items;
-    private string _productName;
-
-    private bool _deleteFail;
-
-    protected override async Task OnInitializedAsync()
-    {
-        Product prod = (Product) await Repository.GetById(typeof(Product), Id);
-
-        _productName = prod.Description;
-        _items = prod.Items;
-    }
-
-    private void GetHistory(int id)
-    {
-        NavigationManager.NavigateTo("/itemhistoriek/" + id);
-    }
-
-    private void EditItem(int id)
-    {
-        NavigationManager.NavigateTo("/itemform/in/id/" + id);
-    }
-
-    private void DeleteItem(Item item)
-    {
-        try
-        {
-            Repository.Delete(item);
-            _items.Remove(item);
-        } catch (Exception ex)
-        {
-            _deleteFail = true;
-        }
-    }
 }

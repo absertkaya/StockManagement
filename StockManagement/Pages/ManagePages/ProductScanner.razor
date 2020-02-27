@@ -1,9 +1,8 @@
-﻿@page "/productscanner"
+﻿@inherits ProductScannerBase
+
+@page "/productscanner"
 @using StockManagement.Domain
-@using  StockManagement.Domain.IRepositories
-@inject IItemRepository Repository
-@inject IJSRuntime JSRuntime
-@inject NavigationManager NavigationManager
+
 
 <h3>ProductScanner</h3>
 
@@ -34,26 +33,6 @@
 
 
 @code {
-    private string _productnr;
-    private ElementReference startButton;
-    private ElementReference resetButton;
-    private ElementReference video;
-    private ElementReference sourceSelectPanel;
-    private ElementReference sourceSelect;
-    private ElementReference result;
 
-    [Parameter]
-    public string Method { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstrender)
-    {
-        if (firstrender)
-            await JSRuntime.InvokeVoidAsync("JsFunctions.scanner");
-    }
-
-    private void Submit()
-    {
-        NavigationManager.NavigateTo("/productform/" + _productnr);
-    }
 
 }
