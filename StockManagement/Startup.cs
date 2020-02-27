@@ -1,3 +1,5 @@
+using Azure.Storage.Blobs;
+using Blazor.FileReader;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authorization;
@@ -42,9 +44,13 @@ namespace StockManagement
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddHttpClient<ProtectedApiCallHelper>();
             services.AddApplicationInsightsTelemetry();
+            services.AddFileReaderService();
             services.AddRazorPages();
-            services.AddServerSideBlazor();
-
+            services.AddServerSideBlazor().AddHubOptions(o =>
+            {
+                o.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10MB
+            }); ;
+            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)//, IMapperSession session)

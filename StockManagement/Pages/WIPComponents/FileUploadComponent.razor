@@ -1,0 +1,70 @@
+﻿@using System.IO;
+@using System.Diagnostics;
+@using Blazor.FileReader
+@using StockManagement.Data.Services
+
+@page "/file"
+
+@inject IFileReaderService fileReaderService
+@inject IJSRuntime CurrentJSRuntime
+
+<input type="file" @ref=inputElement />
+<button @onclick=ReadFile class="btn btn-primary">Read file</button>
+<button @onclick=ClearFile class="btn btn-primary">Clear</button>
+
+<br />
+<br />
+<progress max="@max" value="@value" />
+<br />
+<textarea style="max-width: 100%;" cols="50" rows="20">@Output</textarea>
+@code {
+
+    [Parameter]
+    public int BufferSize { get; set; } = 20480;
+    public long max;
+    public long value;
+    ElementReference inputElement;
+
+    string Output { get; set; }
+
+    [Inject]
+    private BlobService _service { get; set; }
+
+    public async Task ClearFile()
+    {
+        await fileReaderService.CreateReference(inputElement).ClearValue();
+    }
+
+    public async Task ReadFile()
+    {
+        max = 0;
+        value = 0;
+        Output = string.Empty;
+        this.StateHasChanged();
+        var nl = Environment.NewLine;
+        var files = (await fileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList();
+        foreach (var file in files)
+        {
+            max += (await file.ReadFileInfoAsync()).Size;
+        }
+        foreach (var file in files)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            var fileInfo = await file.ReadFileInfoAsync();
+            Output += $"{nameof(IFileInfo)}.{nameof(fileInfo.Name)}: {fileInfo.Name}{nl}";
+            Output += $"{nameof(IFileInfo)}.{nameof(fileInfo.Size)}: {fileInfo.Size}{nl}";
+            Output += $"{nameof(IFileInfo)}.{nameof(fileInfo.Type)}: {fileInfo.Type}{nl}";
+            Output += $"{nameof(IFileInfo)}.{nameof(fileInfo.LastModifiedDate)}: {fileInfo.LastModifiedDate?.ToString() ?? "(N/A)"}{nl}";
+            Output += $"Reading file...";
+            this.StateHasChanged();
+            Console.WriteLine(Output);
+            using (var fileStream = await file.OpenReadAsync())
+            {
+
+            }
+            this.StateHasChanged();
+        }
+
+    }
+}

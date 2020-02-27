@@ -1,0 +1,24 @@
+﻿@inherits ProductListComponentBase
+
+@using StockManagement.Domain
+
+@page "/test"
+
+<div class="container">
+    <h3>Productenlijst</h3>
+
+    <div class="row">
+        @if (_products != null)
+        {
+            @foreach (Product product in _products)
+            {
+                <ProductComponent Product="product" />
+            }
+        }
+
+    </div>
+</div>
+
+@code {
+
+}
