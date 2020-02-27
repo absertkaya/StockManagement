@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using StockManagement.Domain.IRepositories;
+using StockManagement.Pages.ReuseableComponents;
 using System;
 using System.Threading.Tasks;
 
@@ -12,29 +13,14 @@ namespace StockManagement.Pages.StockPages
         public IItemRepository Repository { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
-        [Inject]
-        public IJSRuntime JSRuntime { get; set; }
-
-        protected string _serialnr;
 
         protected bool _notInStock = false;
         protected bool _invalidSerialNr = false;
 
-        protected ElementReference startButton;
-        protected ElementReference resetButton;
-        protected ElementReference video;
-        protected ElementReference sourceSelectPanel;
-        protected ElementReference sourceSelect;
-        protected ElementReference result;
+        protected Scanner _scanner;
 
         [Parameter]
         public string Method { get; set; }
-
-        protected override async Task OnAfterRenderAsync(bool firstrender)
-        {
-            if (firstrender)
-                await JSRuntime.InvokeVoidAsync("JsFunctions.scanner");
-        }
 
         protected void Submit()
         {
@@ -44,14 +30,14 @@ namespace StockManagement.Pages.StockPages
             {
                 try
                 {
-                    bool inStock = Repository.GetItemInStock(_serialnr);
+                    bool inStock = Repository.GetItemInStock(_scanner.GetResult());
                     if (!inStock)
                     {
                         _notInStock = true;
                     }
                     else
                     {
-                        NavigationManager.NavigateTo("itemform/out/" + _serialnr);
+                        NavigationManager.NavigateTo("itemform/out/" + _scanner.GetResult());
                     }
                 }
                 catch (ArgumentException ex)
@@ -62,7 +48,7 @@ namespace StockManagement.Pages.StockPages
             }
             else if (Method == "in")
             {
-                NavigationManager.NavigateTo("itemform/in/" + _serialnr);
+                NavigationManager.NavigateTo("itemform/in/" + _scanner.GetResult());
             }
 
         }

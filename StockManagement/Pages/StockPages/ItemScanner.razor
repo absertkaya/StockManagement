@@ -1,7 +1,7 @@
 ﻿@inherits ItemScannerBase
 
 @page "/scanner/{method}"
-@using StockManagement.Domain
+@using StockManagement.Pages.ReuseableComponents
 
 @if (Method == "in")
 {
@@ -12,23 +12,7 @@ else if (Method == "out")
     <h1 class="title">Haal uit stock</h1>
 }
 
-<div class="form-group">
-    <button class="btn btn-secondary" @ref="resetButton" id="resetButton">Reset</button>
-</div>
- 
-<div>
-    <video class=" w-50 embed-responsive-item embed-responsive" @ref="video" id="video"></video>
-</div>
-
-<div class="form-group" @ref="sourceSelectPanel" id="sourceSelectPanel">
-    <label for="sourceSelect">Verander videobron</label>
-    <select class="form-control" @ref="sourceSelect" id="sourceSelect">
-    </select>
-</div>
-<div class="form-group">
-    <label for="result">Serienummer</label>
-    <input class="form-control" @bind="_serialnr" @ref="result" type="text" id="result" />
-</div>
+<Scanner @ref="_scanner"/>
 @if (_invalidSerialNr)
 {
     <p class="text-danger">Dit item bestaat niet.</p>

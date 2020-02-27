@@ -22,7 +22,7 @@ namespace StockManagement.Data
                                 .ConnectionString("Server=tcp:vgd-stockmanagement.database.windows.net,1433;Initial Catalog=stockmanagement-test;Persist Security Info=False;User ID=vgd-stockmanagement;Password=fwVhpN73gJ2gZJLvD25h;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
                                 .Mappings(m => m.FluentMappings.AddFromAssembly(new Database().GetType().Assembly))
                                 .CurrentSessionContext("call")
-                                .ExposeConfiguration(cfg => BuildSchema(cfg, true, true))
+                                .ExposeConfiguration(cfg => BuildSchema(cfg, false, true))
                                 .BuildSessionFactory();
                 }
                 return _sessionFactory;
