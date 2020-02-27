@@ -1,11 +1,7 @@
-﻿@page "/calendars"
-@using Microsoft.Identity.Client;
-@using Newtonsoft.Json;
-@using Newtonsoft.Json.Linq;
-@using StockManagement.Graph;
-@inject IJSRuntime JSRuntime
-@inject IConfiguration _configuration
-@inject ProtectedApiCallHelper ProtectedApiCallHelper
+﻿@inherits UserSelectBoxBase
+
+@page "/calendars"
+
 <div class="form-group">
     <label>Gebruiker</label>
     <select class="form-control" @bind="@UserId">
@@ -22,68 +18,5 @@
 
 
 @code {
-    public string UserId { get; set; }
-    private List<GraphUser> _colGraphUsers = new List<GraphUser>();
-    private string _lastUrl;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
-    }
-
-    private async Task ApiCall(string url)
-    {
-        
-            IConfidentialClientApplication confidentialClientApplication =
-                ConfidentialClientApplicationBuilder
-                .Create(_configuration["AzureAd:ClientId"])
-                .WithTenantId(_configuration["AzureAd:TenantId"])
-                .WithClientSecret(_configuration["AzureAd:ClientSecret"])
-                .Build();
-            string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
-            AuthenticationResult result = null;
-            result = await confidentialClientApplication.AcquireTokenForClient(scopes)
-                .ExecuteAsync();
-            var httpClient = new HttpClient();
-            var apiCaller = new ProtectedApiCallHelper(httpClient);
-            var res = await apiCaller
-                .CallWebApiAndProcessResultASync(
-                    url,
-                    result.AccessToken
-                    );
-            DisplayUsers(res);
-        if (res.Properties().FirstOrDefault(p => p.Name == "@odata.nextLink") != null)
-        {
-            await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
-        }
-    }
-
-
-    public GraphUser GetSelectedUser()
-    {
-        return _colGraphUsers.FirstOrDefault(u => u.Id == UserId);
-    }
-
-    private void DisplayUsers(JObject result)
-    {
-
-        foreach (JProperty child in result.Properties().Where(p => !p.Name.StartsWith("@")))
-        {
-            _colGraphUsers.AddRange(
-                child.Value.ToObject<List<GraphUser>>()
-                );
-        }
-        if (_colGraphUsers.Count > 0)
-        {
-            UserId = _colGraphUsers
-                .OrderBy(x => x.DisplayName)
-                .FirstOrDefault().Id;
-        }
-
-        _colGraphUsers = _colGraphUsers
-          .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && u.OfficeLocation != null)
-          .ToList();
-
-        JSRuntime.InvokeVoidAsync("console.log", _colGraphUsers);
-    }
 }

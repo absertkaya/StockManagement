@@ -41,6 +41,7 @@ namespace StockManagement
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddHttpClient<ProtectedApiCallHelper>();
+            services.AddApplicationInsightsTelemetry();
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
@@ -75,7 +76,7 @@ namespace StockManagement
             });
 
 
-            new DataInitializer().Initialize();
+            //new DataInitializer().Initialize();
         }
     }
 }

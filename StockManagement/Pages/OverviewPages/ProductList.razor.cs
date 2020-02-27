@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace StockManagement.Pages.OverviewPages
 {

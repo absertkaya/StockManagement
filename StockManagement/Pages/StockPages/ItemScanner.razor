@@ -2,7 +2,6 @@
 
 @page "/scanner/{method}"
 @using StockManagement.Domain
-@using  StockManagement.Domain.IRepositories
 
 @if (Method == "in")
 {
@@ -13,14 +12,12 @@ else if (Method == "out")
     <h1 class="title">Haal uit stock</h1>
 }
 
-
 <div class="form-group">
-    <button class="btn btn-primary" @ref="startButton" id="startButton">Start</button>
     <button class="btn btn-secondary" @ref="resetButton" id="resetButton">Reset</button>
 </div>
  
 <div>
-    <video class="embed-responsive-item" @ref="video" id="video"></video>
+    <video class=" w-50 embed-responsive-item embed-responsive" @ref="video" id="video"></video>
 </div>
 
 <div class="form-group" @ref="sourceSelectPanel" id="sourceSelectPanel">

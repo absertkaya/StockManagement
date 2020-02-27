@@ -57,9 +57,8 @@
     </div>
     <div class="form-group">
         <label for="comment">Opmerkingen</label>
-        <input id="comment" class="form-control" @bind="_comment"></input>
+        <input id="comment" class="form-control" @bind="_comment"/>
     </div>
-
     @if (_submitFail)
     {
         <p class="text-danger">Ongeldige invoergegevens</p>
@@ -68,6 +67,5 @@
     <button class="btn btn-primary" @onclick="Submit">Voeg toe</button>
 
 @code {
-
 
 }

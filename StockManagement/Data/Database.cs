@@ -1,5 +1,6 @@
 ﻿using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using NHibernate;
 using NHibernate.Tool.hbm2ddl;

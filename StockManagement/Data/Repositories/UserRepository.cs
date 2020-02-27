@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using StockManagement.Domain;
+﻿using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using System.Linq;
 
 namespace StockManagement.Data.Repositories
 {

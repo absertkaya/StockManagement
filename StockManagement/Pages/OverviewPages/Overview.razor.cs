@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace StockManagement.Pages.OverviewPages
 {
@@ -15,11 +14,19 @@ namespace StockManagement.Pages.OverviewPages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
+        protected bool _dBError;
+
         protected IList<Category> _categories;
 
         protected override async Task OnInitializedAsync()
         {
-            _categories = await Repository.GetAll<Category>();
+            try
+            {
+                _categories = await Repository.GetAll<Category>();
+            } catch (Exception ex)
+            {
+                _dBError = true;
+            }
         }
 
         protected void GetProductList(int id)

@@ -1,6 +1,5 @@
 ﻿@inherits UpdateSuccesBase
 @page "/updatesucces/{method}/{id:int}"
-@using StockManagement.Domain.IRepositories
 
 <h3>Succes</h3>
 
@@ -16,12 +15,12 @@ else if (Method == "out")
 <p>Dit product heeft nog @_amountInStock aantal items in stock</p>
 
 @if (Method == "in")
- {
+{
     <button class="btn btn-primary" @onclick="Add">Item in stock plaatsen</button>
- }
+}
 else if (Method == "out")
 {
-<button class="btn btn-primary" @onclick="Remove">Item uit stock halen</button>
+    <button class="btn btn-primary" @onclick="Remove">Item uit stock halen</button>
 }
 
 

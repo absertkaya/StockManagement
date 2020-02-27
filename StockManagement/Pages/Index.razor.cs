@@ -3,16 +3,13 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using Microsoft.JSInterop;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using StockManagement.Graph;
 using System.Net.Http;
 using System.Threading.Tasks;
-using StockManagement.Graph;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using StockManagement.Domain;
 
 namespace StockManagement.Pages
 {
@@ -33,7 +30,7 @@ namespace StockManagement.Pages
         protected override async Task OnInitializedAsync()
         {
 
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
             if (UserRepository.GetByEmail(user.Identity.Name) == null)
             {

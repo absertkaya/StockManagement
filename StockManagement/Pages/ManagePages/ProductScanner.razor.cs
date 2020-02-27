@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using StockManagement.Domain.IRepositories;
 using Microsoft.JSInterop;
+using StockManagement.Domain.IRepositories;
+using System.Threading.Tasks;
 
 namespace StockManagement.Pages.ManagePages
 {

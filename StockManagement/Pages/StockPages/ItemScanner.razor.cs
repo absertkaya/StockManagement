@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using StockManagement.Domain.IRepositories;
+using System;
+using System.Threading.Tasks;
 
 namespace StockManagement.Pages.StockPages
 {
@@ -14,7 +12,7 @@ namespace StockManagement.Pages.StockPages
         public IItemRepository Repository { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
-        [Inject] 
+        [Inject]
         public IJSRuntime JSRuntime { get; set; }
 
         protected string _serialnr;
@@ -58,7 +56,6 @@ namespace StockManagement.Pages.StockPages
                 }
                 catch (ArgumentException ex)
                 {
-                    Console.WriteLine(ex);
                     _invalidSerialNr = true;
                 }
 
