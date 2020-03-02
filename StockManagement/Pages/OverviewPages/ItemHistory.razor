@@ -1,11 +1,17 @@
 ﻿@inherits ItemHistoryBase
 
 @using StockManagement.Domain;
-
+@using StockManagement.Pages.ReuseableComponents
 @page "/itemhistoriek/{id:int}"
 
-<h3>Gebruikshistoriek</h3>
 
+<div class="form-group">
+    <FileUploadComponent @ref="_fileUpload" Container="@("item"+Id)" />
+    <button class="btn btn-primary" @onclick="Upload">Upload</button>
+    <button class="btn btn-secondary" @onclick="Clear">Clear</button>
+</div>
+<BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />    
+<h3>Gebruikshistoriek</h3>
 <table class="table striped table-responsive">
     <thead class="thead-dark">
         <tr>

@@ -9,10 +9,11 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using StockManagement.Data;
+using StockManagement.Data.Services;
 using StockManagement.Data.Repositories;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Graph;
+using StockManagement.Domain.IServices;
 
 namespace StockManagement
 {
@@ -42,6 +43,7 @@ namespace StockManagement
             services.AddScoped<IRepository, RepositoryBase>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBlobService, BlobService>();
             services.AddHttpClient<ProtectedApiCallHelper>();
             services.AddApplicationInsightsTelemetry();
             services.AddFileReaderService();
