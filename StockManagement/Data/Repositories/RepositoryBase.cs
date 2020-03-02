@@ -36,7 +36,7 @@ namespace StockManagement.Data.Repositories
             _session.Delete(obj);
             // _session.Flush();
         }
-        public virtual async Task<object> GetById(Type objType, object objId)
+        public virtual async Task<object> GetByIdAsync(Type objType, object objId)
         {
             return await _session.GetAsync(objType, objId);
         }
@@ -56,5 +56,10 @@ namespace StockManagement.Data.Repositories
             }
         }
 
+        public object GetById(Type objType, object objId)
+        {
+            return _session.Get(objType, objId);
+        }
     }
+    
 }

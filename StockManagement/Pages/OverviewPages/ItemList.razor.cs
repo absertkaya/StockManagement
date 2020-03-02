@@ -23,7 +23,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected override async Task OnInitializedAsync()
         {
-            Product prod = (Product)await Repository.GetById(typeof(Product), Id);
+            Product prod = (Product)await Repository.GetByIdAsync(typeof(Product), Id);
 
             _productName = prod.Description;
             _items = prod.Items;

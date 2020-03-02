@@ -19,7 +19,7 @@ namespace StockManagement.Data
                 {
                     _sessionFactory = Fluently.Configure()
                                 .Database(MsSqlConfiguration.MsSql2012
-                                .ConnectionString("Server=tcp:vgd-stockmanagement.database.windows.net,1433;Initial Catalog=stockmanagement-test;Persist Security Info=False;User ID=vgd-stockmanagement;Password=fwVhpN73gJ2gZJLvD25h;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+                                .ConnectionString("Server=tcp:vgd-stockmanagement.database.windows.net,1433;Initial Catalog=stockmanagement-test;Persist Security Info=False;User ID=vgd-stockmanagement;Password=fwVhpN73gJ2gZJLvD25h;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;MultipleActiveResultSets=true;"))
                                 .Mappings(m => m.FluentMappings.AddFromAssembly(new Database().GetType().Assembly))
                                 .CurrentSessionContext("call")
                                 .ExposeConfiguration(cfg => BuildSchema(cfg, false, true))

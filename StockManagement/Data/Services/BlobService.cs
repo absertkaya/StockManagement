@@ -69,7 +69,6 @@ namespace StockManagement.Data.Services
             string blobName = uri.Substring(uri.LastIndexOf("/") + 1);
             CloudBlockBlob blob = BlobContainer.GetBlockBlobReference(blobName);
             await blob.DeleteIfExistsAsync();
-
         }
     }
 }

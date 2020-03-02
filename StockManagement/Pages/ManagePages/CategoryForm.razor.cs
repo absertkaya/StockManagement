@@ -24,7 +24,11 @@ namespace StockManagement.Pages.ManagePages
         protected bool _submitFail;
 
         protected override void OnInitialized()
-        {
+        { 
+            if (Id != null)
+            {
+                _category = (Category) Repository.GetById(typeof(Category), Id);
+            }
             _editContext = new EditContext(_category);
         }
 

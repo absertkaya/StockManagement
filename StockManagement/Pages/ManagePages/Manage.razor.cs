@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using StockManagement.Domain.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,9 @@ namespace StockManagement.Pages.ManagePages
         protected bool _loadFail;
         protected bool _deleteFailProduct;
         protected bool _deleteFailCategory;
+
+        [Inject]
+        public IBlobService BlobService { get; set; }
         protected override async Task OnInitializedAsync()
         {
             try
@@ -89,6 +93,8 @@ namespace StockManagement.Pages.ManagePages
         {
             try
             {
+                BlobService.SetContainer("categories");
+                BlobService.DeleteBlob("category" + id);
                 Repository.Delete(_categories.FirstOrDefault(p => p.Id == id));
                 _categories.Remove(_categories.FirstOrDefault(p => p.Id == id));
                 _products = _products.Where(p => p.Category.Id != id).ToList();

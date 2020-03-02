@@ -52,7 +52,7 @@ namespace StockManagement.Pages.StockPages
             }
             if (Id != null)
             {
-                _item = (Item)await Repository.GetById(typeof(Item), Id);
+                _item = (Item)await Repository.GetByIdAsync(typeof(Item), Id);
                 SerialNr = _item.SerialNumber;
             }
 

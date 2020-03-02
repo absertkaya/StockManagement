@@ -45,7 +45,7 @@ namespace StockManagement.Pages.StockPages
             try
             {
                 GraphUser graphUser = _userSelect.GetSelectedUser();
-                ADUser aduser = (ADUser)await Repository.GetById(typeof(ADUser), graphUser.Id);
+                ADUser aduser = (ADUser)await Repository.GetByIdAsync(typeof(ADUser), graphUser.Id);
                 if (aduser == null)
                 {
                     aduser = new ADUser(graphUser);

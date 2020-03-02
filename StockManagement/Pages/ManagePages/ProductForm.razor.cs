@@ -29,17 +29,18 @@ namespace StockManagement.Pages.ManagePages
         protected override void OnInitialized()
         {
             _product.ProductNumber = ProductNr;
+            
+            if (Id != null)
+            { 
+                _product = (Product) Repository.GetById(typeof(Product), Id);
+            }
             _editContext = new EditContext(_product);
+            
         }
 
         protected override async Task OnInitializedAsync()
         {
             _categories = await Repository.GetAll<Category>();
-            if (Id != null)
-            {
-                _product = (Product)await Repository.GetById(typeof(Product), Id);
-
-            }
         }
 
         protected void SelectCategory(ChangeEventArgs e)

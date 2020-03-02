@@ -8,7 +8,8 @@ namespace StockManagement.Domain.IRepositories
     {
         void Save(object obj);
         void Delete(object obj);
-        Task<object> GetById(Type objType, object objId);
+        Task<object> GetByIdAsync(Type objType, object objId);
+        object GetById(Type objType, object objId);
         Task<IList<TEntity>> GetAll<TEntity>() where TEntity : class;
     }
 }

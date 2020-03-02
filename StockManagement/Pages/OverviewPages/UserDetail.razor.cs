@@ -25,7 +25,7 @@ namespace StockManagement.Pages.OverviewPages
         protected override async Task OnInitializedAsync()
         {
             _itemusers = await Repository.GetItemUsersByUser(Id);
-            _user = (ADUser)await Repository.GetById(typeof(ADUser), Id);
+            _user = (ADUser)await Repository.GetByIdAsync(typeof(ADUser), Id);
             _items = await Repository.GetItemsByUser(Id);
         }
 

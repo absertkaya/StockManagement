@@ -21,7 +21,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected override async Task OnInitializedAsync()
         {
-            _category = ((Category)await Repository.GetById(typeof(Category), Id)).CategoryName;
+            _category = ((Category)await Repository.GetByIdAsync(typeof(Category), Id)).CategoryName;
             _products = await Repository.GetByCategory(Id);
             foreach (Product prod in _products)
             {
