@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using StockManagement.Pages.ReuseableComponents;
 using System;
+using System.Threading.Tasks;
 
 namespace StockManagement.Pages.ManagePages
 {
@@ -17,6 +19,8 @@ namespace StockManagement.Pages.ManagePages
         protected Category _category = new Category();
         protected EditContext _editContext;
 
+        protected FileUploadComponent _fileUpload; 
+
         protected bool _submitFail;
 
         protected override void OnInitialized()
@@ -24,14 +28,16 @@ namespace StockManagement.Pages.ManagePages
             _editContext = new EditContext(_category);
         }
 
-        protected void Submit()
+
+        protected async Task Submit()
         {
             if (_editContext.Validate())
             {
                 try
                 {
                     Repository.Save(_category);
-                    NavigationManager.NavigateTo("/beheer", true);
+                    await _fileUpload.Upload("category" + _category.Id);
+                    NavigationManager.NavigateTo("/beheer");
                 }
                 catch (Exception ex)
                 {

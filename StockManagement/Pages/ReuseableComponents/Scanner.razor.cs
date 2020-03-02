@@ -7,8 +7,9 @@ namespace StockManagement.Pages.ReuseableComponents
 {
     public class ScannerBase : ComponentBase
     {
-        [Inject] private IItemRepository Repository { get; set; }
-        [Inject] private NavigationManager NavigationManager { get; set; }
+        [Parameter]
+        public string Kind { get; set; }
+
         [Inject] private IJSRuntime JSRuntime { get; set; }
 
         protected string _productnr;

@@ -24,15 +24,11 @@ namespace StockManagement.Pages.ManagePages
         protected Product _product = new Product();
         protected EditContext _editContext;
 
-        protected int? _selectedCategory;
-        protected string _description;
-        protected string _productnr;
-
         protected bool _submitFail;
 
         protected override void OnInitialized()
         {
-            _productnr = ProductNr;
+            _product.ProductNumber = ProductNr;
             _editContext = new EditContext(_product);
         }
 
@@ -42,9 +38,7 @@ namespace StockManagement.Pages.ManagePages
             if (Id != null)
             {
                 _product = (Product)await Repository.GetById(typeof(Product), Id);
-                _description = _product.Description;
-                _productnr = _product.ProductNumber;
-                _selectedCategory = _product.Category.Id;
+
             }
         }
 

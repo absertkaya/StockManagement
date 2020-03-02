@@ -44,10 +44,7 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<int> GetAmountInStockValue(int productId)
         {
-            var crit = _session.CreateCriteria<Item>()
-                 .Add(Restrictions.Eq("Product.Id", productId))
-                 .Add(Restrictions.Eq("InStock", true));
-            return (await crit.ListAsync<Item>()).Count;
+            return await _session.QueryOver<Item>().Where(i => i.Product.Id == productId).RowCountAsync();
         }
 
         public virtual async Task<IList<Item>> GetByProduct(int productid)

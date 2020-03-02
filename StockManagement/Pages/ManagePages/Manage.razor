@@ -87,6 +87,10 @@
 {
     <p class="text-danger">Verwijderen van product mislukt</p>
 }
+@if (_loadFail)
+{
+    <p class="text-danger">Fout bij het inladen van de data. Herlaad de Pagina.</p>
+}
 
 @code {
 

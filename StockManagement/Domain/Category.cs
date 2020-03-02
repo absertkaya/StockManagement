@@ -9,6 +9,5 @@ namespace StockManagement.Domain
         [Required(ErrorMessage = "Categorienaam is verplicht")]
         public virtual string CategoryName { get; set; }
         public virtual IList<Product> Products { get; set; }
-        public virtual string ImgURL { get; set; }
     }
 }

@@ -20,15 +20,8 @@
             <div class="col-6 col-md-4 col-lg-3">
 
                 <figure class="figure">
-                    @if (cat.ImgURL == null)
-                    {
-                        <img @onclick="@(() => GetProductList(@cat.Id))" onerror="this.src='/images/categories/default.jpg'" class="img-fluid border rounded" src="/images/categories/@(cat.Id).jpg" />
-                    }
-                    else
-                    {
-                        <img @onclick="@(() => GetProductList(@cat.Id))" onerror="this.src='/images/categories/default.jpg'" class="img-fluid border rounded" src="@cat.ImgURL" />
-                    }
-                    <figcaption class="figure-caption">@cat.CategoryName</figcaption>
+                        <img @onclick="@(() => GetProductList(@cat.Id))" onerror="this.src='/images/categories/default.jpg'" class="img-fluid border rounded" src=@($"https://vgdstockmanagement.blob.core.windows.net/categories/category{cat.Id}") />
+                <figcaption class="figure-caption">@cat.CategoryName</figcaption>
                 </figure>
             </div>
         }

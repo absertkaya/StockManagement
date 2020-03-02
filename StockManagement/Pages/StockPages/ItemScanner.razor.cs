@@ -26,18 +26,19 @@ namespace StockManagement.Pages.StockPages
         {
             _notInStock = false;
             _invalidSerialNr = false;
+            string res = _scanner.GetResult();
             if (Method == "out")
             {
                 try
                 {
-                    bool inStock = Repository.GetItemInStock(_scanner.GetResult());
+                    bool inStock = Repository.GetItemInStock(res);
                     if (!inStock)
                     {
                         _notInStock = true;
                     }
                     else
                     {
-                        NavigationManager.NavigateTo("itemform/out/" + _scanner.GetResult());
+                        NavigationManager.NavigateTo("itemform/out/" + res);
                     }
                 }
                 catch (ArgumentException ex)
@@ -48,7 +49,7 @@ namespace StockManagement.Pages.StockPages
             }
             else if (Method == "in")
             {
-                NavigationManager.NavigateTo("itemform/in/" + _scanner.GetResult());
+                NavigationManager.NavigateTo("itemform/in/" + res);
             }
 
         }

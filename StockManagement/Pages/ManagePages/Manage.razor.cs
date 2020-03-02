@@ -16,16 +16,24 @@ namespace StockManagement.Pages.ManagePages
         [Inject] public IItemRepository Repository { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
 
+        protected bool _loadFail;
         protected bool _deleteFailProduct;
         protected bool _deleteFailCategory;
         protected override async Task OnInitializedAsync()
         {
-            _categories = await Repository.GetAll<Category>();
-            _products = await Repository.GetAll<Product>();
-            foreach (Product prod in _products)
+            try
             {
-                prod.AmountInStock = await Repository.GetAmountInStockValue(prod.Id);
+                _categories = await Repository.GetAll<Category>();
+                _products = await Repository.GetAll<Product>();
+                foreach (Product prod in _products)
+                {
+                    prod.AmountInStock = await Repository.GetAmountInStockValue(prod.Id);
+                }
+            } catch (Exception e)
+            {
+                _loadFail = true;
             }
+
         }
 
         protected int GetAmountOfProducts(Category cat)

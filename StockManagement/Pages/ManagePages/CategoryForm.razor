@@ -1,19 +1,17 @@
 ﻿@inherits CategoryFormBase
 @page "/categorie"
 @page "/categorie/{id:int}"
-
+@using StockManagement.Pages.ReuseableComponents
 <h3>Nieuwe Categorie</h3>
-
 <EditForm EditContext="@_editContext" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-group">
-        <label for="category">Categorienaam</label>
-        <InputText @bind-Value="@_category.CategoryName" type="text" class="form-control" id="category" placeholder="Categorienaam" />
+        <FileUploadComponent @ref="_fileUpload" Container="categories" />
     </div>
     <div class="form-group">
-        <label for="imgurl">AfbeeldingURL</label>
-        <InputText @bind-Value="@_category.ImgURL" type="text" class="form-control" id="imgurl" placeholder="URL" />
+        <label for="category">Categorienaam</label>
+        <InputText @bind-Value="@_category.CategoryName" type="text" class="form-control" id="category" placeholder="Categorienaam" />
     </div>
     <div class="form-group">
         @if (Id == null)
