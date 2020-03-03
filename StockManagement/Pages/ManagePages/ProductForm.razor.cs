@@ -33,6 +33,10 @@ namespace StockManagement.Pages.ManagePages
             if (Id != null)
             { 
                 _product = (Product) Repository.GetById(typeof(Product), Id);
+                if (_product == null)
+                {
+                    NavigationManager.NavigateTo("/error");
+                }
             }
             _editContext = new EditContext(_product);
             

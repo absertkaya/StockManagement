@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;
@@ -14,12 +15,16 @@ namespace StockManagement.Pages.ManagePages
         protected IList<Product> _products;
         protected IList<Category> _categories;
 
-        [Inject] public IItemRepository Repository { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
+        [Inject] 
+        public IItemRepository Repository { get; set; }
+        [Inject] 
+        public NavigationManager NavigationManager { get; set; }
 
         protected bool _loadFail;
         protected bool _deleteFailProduct;
         protected bool _deleteFailCategory;
+
+        protected bool _showDialog;
 
         [Inject]
         public IBlobService BlobService { get; set; }
@@ -89,6 +94,7 @@ namespace StockManagement.Pages.ManagePages
 
         }
 
+
         protected void DeleteCategory(int id)
         {
             try
@@ -103,6 +109,7 @@ namespace StockManagement.Pages.ManagePages
             {
                 _deleteFailCategory = true;
             }
+
         }
 
         protected void GetItems(int id)

@@ -2,6 +2,7 @@
 @page "/beheer"
 
 @using StockManagement.Domain
+@using StockManagement.Pages.DialogPages
 
 <h3>Beheer</h3>
 <div class="form-group">
@@ -83,6 +84,7 @@
     }
 
 </table>
+
 @if (_deleteFailProduct)
 {
     <p class="text-danger">Verwijderen van product mislukt</p>

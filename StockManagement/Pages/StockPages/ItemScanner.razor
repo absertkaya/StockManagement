@@ -3,15 +3,6 @@
 @page "/scanner/{method}"
 @using StockManagement.Pages.ReuseableComponents
 
-@if (Method == "in")
-{
-    <h1 class="title">Plaats in stock</h1>
-}
-else if (Method == "out")
-{
-    <h1 class="title">Haal uit stock</h1>
-}
-
 <Scanner Kind="Serienummer" @ref="_scanner"/>
 @if (_invalidSerialNr)
 {

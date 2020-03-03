@@ -12,7 +12,7 @@ namespace StockManagement.Pages.ReuseableComponents
 
         [Inject] private IJSRuntime JSRuntime { get; set; }
 
-        protected string _productnr;
+        protected string _code;
         protected ElementReference startButton;
         protected ElementReference resetButton;
         protected ElementReference video;
@@ -28,7 +28,7 @@ namespace StockManagement.Pages.ReuseableComponents
 
         public string GetResult()
         {
-            return _productnr;
+            return _code;
         }
     }
 }
