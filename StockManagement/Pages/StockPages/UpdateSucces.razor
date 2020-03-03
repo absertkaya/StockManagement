@@ -3,7 +3,6 @@
 
 <h3>Succes</h3>
 
-<h1>De lijst is geüpdate</h1>
 @if (Method == "in")
 {
     <p>Er werd een item toegevoegd.</p>
@@ -13,18 +12,11 @@ else if (Method == "out")
     <p>Er werd een item verwijderd.</p>
 }
 <p>Dit product heeft nog @_amountInStock aantal items in stock</p>
-
-@if (Method == "in")
-{
-    <button class="btn btn-primary" @onclick="Add">Item in stock plaatsen</button>
-}
-else if (Method == "out")
-{
-    <button class="btn btn-primary" @onclick="Remove">Item uit stock halen</button>
-}
-
-
-<button class="btn btn-secondary">Terug naar hooftmenu</button>
+<div class="btn-group">
+    <a href="scanner/in" class="btn btn-info"><span class="oi oi-arrow-bottom" aria-hidden="true"></span> In</a>
+    <a href="scanner/out" class="btn btn-info"><span class="oi oi-arrow-top" aria-hidden="true"></span> Out</a>
+    <a href="overzicht" class="btn btn-info"><span class="oi oi-list-rich" aria-hidden="true"></span> Overzicht</a>
+</div>
 
 @code {
 

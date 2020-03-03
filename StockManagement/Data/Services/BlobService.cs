@@ -70,5 +70,10 @@ namespace StockManagement.Data.Services
             CloudBlockBlob blob = BlobContainer.GetBlockBlobReference(blobName);
             await blob.DeleteIfExistsAsync();
         }
+
+        public async Task DeleteContainer()
+        {
+            await BlobContainer.DeleteAsync();
+        }
     }
 }

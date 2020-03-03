@@ -80,12 +80,22 @@ namespace StockManagement.Pages.ManagePages
             NavigationManager.NavigateTo("/categorie/" + id);
         }
 
-        protected void DeleteProduct(int id)
+        protected async Task DeleteProduct(int id)
         {
+            Product product = _products.FirstOrDefault(p => p.Id == id);
             try
             {
-                Repository.Delete(_products.FirstOrDefault(p => p.Id == id));
-                _products.Remove(_products.FirstOrDefault(p => p.Id == id));
+                await DeleteItemBlobs(product.Items);
+            }
+            catch (Exception ex)
+            {
+                //Log
+            }
+
+            try
+            {
+                Repository.Delete(product);
+                _products.Remove(product);
             }
             catch (Exception ex)
             {
@@ -95,12 +105,23 @@ namespace StockManagement.Pages.ManagePages
         }
 
 
-        protected void DeleteCategory(int id)
+        protected async Task DeleteCategory(int id)
         {
             try
             {
-                BlobService.SetContainer("categories");
-                BlobService.DeleteBlob("category" + id);
+                _products.Where(p => p.Category.Id == id).ToList().ForEach(async p =>
+                {
+                    await DeleteItemBlobs(p.Items);
+                });
+            } catch (Exception ex)
+            {
+                //Log
+            }
+
+            try
+            {
+                await BlobService.SetContainer("categories");
+                await BlobService.DeleteBlob("category" + id);
                 Repository.Delete(_categories.FirstOrDefault(p => p.Id == id));
                 _categories.Remove(_categories.FirstOrDefault(p => p.Id == id));
                 _products = _products.Where(p => p.Category.Id != id).ToList();
@@ -110,6 +131,17 @@ namespace StockManagement.Pages.ManagePages
                 _deleteFailCategory = true;
             }
 
+        }
+
+        private async Task DeleteItemBlobs(IList<Item> items)
+        {
+
+            foreach (Item item in items)
+            {
+                await BlobService.SetContainer("item"+item.Id);
+                await BlobService.DeleteContainer();
+                
+            }
         }
 
         protected void GetItems(int id)

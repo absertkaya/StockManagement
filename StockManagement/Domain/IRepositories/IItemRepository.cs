@@ -8,7 +8,6 @@ namespace StockManagement.Domain.IRepositories
         Task<IList<Product>> GetByCategory(int id);
         Task<IList<Item>> GetByProduct(int id);
         Item GetBySerialNr(string serialnr);
-        Task<object[]> GetAmountInStock(int id);
         bool GetItemInStock(string serialnr);
         Task<int> GetAmountInStockValue(int id);
 

@@ -2,11 +2,14 @@
 @using StockManagement.Pages.ReuseableComponents
 @page "/productscanner"
 
-<h1 class="title">Scan product</h1>
 
-<Scanner Kind="Productnummer" @ref="_scanner"/>
+<div class="form-group">
+    <button class="btn btn-primary" @onclick="Submit">Geef in</button>
+    <button class="btn btn-secondary" @ref="resetButton" id="resetButton">Reset</button>
+</div>
 
-<button class="btn btn-primary" @onclick="Submit">Geef in</button>
+<Scanner Kind="Productnummer" @ref="_scanner" />
+
 
 @code {
 

@@ -1,8 +1,6 @@
 ﻿@inherits ScannerBase
 
-<div class="form-group">
-    <button class="btn btn-secondary" @ref="resetButton" id="resetButton">Reset</button>
-</div>
+<input class="form-control" @bind="_code" @ref="result" type="text" id="result" />
 
 <div class="form-group">
     <video class="embed-responsive-item embed-responsive" @ref="video" id="video"></video>
@@ -13,10 +11,7 @@
     <select class="form-control" @ref="sourceSelect" id="sourceSelect">
     </select>
 </div>
-<div class="form-group">
-    <label for="result">@Kind</label>
-    <input class="form-control" @bind="_code" @ref="result" type="text" id="result" />
-</div>
+
 
 @code {
 

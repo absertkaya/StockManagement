@@ -3,7 +3,14 @@
 @page "/scanner/{method}"
 @using StockManagement.Pages.ReuseableComponents
 
-<Scanner Kind="Serienummer" @ref="_scanner"/>
+    <div class="form-group">
+        <button class="btn btn-primary" @onclick="Submit">Geef in</button>
+        <button class="btn btn-secondary" @ref="resetButton" id="resetButton">Reset</button>
+        @if (Method == "in")
+        {
+            <button class="btn btn-outline-warning" @onclick="Skip">Sla over</button>
+        }
+    </div>
 @if (_invalidSerialNr)
 {
     <p class="text-danger">Dit item bestaat niet.</p>
@@ -13,16 +20,8 @@
 {
     <p class="text-danger">Dit item is niet in stock.</p>
 }
-<button class="btn btn-primary" @onclick="Submit">Geef in</button>
 
-
-
-
-@if (Method == "in")
-{
-    <button class="btn btn-secondary" @onclick="Skip">Sla over</button>
-
-}
+<Scanner Kind="Serienummer" @ref="_scanner" />
 
 @code {
 

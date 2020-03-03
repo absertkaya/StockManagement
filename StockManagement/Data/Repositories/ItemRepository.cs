@@ -16,15 +16,6 @@ namespace StockManagement.Data.Repositories
             return await query.ListAsync<Product>();
         }
 
-        public virtual async Task<object[]> GetAmountInStock(int productId)
-        {
-            var crit = _session.CreateCriteria<Item>()
-                .Add(Restrictions.Eq("Product.Id", productId))
-                .Add(Restrictions.Eq("InStock", true));
-            IList<Item> items = await crit.ListAsync<Item>();
-            return new object[] { items[0].Product.Description, items.Count };
-        }
-
         public virtual Item GetBySerialNr(string serialnr)
         {
             return _session.Query<Item>()
@@ -44,7 +35,7 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<int> GetAmountInStockValue(int productId)
         {
-            return await _session.QueryOver<Item>().Where(i => i.Product.Id == productId).RowCountAsync();
+            return await _session.QueryOver<Item>().Where(i => i.Product.Id == productId && i.InStock).RowCountAsync();
         }
 
         public virtual async Task<IList<Item>> GetByProduct(int productid)

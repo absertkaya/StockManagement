@@ -44,6 +44,7 @@ namespace StockManagement
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBlobService, BlobService>();
+            services.AddScoped<MailService, GmailService>();
             services.AddHttpClient<ProtectedApiCallHelper>();
             services.AddApplicationInsightsTelemetry();
             services.AddFileReaderService();

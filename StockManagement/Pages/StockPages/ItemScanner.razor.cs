@@ -13,7 +13,7 @@ namespace StockManagement.Pages.StockPages
         public IItemRepository Repository { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
-
+        protected ElementReference resetButton;
         protected bool _notInStock = false;
         protected bool _invalidSerialNr = false;
 

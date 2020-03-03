@@ -9,7 +9,7 @@ namespace StockManagement.Pages.ManagePages
         public NavigationManager NavigationManager { get; set; }
 
         protected Scanner _scanner;
-
+        protected ElementReference resetButton;
         protected void Submit()
         {
             NavigationManager.NavigateTo("/productform/" + _scanner.GetResult());

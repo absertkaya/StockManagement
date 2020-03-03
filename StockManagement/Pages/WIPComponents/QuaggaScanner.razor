@@ -1,0 +1,16 @@
+﻿@page "/exp"
+@inject IJSRuntime JSRuntime
+
+
+    <div id="interactive" class="viewport"></div>
+
+
+@code {
+    public ElementReference interactive { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstrender)
+    {
+        
+        if (firstrender)
+            await JSRuntime.InvokeVoidAsync("JsFunctions.quagga");
+    }
+}

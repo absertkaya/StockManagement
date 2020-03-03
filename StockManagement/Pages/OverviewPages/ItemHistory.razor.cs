@@ -42,9 +42,7 @@ namespace StockManagement.Pages.OverviewPages
         {
             await _fileUpload.Upload("item"+ Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
             await Clear();
-            await _blobsComponent.RefreshBlobs();
         }
-
 
     }
 }

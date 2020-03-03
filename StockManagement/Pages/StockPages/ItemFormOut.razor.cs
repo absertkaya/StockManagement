@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using StockManagement.Domain.IServices;
 using StockManagement.Graph;
 using StockManagement.Pages.ReuseableComponents;
 using System;
@@ -19,6 +20,8 @@ namespace StockManagement.Pages.StockPages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         private IUserRepository UserRepository { get; set; }
+        [Inject]
+        public MailService MailService { get; set; }
         [Parameter]
         public string SerialNr { get; set; }
 
@@ -42,6 +45,7 @@ namespace StockManagement.Pages.StockPages
 
         protected async Task Submit()
         {
+            
             try
             {
                 GraphUser graphUser = _userSelect.GetSelectedUser();
@@ -69,11 +73,25 @@ namespace StockManagement.Pages.StockPages
                 Repository.Save(history);
                 Repository.Save(_item);
 
+
+
                 NavigationManager.NavigateTo("updatesucces/out/" + _item.Product?.Id, true);
             }
             catch (Exception ex)
             {
                 _submitFail = true;
+            }
+
+            try
+            {
+                var aantal = await Repository.GetAmountInStockValue(_item.Id);
+                if (aantal < 5)
+                {
+                    MailService.SendMail($"Stock {_item.Product.Description} laag", $"Dit product heeft {aantal} items in stock.", "stockmanagervgd@gmail.com");
+                }
+            } catch (Exception ex)
+            {
+                //Log
             }
 
         }

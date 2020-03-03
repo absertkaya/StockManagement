@@ -14,7 +14,6 @@ namespace StockManagement.Pages.ReuseableComponents
 
         protected string _code;
         protected ElementReference startButton;
-        protected ElementReference resetButton;
         protected ElementReference video;
         protected ElementReference sourceSelectPanel;
         protected ElementReference sourceSelect;
@@ -25,6 +24,7 @@ namespace StockManagement.Pages.ReuseableComponents
             if (firstrender)
                 await JSRuntime.InvokeVoidAsync("JsFunctions.scanner");
         }
+
 
         public string GetResult()
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using StockManagement.Pages.ReuseableComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,8 @@ namespace StockManagement.Pages.StockPages
         protected IList<Product> _descriptions;
         protected IList<Supplier> _suppliers;
         protected IList<ADUser> _users;
+
+        protected FileUploadComponent _fileUpload;
 
         protected int? _selectedCategory;
         protected int? _selectedDescription;
@@ -106,6 +109,17 @@ namespace StockManagement.Pages.StockPages
                 _item.Comment = _comment;
                 _item.InStock = true;
                 Repository.Save(_item);
+                if (! await _fileUpload.IsEmpty())
+                {
+                    try
+                    {
+                        await Upload(_item);
+                    }
+                    catch (Exception ex)
+                    {
+                        //Log
+                    }
+                }
                 NavigationManager.NavigateTo("updatesucces/in/" + _selectedDescription, true);
             }
             catch (Exception ex)
@@ -114,6 +128,17 @@ namespace StockManagement.Pages.StockPages
             }
 
 
+        }
+        protected async Task Clear()
+        {
+            await _fileUpload.ClearFile();
+        }
+
+        private async Task Upload(Item item)
+        {
+            _fileUpload.Container = "item" + item.Id;
+            await _fileUpload.Upload("item" + item.Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
+            await Clear();
         }
     }
 }

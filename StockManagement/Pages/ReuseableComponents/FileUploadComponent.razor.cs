@@ -15,14 +15,17 @@ namespace StockManagement.Pages.ReuseableComponents
 
         protected ElementReference inputElement;
 
-        protected string Output { get; set; }
-
         [Inject]
         private IBlobService _service { get; set; }
 
         public async Task ClearFile()
         {
             await FileReaderService.CreateReference(inputElement).ClearValue();
+        }
+
+        public async Task<bool> IsEmpty()
+        {
+            return (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList().Count == 0;
         }
 
         public async Task Upload(string filename)
