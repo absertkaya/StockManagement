@@ -112,6 +112,7 @@ app {
     word-wrap: break-word;
     height: 40px;
     margin: 0px;
+
 }
 
 #result_strip > ul:after {

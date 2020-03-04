@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazor.Extensions.Storage.Interfaces;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
 using Microsoft.JSInterop;
@@ -20,17 +21,39 @@ namespace StockManagement.Pages.ReuseableComponents
         public IConfiguration Configuration { get; set; }
         [Inject]
         public ProtectedApiCallHelper ProtectedApiCallHelper { get; set; }
+        [Inject]
+        public ISessionStorage SessionStorage { get; set; }
         public string UserId { get; set; }
         protected List<GraphUser> _colGraphUsers = new List<GraphUser>();
 
         protected override async Task OnInitializedAsync()
         {
-            await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
+            if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
+            {
+                await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
+                await SaveToSession();
+            } else
+            {
+                _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
+            }
+
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstrender)
+        {
+            if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
+            {
+                await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
+                await SaveToSession();
+            }
+            else
+            {
+                _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
+            }
         }
 
         protected async Task ApiCall(string url)
         {
-
             IConfidentialClientApplication confidentialClientApplication =
                 ConfidentialClientApplicationBuilder
                 .Create(Configuration["AzureAd:ClientId"])
@@ -53,6 +76,11 @@ namespace StockManagement.Pages.ReuseableComponents
             {
                 await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
             }
+        }
+
+        private async Task SaveToSession()
+        {
+            await SessionStorage.SetItem<List<GraphUser>>("graphusers", _colGraphUsers);
         }
 
 

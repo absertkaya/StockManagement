@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazor.Extensions.Storage.Interfaces;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;

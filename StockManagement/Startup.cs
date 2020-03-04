@@ -14,6 +14,8 @@ using StockManagement.Data.Repositories;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Graph;
 using StockManagement.Domain.IServices;
+using Blazor.Extensions.Storage;
+using Blazor.Extensions.Storage.Interfaces;
 
 namespace StockManagement
 {
@@ -40,6 +42,7 @@ namespace StockManagement
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
 
+            services.AddStorage();
             services.AddScoped<IRepository, RepositoryBase>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
@@ -71,9 +74,8 @@ namespace StockManagement
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
+            
             app.UseAuthentication();
             app.UseAuthorization();
 

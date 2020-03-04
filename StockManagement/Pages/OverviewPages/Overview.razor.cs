@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazor.Extensions.Storage.Interfaces;
+using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;
+using StockManagement.Graph;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,6 +19,7 @@ namespace StockManagement.Pages.OverviewPages
 
         [Inject]
         public IBlobService BlobService { get; set; }
+
         protected List<string> _uris;
 
         protected bool _dBError;
