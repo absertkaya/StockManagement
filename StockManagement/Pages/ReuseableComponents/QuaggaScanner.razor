@@ -2,18 +2,13 @@
 @page "/qScanner"
 <input class="form-control" @bind="_code" type="text" id="codeField" />
 <section id="quaggaContainer" class="container">
-    
-    <div id="interactive" class="viewport"></div>
-
     <div id="result_strip">
         <ul class="thumbnails"></ul>
         <ul class="collector"></ul>
     </div>
+    <div id="interactive" class="viewport"></div>
 
     <div class="controls">
-        <fieldset class="input-group">
-            <button id="stop">Stop</button>
-        </fieldset>
         <fieldset class="reader-config-group">
             <label>
                 <span>Barcode-Type</span>
@@ -55,7 +50,7 @@
             </label>
             <label>
                 <span>Half-Sample</span>
-                <input type="checkbox" checked="checked" name="locator_half_sample"/>
+                <input type="checkbox" checked="checked" name="locator_half_sample" />
             </label>
             <label>
                 <span>Workers</span>

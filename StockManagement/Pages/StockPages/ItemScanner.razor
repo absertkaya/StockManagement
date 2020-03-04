@@ -3,13 +3,13 @@
 @page "/scanner/{method}"
 @using StockManagement.Pages.ReuseableComponents
 
-    <div class="form-group">
+    <div class="btn-group">
         <button class="btn btn-primary" @onclick="Submit">Geef in</button>
         <button class="btn btn-secondary" @ref="resetButton" id="resetButton">Reset</button>
 
         @if (Method == "in")
         {
-            <button class="btn btn-outline-warning" @onclick="Skip">Sla over</button>
+            <button class="btn btn-warning" @onclick="Skip">Sla over</button>
         }
 
         <button class="btn btn-info float-right" @onclick="SwitchScanner">

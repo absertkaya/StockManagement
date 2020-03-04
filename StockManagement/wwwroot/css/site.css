@@ -43,41 +43,38 @@ app {
 }
 
 #result_strip {
-    margin: 10px 0;
-    border-top: 1px solid #EEE;
-    border-bottom: 1px solid #EEE;
-    padding: 10px 0;
+    width: 100%;
 }
 
-    #result_strip > ul {
-        padding: 0;
-        margin: 0;
-        list-style-type: none;
-        width: auto;
-        overflow-x: auto;
-        overflow-y: hidden;
-        white-space: nowrap;
-    }
+#result_strip > ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    width: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
 
-        #result_strip > ul > li {
-            display: inline-block;
-            vertical-align: middle;
-            width: 160px;
-        }
+#result_strip > ul > li {
+    display: inline-block;
+    vertical-align: middle;
+    width: 160px;
+}
 
-            #result_strip > ul > li .thumbnail {
-                padding: 5px;
-                margin: 4px;
-                border: 1px dashed #CCC;
-            }
+#result_strip > ul > li .thumbnail {
+    padding: 5px;
+    margin: 4px;
+    border: 1px dashed #CCC;
+}
 
-                #result_strip > ul > li .thumbnail img {
-                    max-width: 140px;
-                }
+#result_strip > ul > li .thumbnail img {
+    max-width: 140px;
+}
 
-                #result_strip > ul > li .thumbnail .caption {
-                    white-space: normal;
-                }
+#result_strip > ul > li .thumbnail .caption {
+    white-space: normal;
+}
 
 .controls fieldset {
     border: none;
@@ -101,11 +98,11 @@ app {
     display: block;
 }
 
-    .controls .reader-config-group label span {
-        width: 9rem;
-        display: inline-block;
-        text-align: right;
-    }
+.controls .reader-config-group label span {
+    width: 9rem;
+    display: inline-block;
+    text-align: right;
+}
 
 .controls:after {
     content: '';
@@ -337,13 +334,13 @@ app {
         width: 100%;
     }
 
-        .reader-config-group label > span {
-            width: 50%;
-        }
+    .reader-config-group label > span {
+        width: 50%;
+    }
 
-        .reader-config-group label > select, .reader-config-group label > input {
-            max-width: calc(50% - 2px);
-        }
+    .reader-config-group label > select, .reader-config-group label > input {
+        max-width: calc(50% - 2px);
+    }
 
     #interactive.viewport {
         width: 300px;
@@ -352,15 +349,15 @@ app {
     }
 
 
-        #interactive.viewport canvas, video {
-            margin-top: -50px;
-            width: 300px;
-            height: 400px;
-        }
+    #interactive.viewport canvas, video {
+        margin-top: -50px;
+        width: 300px;
+        height: 400px;
+    }
 
-            #interactive.viewport canvas.drawingBuffer, video.drawingBuffer {
-                margin-left: -300px;
-            }
+    #interactive.viewport canvas.drawingBuffer, video.drawingBuffer {
+        margin-left: -300px;
+    }
 
 
     #result_strip {
@@ -368,19 +365,17 @@ app {
         padding-top: 5px;
     }
 
-        #result_strip ul.thumbnails > li {
-            width: 150px;
-        }
+    #result_strip ul.thumbnails > li {
+        width: 150px;
+    }
 
-            #result_strip ul.thumbnails > li .thumbnail .imgWrapper {
-                width: 130px;
-                height: 130px;
-                overflow: hidden;
-            }
+    #result_strip ul.thumbnails > li .thumbnail .imgWrapper {
+        width: 130px;
+        height: 130px;
+        overflow: hidden;
+    }
 
-                #result_strip ul.thumbnails > li .thumbnail .imgWrapper img {
-                    margin-top: -25px;
-                    width: 130px;
-                    height: 180px;
-                }
+    #result_strip ul.thumbnails > li .thumbnail .imgWrapper img {
+        margin-top: -25px;
+    }
 }
