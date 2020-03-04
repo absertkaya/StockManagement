@@ -1,16 +1,21 @@
 ﻿@inherits ScannerBase
 
-<input class="form-control" @bind="_code" @ref="result" type="text" id="result" />
-
 <div class="form-group">
-    <video class="embed-responsive-item embed-responsive" @ref="video" id="video"></video>
+    <input class="form-control" @bind="_code" @ref="result" type="text" id="result" />
 </div>
 
+    <video class="embed-responsive embed-responsive-item" @ref="video" id="video"></video>
+
+    
+
+        
+
 <div class="form-group" @ref="sourceSelectPanel" id="sourceSelectPanel">
-    <label for="sourceSelect">Verander videobron</label>
     <select class="form-control" @ref="sourceSelect" id="sourceSelect">
     </select>
 </div>
+
+
 
 
 @code {

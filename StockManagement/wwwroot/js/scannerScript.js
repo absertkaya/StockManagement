@@ -388,16 +388,21 @@
                 halfSample: true
             },
             numOfWorkers: 2,
-            frequency: 10,
+            frequency: 2,
             decoder: {
-                readers: [{
-                    format: "code_128_reader",
-                    config: {}
-                }]
+                readers: [
+                    "code_128_reader",
+                    "ean_reader",
+                    //"code_93_reader",
+                    "ean_8_reader",
+                    "upc_reader",
+                    "upc_e_reader",
+                    //"code_39_reader"
+                ]
             },
             locate: true
         },
-        lastResult: null
+        found: []
     };
 
     App.init();
@@ -426,11 +431,12 @@
         }
     });
 
+    
     Quagga.onDetected(function (result) {
         var code = result.codeResult.code;
-
-        if (App.lastResult !== code) {
-            App.lastResult = code;
+        
+        if (!App.found.includes(code)) {
+            App.found.push(code);
             var $node = null, canvas = Quagga.canvas.dom.image;
 
             $node = $('<li><div class="thumbnail"><div class="imgWrapper"><img /></div><div class="caption"><h4 class="code"></h4></div></div></li>');

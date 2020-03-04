@@ -36,14 +36,11 @@ app {
     margin-left: -640px;
 }
 
-#quaggaContainer {
-    width: 640px;
-    margin: 20px auto;
-    padding: 10px;
-}
-
 #result_strip {
-    width: 100%;
+    margin: 10px 0;
+    border-top: 1px solid #EEE;
+    border-bottom: 1px solid #EEE;
+    padding: 10px 0;
 }
 
 #result_strip > ul {
@@ -248,6 +245,13 @@ app {
     color: red;
 }
 
+#video {
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    margin-top: auto;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -313,20 +317,7 @@ app {
     }
 }
 
-@media (max-width: 768px) {
 
-    #container {
-        width: 300px;
-        margin: 10px auto;
-        -moz-box-shadow: none;
-        -webkit-box-shadow: none;
-        box-shadow: none;
-    }
-
-        #container form.voucher-form input.voucher-code {
-            width: 180px;
-        }
-}
 
 @media (max-width: 768px) {
 
@@ -348,7 +339,6 @@ app {
         overflow: hidden;
     }
 
-
     #interactive.viewport canvas, video {
         margin-top: -50px;
         width: 300px;
@@ -359,6 +349,11 @@ app {
         margin-left: -300px;
     }
 
+    #video {
+        width: 100%;
+        margin-left: 0px;
+        margin-top: 0px;
+    }
 
     #result_strip {
         margin-top: 5px;

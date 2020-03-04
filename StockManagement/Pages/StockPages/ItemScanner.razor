@@ -13,7 +13,7 @@
         }
 
         <button class="btn btn-info float-right" @onclick="SwitchScanner">
-            @if (_quagga)
+            @if (!_quagga)
             {
                 @("ZXing")
             }
