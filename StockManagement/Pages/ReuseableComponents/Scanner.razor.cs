@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using StockManagement.Domain.IRepositories;
+using StockManagement.Domain.IComponents;
 using System.Threading.Tasks;
 
 namespace StockManagement.Pages.ReuseableComponents
 {
-    public class ScannerBase : ComponentBase
+    public class ScannerBase : ComponentBase, IScannerComponent
     {
         [Parameter]
         public string Kind { get; set; }

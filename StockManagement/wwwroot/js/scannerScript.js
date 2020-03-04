@@ -439,8 +439,11 @@
             $("#result_strip ul.thumbnails").prepend($node);
             $node.on("click", function (e) {
                 document.getElementById("codeField").value = code;
+                document.getElementById('codeField').dispatchEvent(new Event("change"))
             })
         }
+        document.getElementById("codeField").value = code;
+        document.getElementById('codeField').dispatchEvent(new Event("change"))
     });
 
 }

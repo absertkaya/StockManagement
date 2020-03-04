@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using StockManagement.Domain.IComponents;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Pages.ReuseableComponents;
 using System;
@@ -17,7 +18,8 @@ namespace StockManagement.Pages.StockPages
         protected bool _notInStock = false;
         protected bool _invalidSerialNr = false;
 
-        protected Scanner _scanner;
+        protected IScannerComponent _scanner;
+        protected bool _quagga = true;
 
         [Parameter]
         public string Method { get; set; }
@@ -52,6 +54,11 @@ namespace StockManagement.Pages.StockPages
                 NavigationManager.NavigateTo("itemform/in/" + res);
             }
 
+        }
+
+        protected void SwitchScanner()
+        {
+            _quagga = !_quagga;
         }
 
         protected void Skip()
