@@ -15,5 +15,6 @@ namespace StockManagement.Domain.IRepositories
         Task<ItemUser> GetLastUse(string userid, int itemid);
         Task<IList<ItemUser>> GetItemUsersByUser(string id);
         Task<IList<ItemUser>> GetItemUsersByItem(int id);
+        bool ItemDuplicateExists(int id, string sn, int productId);
     }
 }

@@ -66,9 +66,13 @@
     <input id="comment" class="form-control " @bind="_comment" />
 </div>
 @if (_submitFail)
-    {
-<p class="text-danger">Ongeldige invoergegevens</p>
-    }
+{
+    <p class="text-danger">Ongeldige invoergegevens</p>
+}
+@if (_duplicateItem)
+{
+<p class="text-danger">Items hebben een uniek serienummer per product</p>
+}
 
 <button class="btn btn-primary" @onclick="Submit">Voeg toe</button>
 

@@ -14,7 +14,6 @@ namespace StockManagement.Domain
         [Required(ErrorMessage = "Serienummer is verplicht")]
         public virtual string SerialNumber { get; set; }
         public virtual bool InStock { get; set; }
-        [Required(ErrorMessage = "Leverancier is verplicht")]
         public virtual Supplier Supplier { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }
     }

@@ -31,7 +31,7 @@ namespace StockManagement.Pages.StockPages
         protected Task<AuthenticationState> authenticationStateTask { get; set; }
 
 
-        protected UserSelectBox _userSelect;
+        protected UserSearchBox _userSelect;
 
         protected Item _item;
         protected EditContext _editContext;

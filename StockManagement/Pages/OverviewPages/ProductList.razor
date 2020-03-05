@@ -2,19 +2,20 @@
 
 @page "/productlijst/{id:int}"
 @using StockManagement.Domain
-@using StockManagement.Domain.IRepositories
+
+<div class="container-fluid">
+    <h3>@_category</h3>
+    <input placeholder="Zoek" type="text" @onchange="Filter" />
+</div>
 
 
-<h3>@_category</h3>
-
-<table class="table table-striped table-responsive">
+<table id="productList" class="table table-striped table-responsive">
     <thead class="thead-dark">
         <tr>
-            <th>Id</th>
+            <th class="d-none d-md-table-cell">Id</th>
             <th>Productnaam</th>
-            <th>Productnummer</th>
-            <th>Category</th>
-            <th>Aantal in stock</th>
+            <th class="d-none d-md-table-cell">Productnummer</th>
+            <th>#</th>
             <th></th>
         </tr>
     </thead>
@@ -23,11 +24,10 @@
     {
         @foreach (Product prod in _products)
         {
-            <tr>
-                <td>@prod.Id</td>
+            <tr id="product@(prod.Id)">
+                <td class="d-none d-md-table-cell">@prod.Id</td>
                 <td>@prod.Description</td>
-                <td>@prod.ProductNumber</td>
-                <td>@prod.Category.CategoryName</td>
+                <td class="d-none d-md-table-cell">@prod.ProductNumber</td>
                 <td>@prod.AmountInStock</td>
                 <td><button class="btn btn-primary" @onclick="@(() => GetItems(prod.Id))"><i class="oi oi-magnifying-glass"></i></button></td>
             </tr>

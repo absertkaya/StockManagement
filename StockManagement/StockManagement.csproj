@@ -7,6 +7,9 @@
   <ItemGroup>
     <PackageReference Include="Azure.Storage.Blobs" Version="12.3.0" />
     <PackageReference Include="Blazor.Extensions.Storage" Version="1.1.0-preview3" />
+    <PackageReference Include="Blazored.Modal" Version="3.1.2" />
+    <PackageReference Include="Blazored.Toast" Version="2.0.9" />
+    <PackageReference Include="Blazored.Typeahead" Version="4.2.2" />
     <PackageReference Include="FluentNHibernate" Version="2.1.2" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.14.0-beta2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.2" />

@@ -16,6 +16,8 @@ namespace StockManagement.Domain
         public virtual IList<Item> Items { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }
 
+        
+
         public ADUser()
         {
 

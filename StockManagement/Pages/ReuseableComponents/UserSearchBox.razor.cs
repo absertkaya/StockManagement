@@ -24,32 +24,27 @@ namespace StockManagement.Pages.ReuseableComponents
         [Inject]
         public ISessionStorage SessionStorage { get; set; }
         public string UserId { get; set; }
+
         protected List<GraphUser> _colGraphUsers = new List<GraphUser>();
+        protected GraphUser _selectedUser;
 
-        protected override async Task OnInitializedAsync()
-        {
-            if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
-            {
-                await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
-                await SaveToSession();
-            } else
-            {
-                _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
-            }
-
-        }
 
         protected override async Task OnAfterRenderAsync(bool firstrender)
         {
-            if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
+            if (firstrender)
             {
-                await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
-                await SaveToSession();
+                if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
+                {
+                    await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
+                    await SaveToSession();
+                }
+                else
+                {
+                    _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
+                }
+                StateHasChanged();
             }
-            else
-            {
-                _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
-            }
+            
         }
 
         protected async Task ApiCall(string url)
@@ -86,7 +81,16 @@ namespace StockManagement.Pages.ReuseableComponents
 
         public GraphUser GetSelectedUser()
         {
-            return _colGraphUsers.FirstOrDefault(u => u.Id == UserId);
+            return _selectedUser;
+        }
+
+        protected async Task<IEnumerable<GraphUser>> SearchUser(string searchString)
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return _colGraphUsers;
+            } 
+            return await Task.FromResult(_colGraphUsers.Where(u => u.FirstAndLastName.ToLower().Contains(searchString.ToLower())));
         }
 
         protected void DisplayUsers(JObject result)

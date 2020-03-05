@@ -37,6 +37,7 @@ namespace StockManagement.Pages.StockPages
         protected string _comment;
 
         protected bool _submitFail;
+        protected bool _duplicateItem;
 
         protected void CheckDefective()
         {
@@ -99,35 +100,40 @@ namespace StockManagement.Pages.StockPages
                 Repository.Save(lastUse);
             }
 
-            try
+            _item.SerialNumber = SerialNr;
+            _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
+            _item.Supplier = _suppliers.FirstOrDefault(i => _selectedSupplier == i.Id);
+            _item.ADUser = null;
+            _item.IsDefective = _isDefective;
+            _item.Comment = _comment;
+            _item.InStock = true;
+
+            if (!Repository.ItemDuplicateExists(_item.Id, _item.SerialNumber, _item.Product.Id))
             {
-                _item.SerialNumber = SerialNr;
-                _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
-                _item.Supplier = _suppliers.FirstOrDefault(i => _selectedSupplier == i.Id);
-                _item.ADUser = null;
-                _item.IsDefective = _isDefective;
-                _item.Comment = _comment;
-                _item.InStock = true;
-                Repository.Save(_item);
-                if (! await _fileUpload.IsEmpty())
+                try
                 {
-                    try
+                    Repository.Save(_item);
+                    if (!await _fileUpload.IsEmpty())
                     {
-                        await Upload(_item);
+                        try
+                        {
+                            await Upload(_item);
+                        }
+                        catch (Exception ex)
+                        {
+                            //Log
+                        }
                     }
-                    catch (Exception ex)
-                    {
-                        //Log
-                    }
+                    NavigationManager.NavigateTo("updatesucces/in/" + _selectedDescription, true);
                 }
-                NavigationManager.NavigateTo("updatesucces/in/" + _selectedDescription, true);
-            }
-            catch (Exception ex)
+                catch (Exception ex)
+                {
+                    _submitFail = true;
+                }
+            } else
             {
-                _submitFail = true;
+                _duplicateItem = true;
             }
-
-
         }
         protected async Task Clear()
         {

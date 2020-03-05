@@ -12,7 +12,6 @@ namespace StockManagement.Data
 
             using (RepositoryBase repo = new RepositoryBase())
             {
-
                 List<Category> cats = new List<Category> {
                     new Category { CategoryName = "Monitors" },
                     new Category { CategoryName = "Laptops" },

@@ -1,0 +1,14 @@
+﻿@inherits UserSelectBoxBase
+
+@using Blazored.Typeahead
+<div class="form-group">
+    <label>Gebruiker</label>
+    <BlazoredTypeahead SearchMethod="SearchUser" @bind-Value="_selectedUser">
+        <SelectedTemplate>@context.FirstAndLastName</SelectedTemplate>
+        <ResultTemplate>@context.FirstAndLastName</ResultTemplate>
+    </BlazoredTypeahead>
+</div>
+
+@code {
+
+}

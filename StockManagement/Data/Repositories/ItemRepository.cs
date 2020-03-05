@@ -73,5 +73,10 @@ namespace StockManagement.Data.Repositories
                 .Add(Restrictions.Eq("Item.Id", id));
             return await crit.ListAsync<ItemUser>();
         }
+
+        public virtual bool ItemDuplicateExists(int id, string sn, int productId)
+        {
+            return _session.Query<Item>().Any(i => i.Id != id && i.SerialNumber == sn && i.Product.Id == productId);
+        }
     }
 }

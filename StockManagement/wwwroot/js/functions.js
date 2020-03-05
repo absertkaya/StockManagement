@@ -1,4 +1,15 @@
 ﻿window.JsFunctions = {
+    filterProducts: function (filtered, products) {
+        console.log(products + filtered)
+        if (products && filtered) {
+            products.forEach(p => {
+                document.getElementById("product" + p).classList.add("d-table-row")
+            })
+            filtered.forEach(p => {
+                document.getElementById("product" + p).classList.remove("d-table-row")
+            })
+        }
+    },
     scanner: function () {
         let selectedDeviceId;
         const codeReader = new ZXing.BrowserBarcodeReader()
