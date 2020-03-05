@@ -101,14 +101,16 @@ namespace StockManagement.Pages.StockPages
             }
 
             _item.SerialNumber = SerialNr;
-            _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
-            _item.Supplier = _suppliers.FirstOrDefault(i => _selectedSupplier == i.Id);
+            if (_selectedDescription != null)
+                _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
+            if (_selectedSupplier != null)
+                _item.Supplier = _suppliers.FirstOrDefault(i => _selectedSupplier == i.Id);
             _item.ADUser = null;
             _item.IsDefective = _isDefective;
             _item.Comment = _comment;
             _item.InStock = true;
 
-            if (!Repository.ItemDuplicateExists(_item.Id, _item.SerialNumber, _item.Product.Id))
+            if (_item.Product != null && !Repository.ItemDuplicateExists(_item.Id, _item.SerialNumber, _item.Product.Id))
             {
                 try
                 {
@@ -132,7 +134,7 @@ namespace StockManagement.Pages.StockPages
                 }
             } else
             {
-                _duplicateItem = true;
+                _submitFail = true;
             }
         }
         protected async Task Clear()
