@@ -19,7 +19,6 @@ namespace StockManagement.Pages.ManagePages
         protected Category _category = new Category();
         protected EditContext _editContext;
 
-        protected FileUploadComponent _fileUpload; 
 
         protected bool _submitFail;
 
@@ -40,7 +39,6 @@ namespace StockManagement.Pages.ManagePages
                 try
                 {
                     Repository.Save(_category);
-                    await _fileUpload.Upload("category" + _category.Id);
                     NavigationManager.NavigateTo("/beheer");
                 }
                 catch (Exception ex)

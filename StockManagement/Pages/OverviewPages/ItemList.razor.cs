@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using StockManagement.Pages.DialogComponents;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blazored.Modal;
+using Blazored.Modal.Services;
 
 namespace StockManagement.Pages.OverviewPages
 {
@@ -13,20 +16,21 @@ namespace StockManagement.Pages.OverviewPages
         public IItemRepository Repository { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IModalService Modal { get; set; }
         [Parameter]
         public int Id { get; set; }
 
         protected IList<Item> _items;
-        protected string _productName;
+        protected Product _product;
+
+        protected Item _itemToDelete;
 
         protected bool _deleteFail;
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            Product prod = (Product)await Repository.GetByIdAsync(typeof(Product), Id);
-
-            _productName = prod.Description;
-            _items = prod.Items;
+            _product = (Product) Repository.GetById(typeof(Product), Id);
         }
 
         protected void GetHistory(int id)
@@ -41,14 +45,32 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void DeleteItem(Item item)
         {
-            try
+            _itemToDelete = item;
+            ShowModal();
+        }
+        private void ShowModal()
+        {
+            var options = new ModalOptions()
             {
-                Repository.Delete(item);
-                _items.Remove(item);
-            }
-            catch (Exception ex)
+                Position = "blazored-modal-center"
+            };
+            Modal.OnClose += ModalClosed;
+            Modal.Show<Confirmation>("confirmation", options);
+        }
+
+        private void ModalClosed(ModalResult result)
+        {
+            if (!result.Cancelled)
             {
-                _deleteFail = true;
+                try
+                {
+                    Repository.Delete(_itemToDelete);
+                    _items.Remove(_itemToDelete);
+                }
+                catch (Exception ex)
+                {
+                    _deleteFail = true;
+                }
             }
         }
     }

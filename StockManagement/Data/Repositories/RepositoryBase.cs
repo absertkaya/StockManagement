@@ -51,7 +51,7 @@ namespace StockManagement.Data.Repositories
 
             if (_session != null)
             {
-                _session.Flush();
+                
                 CloseSession();
             }
         }

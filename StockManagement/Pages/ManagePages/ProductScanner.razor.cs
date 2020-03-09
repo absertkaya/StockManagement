@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using StockManagement.Domain.IComponents;
 using StockManagement.Pages.ReuseableComponents;
+using System.Text.RegularExpressions;
 
 namespace StockManagement.Pages.ManagePages
 {
@@ -13,7 +14,7 @@ namespace StockManagement.Pages.ManagePages
         protected bool _quagga = true;
         protected void Submit()
         {
-            NavigationManager.NavigateTo("/productform/" + _scanner.GetResult());
+            NavigationManager.NavigateTo("/productform/" + Regex.Replace(_scanner.GetResult(), @"\s+", ""));
         }
 
         protected void SwitchScanner()

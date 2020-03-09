@@ -16,6 +16,7 @@ using StockManagement.Graph;
 using StockManagement.Domain.IServices;
 using Blazor.Extensions.Storage;
 using Blazor.Extensions.Storage.Interfaces;
+using Blazored.Modal;
 
 namespace StockManagement
 {
@@ -37,12 +38,15 @@ namespace StockManagement
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
+                
                     .RequireAuthenticatedUser()
                     .Build();
+                
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
 
             services.AddStorage();
+            services.AddBlazoredModal();
             services.AddScoped<IRepository, RepositoryBase>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

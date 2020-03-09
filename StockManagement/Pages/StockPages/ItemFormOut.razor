@@ -1,8 +1,8 @@
 ﻿@inherits ItemFormOutBase
 @using StockManagement.Pages.ReuseableComponents
 @page "/itemform/out/{serialnr}"
-
-<h1>Haal item uit stock</h1>
+    <a href="/scanner/out" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+<h1 class="d-inline">Haal item uit stock</h1>
 
 <EditForm EditContext="@_editContext" OnValidSubmit="Submit">
     <div class="form-group">

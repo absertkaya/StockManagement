@@ -127,6 +127,10 @@ app {
     align-items: center;
 }
 
+.category-item {
+    background-color: rgba(16,80,78,1);
+}
+
 .main {
     flex: 1;
 }

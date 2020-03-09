@@ -1,28 +1,24 @@
 ﻿@page "/dialog"
+@inject IModalService ModalService
 
-<!-- This is the popup to create or edit a forecast -->
-<div class="modal" tabindex="-1" style="display:block" role="dialog" id="confirmDialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Confirmation Dialog</h3>
-            </div>
-            <!-- Edit form for the current forecast -->
-            <div class="modal-body">
-                <p>Bent u dat u deze actie wilt uitvoeren?</p>
-                <!-- Button to save the forecast -->
-                <button @onclick="(() => _yes = true)" class="btn btn-primary">Ja</button>
-                <button class="btn btn-secondary">Nee</button>
-            </div>
-        </div>
-    </div>
+<p>Bent u zeker van deze actie?</p>
+<div>
+    <button class="btn btn-primary">Ja</button>
+    <button class="btn btn-secondary">Annuleer</button>
 </div>
+
 
 @code {
 
-    private bool _yes;
-    private bool _no;
 
-    [Parameter]
-    public Func<object> ActionToPerform { get; set; }
+    protected void Ok()
+    {
+        ModalService.Close();
+    }
+
+    protected void Cancer()
+    {
+        ModalService.Cancel();
+    }
+
 }

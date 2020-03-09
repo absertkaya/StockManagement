@@ -6,8 +6,8 @@
 @page "/productform/{productnr}"
 @page "/productform/id/{id:int}"
 
-
-<h3>ProductForm</h3>
+<a href="/productscanner" class="btn btn-info"><i class="oi oi-arrow-thick-left"></i></a>
+<h3 class="inline">ProductForm</h3>
 <EditForm EditContext="@_editContext" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />

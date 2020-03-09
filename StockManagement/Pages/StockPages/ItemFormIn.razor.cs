@@ -5,6 +5,7 @@ using StockManagement.Pages.ReuseableComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace StockManagement.Pages.StockPages
@@ -75,7 +76,6 @@ namespace StockManagement.Pages.StockPages
 
         }
 
-
         public async Task FireChange(ChangeEventArgs e)
         {
             _selectedCategory = int.Parse(e.Value.ToString());
@@ -100,7 +100,11 @@ namespace StockManagement.Pages.StockPages
                 Repository.Save(lastUse);
             }
 
-            _item.SerialNumber = SerialNr;
+            if (SerialNr != null)
+            {
+                _item.SerialNumber = Regex.Replace(SerialNr, @"\s+", "");
+            }
+            
             if (_selectedDescription != null)
                 _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
             if (_selectedSupplier != null)

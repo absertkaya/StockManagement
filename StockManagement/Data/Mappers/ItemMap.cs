@@ -10,7 +10,7 @@ namespace StockManagement.Data.Mappers
         {
             Table("Item");
             Id(x => x.Id).GeneratedBy.Increment();
-            Map(x => x.SerialNumber).UniqueKey("SerialNumberProductNumber").Not.Nullable();
+            Map(x => x.SerialNumber).UniqueKey("SerialNumberProductNumber");
             Map(x => x.Comment);
             Map(x => x.InStock);
             Map(x => x.IsDefective);

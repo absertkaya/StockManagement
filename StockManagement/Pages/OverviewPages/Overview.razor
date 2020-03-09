@@ -8,26 +8,23 @@
 <h3>Overzicht</h3>
 
 <div class="row">
-    @if (_categories != null)
-    {
-        <div class="col-6 col-md-4 col-lg-3">
-            <figure class="figure">
-                <img @onclick="@(() => GetUsers())" class="img-fluid border rounded" src="/images/categories/users.jpg" />
-                <figcaption class="figure-caption">Gebruikers</figcaption>
-            </figure>
-        </div>
-        @foreach (Category cat in _categories)
+    <div class="col-sm-2 col-md-1">
+        <button @onclick="GetUsers" class="btn btn-info btn-outline"><i class="oi oi-person"></i></button>
+    </div>
+    <div class="col-sm-10 col-md-11">
+        @if (_categories != null)
         {
-            <div class="col-6 col-md-4 col-lg-3">
-
-                <figure class="figure">
-                        <img @onclick="@(() => GetProductList(@cat.Id))" onerror="this.src='/images/categories/default.jpg'" class="img-fluid border rounded" src=@($"https://vgdstockmanagement.blob.core.windows.net/categories/category{cat.Id}") />
-                <figcaption class="figure-caption">@cat.CategoryName</figcaption>
-                </figure>
+            <div class="list-group">
+                @foreach (var cat in _categories)
+                {
+                    <button @onclick="(() => GetProductList(cat.Id))" class="list-group-item list-group-item-action">
+                        @cat.CategoryName
+                    </button>
+                }
             </div>
-        }
 
-    }
+        }
+    </div>
 </div>
 @if  (_dBError)
 {

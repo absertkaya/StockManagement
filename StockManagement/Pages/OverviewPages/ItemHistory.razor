@@ -3,15 +3,17 @@
 @using StockManagement.Domain;
 @using StockManagement.Pages.ReuseableComponents
 @page "/itemhistoriek/{id:int}"
-
-
+<a href="/itemlijst/@(_item.Product.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+<h4 class="d-inline">Upload foto</h4>
 <div class="form-group">
-    <h4>Upload afbeelding</h4>
+
     <FileUploadComponent @ref="_fileUpload" Container="@("item"+Id)" />
-    <button class="btn btn-primary" @onclick="Upload">Upload</button>
-    <button class="btn btn-secondary" @onclick="Clear">Clear</button>
+    <div>
+        <button class="btn btn-primary" @onclick="Upload">Upload</button>
+        <button class="btn btn-secondary" @onclick="Clear">Clear</button>
+    </div>
 </div>
-<BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />    
+<BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />
 <h3>Gebruikshistoriek</h3>
 <table class="table striped table-responsive">
     <thead class="thead-dark">

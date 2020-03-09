@@ -5,6 +5,7 @@ using StockManagement.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace StockManagement.Pages.ManagePages
@@ -59,6 +60,7 @@ namespace StockManagement.Pages.ManagePages
             {
                 try
                 {
+                    _product.ProductNumber = Regex.Replace(_product.ProductNumber, @"\s+", "");
                     Repository.Save(_product);
                     NavigationManager.NavigateTo("/beheer", true);
                 }

@@ -15,7 +15,7 @@ namespace StockManagement.Domain
         public virtual string LastName { get; set; }
         public virtual IList<Item> Items { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }
-
+        public virtual string NormalizedSearchInfo => FirstName.ToLower() + LastName.ToLower() + Mail;
         
 
         public ADUser()

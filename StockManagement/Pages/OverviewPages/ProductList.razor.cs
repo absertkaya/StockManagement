@@ -32,12 +32,17 @@ namespace StockManagement.Pages.OverviewPages
             }
         }
 
-        public async Task Filter(ChangeEventArgs e)
+        protected async Task<IEnumerable<Product>> SearchProduct(string searchString)
         {
-            string filterString = e.Value.ToString().Trim().ToLower();
-            int[] productIds = _products.Select(p => p.Id).ToArray();
-            int[] filteredIds = _products.Where(p => !p.Description.ToLower().Contains(filterString)).Select(p => p.Id).ToArray();
-            await JSRuntime.InvokeVoidAsync("JsFunctions.filterProducts", filteredIds, productIds);
+            return await Task.FromResult(_products.Where(u => u.Description.ToLower().Contains(searchString.ToLower())));
+        }
+
+        protected void NavigateToProductDetail()
+        {
+            if (_selectedProduct != null)
+            {
+                NavigationManager.NavigateTo("/itemlijst/" + _selectedProduct.Id);
+            }
         }
 
         protected void GetItems(int id)

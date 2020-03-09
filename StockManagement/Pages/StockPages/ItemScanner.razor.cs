@@ -4,6 +4,7 @@ using StockManagement.Domain.IComponents;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Pages.ReuseableComponents;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace StockManagement.Pages.StockPages
@@ -28,7 +29,12 @@ namespace StockManagement.Pages.StockPages
         {
             _notInStock = false;
             _invalidSerialNr = false;
-            string res = _scanner.GetResult();
+            string res = null;
+            if (_scanner.GetResult() != null)
+            {
+                res = Regex.Replace(_scanner.GetResult(), @"\s+", "");
+            }
+            
             if (Method == "out")
             {
                 try

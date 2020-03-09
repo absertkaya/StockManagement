@@ -17,9 +17,6 @@ namespace StockManagement.Pages.OverviewPages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        [Inject]
-        public IBlobService BlobService { get; set; }
-
         protected List<string> _uris;
 
         protected bool _dBError;
@@ -31,8 +28,6 @@ namespace StockManagement.Pages.OverviewPages
             try
             {
                 _categories = await Repository.GetAll<Category>();
-                await BlobService.SetContainer("categories");
-                _uris = await BlobService.GetBlobs();
             } catch (Exception ex)
             {
                 _dBError = true;
