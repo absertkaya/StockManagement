@@ -4,8 +4,8 @@
 
 @using StockManagement.Domain
 <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-<h3 class="d-inline">Beheer producten</h3>
-<div class="btn-group">
+<h3 class="d-inline">Beheer @_category.CategoryName</h3>
+<div>
     <a href="/productscanner/categorie/@(Id)" class="btn btn-success"><i class="oi oi-plus"></i>Product</a>
 </div>
 
@@ -29,9 +29,9 @@
             </tr>
         </thead>
 
-        @if (_products != null)
+        @if (_category.Products != null)
         {
-            @foreach (Product prod in _products)
+            @foreach (Product prod in _category.Products)
             {
                 <tr>
                     <td>@prod.Id</td>

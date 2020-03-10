@@ -4,96 +4,98 @@
 @using StockManagement.Domain
 
 <h3>Beheer</h3>
-<div class=btn-group>
+<div class="btn-group btn-group-sm">
     <a href="/beheer/categorie" class="btn btn-success"><i class="oi oi-plus"></i>Categorie</a>
-    <a href="/productform" class="btn btn-success"><i class="oi oi-plus"></i>Product</a>
+    <a href="/productscanner" class="btn btn-success"><i class="oi oi-plus"></i>Product</a>
     <a href="/beheer/leverancier" class="btn btn-success"><i class="oi oi-plus"></i>Leverancier</a>
 </div>
-
-<div>
-    @if (_hasProducts)
+<div class="row">
+    <div class="col col-md-6">
+        @if (_hasProducts)
     {
         <p class="text-danger">Verwijderen van categorie mislukt. Categorie bevat producten.</p>
     }
-    <table class="table table-sm table-responsive table-responsive-sm">
-        <thead class="thead-dark">
-            <tr>
-                <th>Id</th>
-                <th>Categorie</th>
-                <th></th>
-            </tr>
-        </thead>
+        <table class="table table-sm table-responsive table-responsive-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Categorie</th>
+                    <th></th>
+                </tr>
+            </thead>
 
-        @if (_categories != null)
+            @if (_categories != null)
         {
             @foreach (Category cat in _categories)
             {
-                <tr>
-                    <td>@cat.Id</td>
-                    <td>@cat.CategoryName</td>
-                    <td>
-                        <div class="btn-group btn-group-sm">
-                            <a href="/beheer/productlijst/@(cat.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                            <a href="/beheer/categorie/@(cat.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                            @if (cat.Products?.Count == 0)
+            <tr>
+                <td>@cat.Id</td>
+                <td>@cat.CategoryName</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a href="/beheer/productlijst/@(cat.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
+                        <a href="/beheer/categorie/@(cat.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                        @if (cat.Products?.Count == 0)
                             {
-                                <button @onclick="@(() => DeleteCategory(@cat.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                        <button @onclick="@(() => DeleteCategory(@cat.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
                             } else
                             {
-                                <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
+                        <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
                             }
 
-                        </div>
-                    </td>
-                </tr>
+                    </div>
+                </td>
+            </tr>
             }
         }
 
-    </table>
-</div>
+        </table>
+    </div>
 
-<div>
-    @if (_supplierHasItems)
+    <div class="col col-md-6">
+        @if (_supplierHasItems)
     {
         <p class="text-danger">Verwijderen van leverancier mislukt. Leverancier heeft items.</p>
     }
-    <table class="table table-sm table-responsive table-responsive-sm">
-        <thead class="thead-dark">
-            <tr>
-                <th>Id</th>
-                <th>Leverancier</th>
-                <th></th>
-            </tr>
-        </thead>
+        <table class="table table-sm table-responsive table-responsive-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Leverancier</th>
+                    <th></th>
+                </tr>
+            </thead>
 
-        @if (_suppliers != null)
+            @if (_suppliers != null)
         {
             @foreach (Supplier sup in _suppliers)
             {
-                <tr>
-                    <td>@sup.Id</td>
-                    <td>@sup.SupplierName</td>
-                    <td>
-                        <div class="btn-group btn-group-sm">
-                            <a href="/itemlijst/leverancier/@(sup.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                            <a href="/beheer/leverancier/@(sup.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                            @if (sup.Items == null ||sup.Items.Count == 0)
+            <tr>
+                <td>@sup.Id</td>
+                <td>@sup.SupplierName</td>
+                <td>
+                    <div class="btn-group btn-group-sm">
+                        <a href="/itemlijst/leverancier/@(sup.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
+                        <a href="/beheer/leverancier/@(sup.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                        @if (sup.Items == null || sup.Items.Count == 0)
                             {
-                                <button @onclick="@(() => DeleteSupplier(sup.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                        <button @onclick="@(() => DeleteSupplier(sup.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
                             }
                             else
                             {
-                                <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
+                        <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
                             }
 
-                        </div>
-                    </td>
-                </tr>
+                    </div>
+                </td>
+            </tr>
             }
         }
 
-    </table>
+        </table>
+    </div>
 </div>
+
 
 
 

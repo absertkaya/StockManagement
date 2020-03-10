@@ -19,15 +19,15 @@ namespace StockManagement.Pages.ManagePages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        protected IList<Product> _products;
+        protected Category _category;
 
         protected bool _deleteFailProduct;
         protected bool _hasItems;
 
         protected override void OnInitialized()
         {
-            _products = Repository.GetByCategory(Id);
-            foreach (Product prod in _products)
+            _category = (Category) Repository.GetById(typeof(Category),Id);
+            foreach (Product prod in _category.Products)
             {
                 prod.AmountInStock = Repository.GetAmountInStockValue(prod.Id);
             }
@@ -35,13 +35,13 @@ namespace StockManagement.Pages.ManagePages
 
         protected void DeleteProduct(int id)
         {
-            Product product = _products.FirstOrDefault(p => p.Id == id);
+            Product product = _category.Products.FirstOrDefault(p => p.Id == id);
             if (product.Items.Count == 0)
             {
                 try
                 {
                     Repository.Delete(product);
-                    _products.Remove(product);
+                    _category.Products.Remove(product);
                 }
                 catch (Exception ex)
                 {

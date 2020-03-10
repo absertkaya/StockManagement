@@ -1,12 +1,13 @@
 ﻿@inherits SupplierFormBase
 
 @page "/beheer/leverancier"
+@page "/beheer/leverancier/{id:int}"
 
 <h3>Leverancier</h3>
 
 <EditForm EditContext="@_editContext" OnSubmit="Submit">
-    <DataAnnotationsValidator/>
-    <ValidationSummary/>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
     <div class="form-group">
         <label for="suppliername">Leveranciernaam</label>
         <InputText id="suppliername" class="form-control" @bind-Value="_supplier.SupplierName" />

@@ -32,16 +32,6 @@ namespace StockManagement.Pages.OverviewPages
             _product = (Product) Repository.GetById(typeof(Product), Id);
         }
 
-        protected void GetHistory(int id)
-        {
-            NavigationManager.NavigateTo("/itemhistoriek/" + id);
-        }
-
-        protected void EditItem(int id)
-        {
-            NavigationManager.NavigateTo("/itemform/in/id/" + id);
-        }
-
         protected void DeleteItem(Item item)
         {
             _itemToDelete = item;
