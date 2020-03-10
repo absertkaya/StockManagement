@@ -17,6 +17,7 @@ using StockManagement.Domain.IServices;
 using Blazor.Extensions.Storage;
 using Blazor.Extensions.Storage.Interfaces;
 using Blazored.Modal;
+using StockManagement.Data;
 
 namespace StockManagement
 {
@@ -45,6 +46,8 @@ namespace StockManagement
                 options.Filters.Add(new AuthorizeFilter(policy));
             });
 
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             services.AddStorage();
             services.AddBlazoredModal();
             services.AddScoped<IRepository, RepositoryBase>();
@@ -59,7 +62,7 @@ namespace StockManagement
             services.AddServerSideBlazor().AddHubOptions(o =>
             {
                 o.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10MB
-            }); ;
+            });
             
         }
 
@@ -92,6 +95,7 @@ namespace StockManagement
 
 
             //new DataInitializer().Initialize();
+            //new ExcelReader().ReadAndPopulateDatabase("C:\\Users\\bse\\Desktop\\Stock Overzicht.xlsx");
         }
     }
 }

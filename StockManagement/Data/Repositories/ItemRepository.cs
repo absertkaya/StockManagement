@@ -12,7 +12,9 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<IList<Product>> GetByCategory(int id)
         {
-            var query = _session.CreateCriteria<Product>().Add(Restrictions.Eq("Category.Id", id));
+            var query = _session.CreateCriteria<Product>()
+                .Add(Restrictions.Eq("Category.Id", id))
+                .AddOrder(Order.Asc("Description"));
             return await query.ListAsync<Product>();
         }
 

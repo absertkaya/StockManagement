@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazor.FileReader;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using StockManagement.Data;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,6 +22,11 @@ namespace StockManagement.Pages.ManagePages
         public IItemRepository Repository { get; set; }
         [Inject] 
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IFileReaderService FileReaderService { get; set; }
+
+        protected ElementReference inputElement;
+        protected string _value;
 
         protected bool _loadFail;
         protected bool _deleteFailProduct;
@@ -105,23 +113,11 @@ namespace StockManagement.Pages.ManagePages
         }
 
 
-        protected async Task DeleteCategory(int id)
+        protected void DeleteCategory(int id)
         {
             try
             {
-                _products.Where(p => p.Category.Id == id).ToList().ForEach(async p =>
-                {
-                    await DeleteItemBlobs(p.Items);
-                });
-            } catch (Exception ex)
-            {
-                //Log
-            }
-
-            try
-            {
-                await BlobService.SetContainer("categories");
-                await BlobService.DeleteBlob("category" + id);
+                
                 Repository.Delete(_categories.FirstOrDefault(p => p.Id == id));
                 _categories.Remove(_categories.FirstOrDefault(p => p.Id == id));
                 _products = _products.Where(p => p.Category.Id != id).ToList();
@@ -129,6 +125,18 @@ namespace StockManagement.Pages.ManagePages
             catch (Exception ex)
             {
                 _deleteFailCategory = true;
+            }
+
+            try
+            {
+                _products.Where(p => p.Category.Id == id).ToList().ForEach(async p =>
+                {
+                    await DeleteItemBlobs(p.Items);
+                });
+            }
+            catch (Exception ex)
+            {
+                //Log
             }
 
         }
@@ -147,6 +155,16 @@ namespace StockManagement.Pages.ManagePages
         protected void GetItems(int id)
         {
             NavigationManager.NavigateTo("/itemlijst/" + id);
+        }
+
+        protected async Task ImportData()
+        {
+            var files = (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList();
+            
+            foreach (var file in files)
+            {
+               
+            }
         }
     }
 }

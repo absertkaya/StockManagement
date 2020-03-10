@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace StockManagement.Domain
@@ -13,6 +14,8 @@ namespace StockManagement.Domain
         public virtual bool IsDefective { get; set; }
         [Required(ErrorMessage = "Serienummer is verplicht")]
         public virtual string SerialNumber { get; set; }
+        public virtual DateTime DeliveryDate { get; set; }
+        public virtual DateTime InvoiceDate { get; set; }
         public virtual bool InStock { get; set; }
         public virtual Supplier Supplier { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }

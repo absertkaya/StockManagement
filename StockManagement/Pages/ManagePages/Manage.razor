@@ -5,12 +5,15 @@
 @using StockManagement.Pages.DialogComponents
 
 <h3>Beheer</h3>
+<div>
+    <button class="btn btn-success" @onclick="AddCategory"><i class="oi oi-plus"></i>Categorie</button>
+    <button class="btn btn-success" @onclick="AddProduct"><i class="oi oi-plus"></i>Product</button>
+    <input @ref="inputElement" @bind="_value" type="file" />
+    <button @onclick="ImportData" class="btn btn-primary"><i class="oi oi-data-transfer-download"></i></button>
+    <button class="btn btn-danger">Wipe DB</button>
+</div>
 <div class="row">
     <div class="col-md-3">
-        <div class="form-group">
-            <button class="btn btn-success" @onclick="AddCategory"><i class="oi oi-plus"></i>Categorie</button>
-        </div>
-
         <table class="table table-striped table-responsive">
             <thead class="thead-dark">
                 <tr>
@@ -49,10 +52,6 @@
         }
     </div>
     <div class="col-md-7">
-        <div class="form-group">
-            <button class="btn btn-success" @onclick="AddProduct"><i class="oi oi-plus"></i>Product</button>
-        </div>
-
         <table class="table table-striped table-responsive">
             <thead class="thead-dark">
                 <tr>
