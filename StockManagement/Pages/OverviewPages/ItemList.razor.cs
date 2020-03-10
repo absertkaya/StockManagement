@@ -21,7 +21,6 @@ namespace StockManagement.Pages.OverviewPages
         [Parameter]
         public int Id { get; set; }
 
-        protected IList<Item> _items;
         protected Product _product;
 
         protected Item _itemToDelete;
@@ -46,7 +45,9 @@ namespace StockManagement.Pages.OverviewPages
         protected void DeleteItem(Item item)
         {
             _itemToDelete = item;
-            ShowModal();
+            Repository.Delete(_itemToDelete);
+            _product.Items.Remove(_itemToDelete);
+            
         }
         private void ShowModal()
         {
@@ -62,15 +63,10 @@ namespace StockManagement.Pages.OverviewPages
         {
             if (!result.Cancelled)
             {
-                try
-                {
+
                     Repository.Delete(_itemToDelete);
-                    _items.Remove(_itemToDelete);
-                }
-                catch (Exception ex)
-                {
-                    _deleteFail = true;
-                }
+                    _product.Items.Remove(_itemToDelete);
+
             }
         }
     }

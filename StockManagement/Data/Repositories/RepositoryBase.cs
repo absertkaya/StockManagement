@@ -2,6 +2,7 @@
 using StockManagement.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace StockManagement.Data.Repositories
@@ -40,18 +41,22 @@ namespace StockManagement.Data.Repositories
         {
             return await _session.GetAsync(objType, objId);
         }
-        public virtual async Task<IList<TEntity>> GetAll<TEntity>() where TEntity : class
+        public virtual async Task<IList<TEntity>> GetAllAsync<TEntity>() where TEntity : class
         {
             var criteria = _session.CreateCriteria<TEntity>();
             return await criteria.ListAsync<TEntity>();
         }
+
+        public virtual IList<TEntity> GetAll<TEntity>() where TEntity : class
+        {
+            var query = _session.Query<TEntity>();
+            return query.ToList();
+        }
         #endregion
         public void Dispose()
         {
-
             if (_session != null)
             {
-                
                 CloseSession();
             }
         }

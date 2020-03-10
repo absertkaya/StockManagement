@@ -9,7 +9,10 @@ namespace StockManagement.Domain.IRepositories
         void Save(object obj);
         void Delete(object obj);
         Task<object> GetByIdAsync(Type objType, object objId);
+
         object GetById(Type objType, object objId);
-        Task<IList<TEntity>> GetAll<TEntity>() where TEntity : class;
+        Task<IList<TEntity>> GetAllAsync<TEntity>() where TEntity : class;
+        IList<TEntity> GetAll<TEntity>() where TEntity : class;
+        void Dispose();
     }
 }

@@ -1,9 +1,9 @@
 ﻿@inherits CategoryFormBase
-@page "/categorie"
-@page "/categorie/{id:int}"
+@page "/beheer/categorie"
+@page "/beheer/categorie/{id:int}"
 @using StockManagement.Pages.ReuseableComponents
 <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-<h3 class="d-inline">Nieuwe Categorie</h3>
+<h3 class="d-inline">Categorie</h3>
 <EditForm EditContext="@_editContext" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -20,8 +20,6 @@
         {
             <button type="submit" class="btn btn-primary">Update</button>
         }
-
-        <button @onclick="Back" class="btn btn-secondary">Terug</button>
     </div>
 </EditForm>
 

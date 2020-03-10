@@ -15,7 +15,7 @@ namespace StockManagement.Pages.ReuseableComponents
         protected override async Task OnAfterRenderAsync(bool render)
         {
             if (render)
-                await JSRuntime.InvokeVoidAsync("JsFunctions.quaggaExample");
+                await JSRuntime.InvokeVoidAsync("JsFunctions.quagga");
         }
 
         public string GetResult()

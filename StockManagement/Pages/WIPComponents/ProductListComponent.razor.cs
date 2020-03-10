@@ -14,10 +14,10 @@ namespace StockManagement.Pages.WIPComponents
         protected IList<Product> _products;
         protected override async Task OnInitializedAsync()
         {
-            _products = await Repository.GetAll<Product>();
+            _products = await Repository.GetAllAsync<Product>();
             foreach (Product prod in _products)
             {
-                prod.AmountInStock = await Repository.GetAmountInStockValue(prod.Id);
+                prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
             }
         }
     }

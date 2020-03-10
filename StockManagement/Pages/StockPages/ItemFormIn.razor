@@ -74,6 +74,10 @@
 {
 <p class="text-danger">Items hebben een uniek serienummer per product</p>
 }
+@if (_errorMessage != null)
+{
+    <p class="text-danger">@_errorMessage</p>
+}
 
 <button class="btn btn-primary" @onclick="Submit">Voeg toe</button>
 

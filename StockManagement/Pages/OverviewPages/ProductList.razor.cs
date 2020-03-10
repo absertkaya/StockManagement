@@ -22,13 +22,13 @@ namespace StockManagement.Pages.OverviewPages
         protected IEnumerable<Product> _products;
         protected Product _selectedProduct;
         protected string _category;
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            _category = ((Category)await Repository.GetByIdAsync(typeof(Category), Id)).CategoryName;
-            _products = await Repository.GetByCategory(Id);
+            _category = ((Category) Repository.GetById(typeof(Category), Id)).CategoryName;
+            _products = Repository.GetByCategory(Id);
             foreach (Product prod in _products)
             {
-                prod.AmountInStock = await Repository.GetAmountInStockValue(prod.Id);
+                prod.AmountInStock = Repository.GetAmountInStockValue(prod.Id);
             }
         }
 

@@ -20,7 +20,7 @@ namespace StockManagement.Pages.StockPages
 
         protected override async Task OnInitializedAsync()
         {
-            _amountInStock = await Repository.GetAmountInStockValue(Id);
+            _amountInStock = await Repository.GetAmountInStockValueAsync(Id);
         }
 
         protected void Add()

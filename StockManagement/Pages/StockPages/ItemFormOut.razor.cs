@@ -86,7 +86,7 @@ namespace StockManagement.Pages.StockPages
 
             try
             {
-                var aantal = await Repository.GetAmountInStockValue(_item.Id);
+                var aantal = await Repository.GetAmountInStockValueAsync(_item.Id);
                 if (aantal < 5)
                 {
                     MailService.SendMail($"Stock {_item.Product.Description} laag", $"Dit product heeft {aantal} items in stock.", "stockmanagervgd@gmail.com");

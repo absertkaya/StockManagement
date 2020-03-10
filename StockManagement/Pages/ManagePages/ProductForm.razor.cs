@@ -20,12 +20,15 @@ namespace StockManagement.Pages.ManagePages
 
         [Parameter]
         public int? Id { get; set; }
+        [Parameter]
+        public int? Category { get; set; }
 
         protected IList<Category> _categories;
         protected Product _product = new Product();
         protected EditContext _editContext;
 
         protected bool _submitFail;
+        protected bool _duplicateExists;
 
         protected override void OnInitialized()
         {
@@ -39,13 +42,18 @@ namespace StockManagement.Pages.ManagePages
                     NavigationManager.NavigateTo("/error");
                 }
             }
+            if (Category != null)
+            {
+                Category cat = (Category)Repository.GetById(typeof(Category), Category);
+                _product.Category = cat;
+            }
             _editContext = new EditContext(_product);
             
         }
 
         protected override async Task OnInitializedAsync()
         {
-            _categories = await Repository.GetAll<Category>();
+            _categories = await Repository.GetAllAsync<Category>();
         }
 
         protected void SelectCategory(ChangeEventArgs e)
@@ -56,18 +64,27 @@ namespace StockManagement.Pages.ManagePages
 
         protected void Submit()
         {
+            _duplicateExists = false;
+            _submitFail = false;
             if (_editContext.Validate())
             {
-                try
+                _product.ProductNumber = Regex.Replace(_product.ProductNumber, @"\s+", "");
+                if (!Repository.ProductDuplicateExists(_product.Id, _product.ProductNumber))
                 {
-                    _product.ProductNumber = Regex.Replace(_product.ProductNumber, @"\s+", "");
-                    Repository.Save(_product);
-                    NavigationManager.NavigateTo("/beheer", true);
-                }
-                catch (Exception ex)
+                    try
+                    {
+                        Repository.Save(_product);
+                        NavigationManager.NavigateTo("/beheer", true);
+                    }
+                    catch (Exception ex)
+                    {
+                        _submitFail = true;
+                    }
+                } else
                 {
-                    _submitFail = true;
+                    _duplicateExists = true;
                 }
+
             }
 
         }

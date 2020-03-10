@@ -19,7 +19,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected override async Task OnInitializedAsync()
         {
-            _users = await Repository.GetAll<ADUser>();
+            _users = await Repository.GetAllAsync<ADUser>();
         }
 
         protected async Task<IEnumerable<ADUser>> SearchUser(string searchString)

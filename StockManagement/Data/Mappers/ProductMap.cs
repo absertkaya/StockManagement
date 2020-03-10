@@ -12,9 +12,7 @@ namespace StockManagement.Data.Mappers
             Map(x => x.ProductNumber).Unique().Not.Nullable();
             Map(x => x.Description).Not.Nullable();
             References(x => x.Category).Not.Nullable();
-            HasMany(x => x.Items)
-                .Inverse()
-                .Cascade.All();
+            HasMany(x => x.Items);
         }
     }
 }

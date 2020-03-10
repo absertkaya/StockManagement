@@ -23,15 +23,9 @@ namespace StockManagement.Pages.OverviewPages
 
         protected IList<Category> _categories;
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            try
-            {
-                _categories = await Repository.GetAll<Category>();
-            } catch (Exception ex)
-            {
-                _dBError = true;
-            }
+             _categories = Repository.GetAll<Category>();
         }
 
         protected void GetProductList(int id)

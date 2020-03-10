@@ -7,6 +7,9 @@ namespace StockManagement.Pages.ManagePages
 {
     public class ProductScannerBase : ComponentBase
     {
+        [Parameter]
+        public int? Category { get; set; }
+
         [Inject] 
         public NavigationManager NavigationManager { get; set; }
 
@@ -14,7 +17,10 @@ namespace StockManagement.Pages.ManagePages
         protected bool _quagga = true;
         protected void Submit()
         {
-            NavigationManager.NavigateTo("/productform/" + Regex.Replace(_scanner.GetResult(), @"\s+", ""));
+            if (Category == null)
+                NavigationManager.NavigateTo("/productform/" + Regex.Replace(_scanner.GetResult(), @"\s+", ""));
+            else
+                NavigationManager.NavigateTo("/productform/categorie/" + Category + "/" + Regex.Replace(_scanner.GetResult(), @"\s+", ""));
         }
 
         protected void SwitchScanner()

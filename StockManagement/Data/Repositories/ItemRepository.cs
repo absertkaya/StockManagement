@@ -10,7 +10,7 @@ namespace StockManagement.Data.Repositories
     public class ItemRepository : RepositoryBase, IItemRepository
     {
 
-        public virtual async Task<IList<Product>> GetByCategory(int id)
+        public virtual async Task<IList<Product>> GetByCategoryAsync(int id)
         {
             var query = _session.CreateCriteria<Product>()
                 .Add(Restrictions.Eq("Category.Id", id))
@@ -35,12 +35,12 @@ namespace StockManagement.Data.Repositories
             return item.InStock;
         }
 
-        public virtual async Task<int> GetAmountInStockValue(int productId)
+        public virtual async Task<int> GetAmountInStockValueAsync(int productId)
         {
             return await _session.QueryOver<Item>().Where(i => i.Product.Id == productId && i.InStock).RowCountAsync();
         }
 
-        public virtual async Task<IList<Item>> GetByProduct(int productid)
+        public virtual async Task<IList<Item>> GetByProductAsync(int productid)
         {
             var crit = _session.CreateCriteria<Item>().Add(Restrictions.Eq("Product.Id", productid));
             return await crit.ListAsync<Item>();
@@ -76,9 +76,30 @@ namespace StockManagement.Data.Repositories
             return await crit.ListAsync<ItemUser>();
         }
 
+        public virtual IList<Product> GetByCategory(int id)
+        {
+            return _session.Query<Product>().Where(p => p.Category.Id == id).OrderBy(p => p.Description).ToList();
+        }
+
         public virtual bool ItemDuplicateExists(int id, string sn, int productId)
         {
             return _session.Query<Item>().Any(i => i.Id != id && i.SerialNumber == sn && i.Product.Id == productId);
+        }
+
+        public IList<Item> GetByProduct(int id)
+        {
+            var crit = _session.CreateCriteria<Item>().Add(Restrictions.Eq("Product.Id", id));
+            return crit.List<Item>();
+        }
+
+        public int GetAmountInStockValue(int id)
+        {
+            return _session.QueryOver<Item>().Where(i => i.Product.Id == id && i.InStock).RowCount();
+        }
+
+        public bool ProductDuplicateExists(int id, string pn)
+        {
+            return _session.Query<Product>().Any(p => p.Id != id && p.ProductNumber == pn);
         }
     }
 }

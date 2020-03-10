@@ -2,6 +2,9 @@
 
 @page "/itemlijst/{id:int}"
 @using StockManagement.Domain
+@if (_product != null)
+{
+
 
 <a href="/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
 <h3 class="d-inline">@_product.Description</h3>
@@ -58,7 +61,7 @@
                 </td>
                 <td>@item.Comment</td>
                 <td>
-                    <div>
+                    <div class="btn-group">
                         <button class="btn btn-primary" @onclick="@(() => GetHistory(item.Id))"><i class="oi oi-magnifying-glass"></i></button>
                         <button @onclick="@(() => EditItem(item.Id))" class="btn btn-secondary"><i class="oi oi-pencil"></i></button>
                         <button @onclick="@(() => DeleteItem(item))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
@@ -70,7 +73,7 @@
     }
 
 </table>
-
+}
 @if (_deleteFail)
 {
     <p class="text-danger">Verwijderen van item mislukt</p>

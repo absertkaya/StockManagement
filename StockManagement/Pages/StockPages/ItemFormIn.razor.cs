@@ -39,6 +39,7 @@ namespace StockManagement.Pages.StockPages
 
         protected bool _submitFail;
         protected bool _duplicateItem;
+        protected string? _errorMessage; 
 
         protected void CheckDefective()
         {
@@ -48,9 +49,9 @@ namespace StockManagement.Pages.StockPages
         protected override async Task OnInitializedAsync()
         {
 
-            _categories = await Repository.GetAll<Category>();
-            _suppliers = await Repository.GetAll<Supplier>();
-            _users = await Repository.GetAll<ADUser>();
+            _categories = await Repository.GetAllAsync<Category>();
+            _suppliers = await Repository.GetAllAsync<Supplier>();
+            _users = await Repository.GetAllAsync<ADUser>();
             if (SerialNr != null)
             {
                 _item = Repository.GetBySerialNr(SerialNr);
@@ -86,13 +87,14 @@ namespace StockManagement.Pages.StockPages
         {
             if (_selectedCategory != null)
             {
-                _descriptions = await Repository.GetByCategory((int)_selectedCategory);
+                _descriptions = await Repository.GetByCategoryAsync((int)_selectedCategory);
                 _selectedDescription = _item.Product?.Id;
             }
         }
 
         protected async Task Submit()
         {
+            _errorMessage = null;
             if (_item.ADUser != null)
             {
                 ItemUser lastUse = await Repository.GetLastUse(_item.ADUser.Id, _item.Id);
@@ -100,15 +102,25 @@ namespace StockManagement.Pages.StockPages
                 Repository.Save(lastUse);
             }
 
-            if (SerialNr != null)
+            if (SerialNr == null)
             {
-                _item.SerialNumber = Regex.Replace(SerialNr, @"\s+", "");
+                _errorMessage = "Serienummer is verplicht.";
+                return;
             }
-            
-            if (_selectedDescription != null)
+            _item.SerialNumber = Regex.Replace(SerialNr, @"\s+", "");
+
+            if (_selectedDescription == null)
+            {
+                _errorMessage = "Product is verplicht.";
+                return;
+            }
                 _item.Product = _descriptions.FirstOrDefault(i => _selectedDescription == i.Id);
-            if (_selectedSupplier != null)
-                _item.Supplier = _suppliers.FirstOrDefault(i => _selectedSupplier == i.Id);
+            if (_selectedSupplier == null)
+            {
+                _errorMessage = "Leverancier is verplicht.";
+                return;
+            }
+            _item.Supplier = _suppliers.FirstOrDefault(i => _selectedSupplier == i.Id);
             _item.ADUser = null;
             _item.IsDefective = _isDefective;
             _item.Comment = _comment;

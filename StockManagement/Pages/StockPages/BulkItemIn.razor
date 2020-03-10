@@ -1,0 +1,40 @@
+﻿@inherits BulkItemInBase
+
+@page "/in/bulk/"
+
+@using StockManagement.Domain
+<h3>Plaats bulk in stock</h3>
+
+
+<div class="form-group">
+    <label for="category">Category</label>
+    <select id="category" class="form-control" value="@_selectedCategory" @onchange="FetchProducts">
+        <option value="" selected hidden>Kies een categorie</option>
+
+        @if (_categories != null)
+        {
+            @foreach (Category cat in _categories)
+            {
+                <option value=@cat.Id>@cat.CategoryName</option>
+            }
+        }
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="product">Product</label>
+    <select id="product" class="form-control" @bind="_selectedProduct">
+        <option value="" selected hidden>Kies een product</option>
+        @if (_products != null)
+        {
+            @foreach (Product product in _products)
+            {
+                <option value=@product.Id>@product.Description</option>
+            }
+        }
+    </select>
+</div>
+
+@code {
+
+}

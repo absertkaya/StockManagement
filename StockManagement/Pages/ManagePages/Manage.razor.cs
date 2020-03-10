@@ -15,8 +15,9 @@ namespace StockManagement.Pages.ManagePages
 {
     public class ManageBase : ComponentBase
     {
-        protected IList<Product> _products;
+
         protected IList<Category> _categories;
+        protected IList<Supplier> _suppliers;
 
         [Inject] 
         public IItemRepository Repository { get; set; }
@@ -29,132 +30,69 @@ namespace StockManagement.Pages.ManagePages
         protected string _value;
 
         protected bool _loadFail;
-        protected bool _deleteFailProduct;
         protected bool _deleteFailCategory;
+        protected bool _hasProducts;
+
+        protected bool _supplierHasItems;
+        protected bool _deleteFailSupplier;
 
         protected bool _showDialog;
 
         [Inject]
         public IBlobService BlobService { get; set; }
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             try
             {
-                _categories = await Repository.GetAll<Category>();
-                _products = await Repository.GetAll<Product>();
-                foreach (Product prod in _products)
-                {
-                    prod.AmountInStock = await Repository.GetAmountInStockValue(prod.Id);
-                }
+                _categories = Repository.GetAll<Category>();
+                _suppliers = Repository.GetAll<Supplier>();
             } catch (Exception e)
             {
                 _loadFail = true;
             }
-
         }
 
-        protected int GetAmountOfProducts(Category cat)
+        protected void DeleteSupplier(int id)
         {
-            return _products.Where(p => p.Category == cat).Count();
-        }
-
-        protected void AddProduct()
-        {
-            NavigationManager.NavigateTo("/productscanner");
-        }
-
-        protected void AddCategory()
-        {
-            NavigationManager.NavigateTo("/categorie");
-        }
-
-        protected void AddItem(int id)
-        {
-            NavigationManager.NavigateTo("/scanner/in");
-        }
-
-        protected void RemoveItem(int id)
-        {
-            NavigationManager.NavigateTo("/scanner/out");
-        }
-
-        protected void EditProduct(int id)
-        {
-            NavigationManager.NavigateTo("/productform/id/" + id);
-        }
-
-        protected void EditCategory(int id)
-        {
-            NavigationManager.NavigateTo("/categorie/" + id);
-        }
-
-        protected async Task DeleteProduct(int id)
-        {
-            Product product = _products.FirstOrDefault(p => p.Id == id);
-            try
+            _supplierHasItems = false;
+            _deleteFailSupplier = false;
+            Supplier sup = _suppliers.FirstOrDefault(s => s.Id == id);
+            if (sup.Items == null || sup.Items.Count == 0)
             {
-                await DeleteItemBlobs(product.Items);
-            }
-            catch (Exception ex)
+                try
+                {
+                    Repository.Delete(sup);
+                    _suppliers.Remove(sup);
+                } catch (Exception ex)
+                {
+                    _deleteFailSupplier = true;
+                }
+            } else
             {
-                //Log
+                _supplierHasItems = true;
             }
-
-            try
-            {
-                Repository.Delete(product);
-                _products.Remove(product);
-            }
-            catch (Exception ex)
-            {
-                _deleteFailProduct = true;
-            }
-
         }
-
 
         protected void DeleteCategory(int id)
         {
-            try
+            _deleteFailCategory = false;
+            _hasProducts = false;
+            Category cat = _categories.FirstOrDefault(p => p.Id == id);
+            if (cat.Products?.Count == 0)
             {
-                
-                Repository.Delete(_categories.FirstOrDefault(p => p.Id == id));
-                _categories.Remove(_categories.FirstOrDefault(p => p.Id == id));
-                _products = _products.Where(p => p.Category.Id != id).ToList();
-            }
-            catch (Exception ex)
-            {
-                _deleteFailCategory = true;
-            }
-
-            try
-            {
-                _products.Where(p => p.Category.Id == id).ToList().ForEach(async p =>
+                try
                 {
-                    await DeleteItemBlobs(p.Items);
-                });
-            }
-            catch (Exception ex)
+                    Repository.Delete(cat);
+                    _categories.Remove(cat);
+                }
+                catch (Exception ex)
+                {
+                    _deleteFailCategory = true;
+                }
+            } else
             {
-                //Log
+                _hasProducts = true;
             }
-
-        }
-
-        private async Task DeleteItemBlobs(IList<Item> items)
-        {
-
-            foreach (Item item in items)
-            {
-                await BlobService.SetContainer("item"+item.Id);
-                await BlobService.DeleteContainer();
-                
-            }
-        }
-
-        protected void GetItems(int id)
-        {
-            NavigationManager.NavigateTo("/itemlijst/" + id);
         }
 
         protected async Task ImportData()

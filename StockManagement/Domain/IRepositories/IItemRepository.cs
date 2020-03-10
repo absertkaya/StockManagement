@@ -5,16 +5,20 @@ namespace StockManagement.Domain.IRepositories
 {
     public interface IItemRepository : IRepository
     {
-        Task<IList<Product>> GetByCategory(int id);
-        Task<IList<Item>> GetByProduct(int id);
+        Task<IList<Product>> GetByCategoryAsync(int id);
+        IList<Product> GetByCategory(int id);
+
+        IList<Item> GetByProduct(int id);
+        Task<IList<Item>> GetByProductAsync(int id);
         Item GetBySerialNr(string serialnr);
         bool GetItemInStock(string serialnr);
-        Task<int> GetAmountInStockValue(int id);
-
+        Task<int> GetAmountInStockValueAsync(int id);
+        int GetAmountInStockValue(int id);
         Task<IList<Item>> GetItemsByUser(string id);
         Task<ItemUser> GetLastUse(string userid, int itemid);
         Task<IList<ItemUser>> GetItemUsersByUser(string id);
         Task<IList<ItemUser>> GetItemUsersByItem(int id);
         bool ItemDuplicateExists(int id, string sn, int productId);
+        bool ProductDuplicateExists(int id, string pn);
     }
 }

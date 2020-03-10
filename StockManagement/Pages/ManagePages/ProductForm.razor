@@ -5,9 +5,10 @@
 @page "/productform"
 @page "/productform/{productnr}"
 @page "/productform/id/{id:int}"
+@page "/productform/categorie/{category:int}/{productnr}"
 
-<a href="/productscanner" class="btn btn-info"><i class="oi oi-arrow-thick-left"></i></a>
-<h3 class="inline">ProductForm</h3>
+<a href="/productscanner" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+<h3 class="d-inline">ProductForm</h3>
 <EditForm EditContext="@_editContext" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -21,22 +22,44 @@
     </div>
     <div class="form-group">
         <label for="category">Category</label>
-        <select value="@_product.Category?.Id" @onchange="SelectCategory" id="category" class="form-control">
-            <option value="" selected hidden>Kies een categorie</option>
+        @if (Category == null)
+        {
+            <select value="@_product.Category?.Id" @onchange="SelectCategory" id="category" class="form-control">
+                <option value="" selected hidden>Kies een categorie</option>
+                @if (_categories != null)
+                {
+                    @foreach (Category cat in _categories)
+                    {
+                        <option value=@cat.Id>@cat.CategoryName</option>
+                    }
+                }
+            </select>
+        }
+        else
+        {
             @if (_categories != null)
             {
-                @foreach (Category cat in _categories)
-                {
-                    <option value=@cat.Id>@cat.CategoryName</option>
-                }
+                <select value="@Category" @onchange="SelectCategory" id="category" class="form-control">
+                    <option value="" selected hidden>Kies een categorie</option>
+
+                    @foreach (Category cat in _categories)
+                    {
+                        <option value=@cat.Id>@cat.CategoryName</option>
+                    }
+
+                </select>
             }
-        </select>
+        }
     </div>
 </EditForm>
 
 @if (_submitFail)
 {
-    <p class="text-danger">Fout bij het persisteren van de data</p>
+    <p class="text-danger">Fout bij het persisteren van de data.</p>
+}
+@if (_duplicateExists)
+{
+    <p class="text-danger">Product met identiek productnummer bestaat al.</p>
 }
 <div class="form-group">
     @if (Id == null)
