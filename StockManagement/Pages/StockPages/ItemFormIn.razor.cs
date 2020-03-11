@@ -36,6 +36,9 @@ namespace StockManagement.Pages.StockPages
         protected int? _selectedSupplier;
         protected bool _isDefective;
         protected string _comment;
+        protected DateTime _deliveryDate = DateTime.Today;
+        protected DateTime _invoiceDate = DateTime.Today;
+
 
         protected bool _submitFail;
         protected bool _duplicateItem;
@@ -73,6 +76,8 @@ namespace StockManagement.Pages.StockPages
                 _selectedSupplier = _item.Supplier?.Id;
                 _isDefective = _item.IsDefective;
                 _comment = _item.Comment;
+                _deliveryDate = _item.DeliveryDate;
+                _invoiceDate = _item.InvoiceDate;
             }
 
         }
@@ -125,6 +130,8 @@ namespace StockManagement.Pages.StockPages
             _item.IsDefective = _isDefective;
             _item.Comment = _comment;
             _item.InStock = true;
+            _item.DeliveryDate = _deliveryDate;
+            _item.InvoiceDate = _invoiceDate;
 
             if (_item.Product != null && !Repository.ItemDuplicateExists(_item.Id, _item.SerialNumber, _item.Product.Id))
             {

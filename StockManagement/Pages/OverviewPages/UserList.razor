@@ -6,39 +6,27 @@
 @using Blazored.Typeahead
 <a href="/overzicht" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
 <h3 class="d-inline">Gebruikers</h3>
-<BlazoredTypeahead SearchMethod="SearchUser" @bind-Value="_selectedUser">
-    <SelectedTemplate>@context.FirstName @context.LastName | @context.Mail</SelectedTemplate>
-    <ResultTemplate>@context.FirstName @context.LastName | @context.Mail</ResultTemplate>
-</BlazoredTypeahead>
-<button class="btn btn-sm btn-primary" @onclick="GetSelectedUser">Zoek</button>
-<table class="table table-sm table-responsive table-responsive-sm">
-    <thead class="thead-dark">
-        <tr>
-            <th class="d-none d-md-table-cell">Email</th>
-            <th>Voornaam</th>
-            <th>Naam</th>
-            <th>Rol</th>
-            <th></th>
-        </tr>
-    </thead>
+<div class="form-group">
+    <BlazoredTypeahead SearchMethod="SearchUser" @bind-Value="_selectedUser">
+        <SelectedTemplate>@context.FirstName @context.LastName | @context.Mail</SelectedTemplate>
+        <ResultTemplate>@context.FirstName @context.LastName | @context.Mail</ResultTemplate>
+    </BlazoredTypeahead>
+    <button class="btn btn-sm btn-primary float-right" @onclick="GetSelectedUser">Zoek</button>
+</div>
 
-    @if (_users != null)
+
+
+
+@if (_users != null)
+{
+<div class="row">
+    @foreach (ADUser user in _users)
     {
-        @foreach (ADUser user in _users)
-        {
-            <tr>
-                <td class="d-none d-md-table-cell">@user.Mail</td>
-                <td>@user.FirstName</td>
-                <td>@user.LastName</td>
-                <td>@user.OfficeRole</td>
-                <td><button class="btn btn-sm btn-primary" @onclick="(() => GetUser(user.Id))"><i class="oi oi-magnifying-glass"></i></button></td>
-            </tr>
-        }
+        <div class="col-md-4">
+            <button class="btn btn-sm btn-primary" @onclick="(() => GetUser(user.Id))"><i class="oi oi-magnifying-glass"></i></button>
+            <UserComponent ADUser="user"/>
+        </div>
     }
-
-</table>
-
-@code {
-
-
+</div>
 }
+

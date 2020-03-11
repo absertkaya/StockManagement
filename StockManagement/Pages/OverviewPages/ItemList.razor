@@ -1,78 +1,36 @@
 ﻿@inherits ItemListBase
 
 @page "/itemlijst/{id:int}"
+@page "/{route}/itemlijst/{id:int}"
 @using StockManagement.Domain
+
 @if (_product != null)
 {
-
-
-<a href="/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-<h5 class="d-inline">@_product.Description</h5>
-
-<table class="table table-sm table-responsive table-responsive-sm">
-    <thead class="thead-dark">
-        <tr>
-            <th>S/N</th>
-            <th>Leverancier</th>
-            <th>Gebruiker</th>
-            <th>In stock</th>
-            <th>Defect</th>
-            <th>Opmerkingen</th>
-            <th></th>
-        </tr>
-    </thead>
-
+    @if (Route == "beheer")
+    {
+        <a href="/beheer/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    }
+    else
+    {
+        <a href="/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    }
+    <h3 class="d-inline">@_product.Description</h3>
     @if (_product.Items != null)
     {
-        @foreach (Item item in _product.Items)
-        {
-            <tr>
-                <td>@item.SerialNumber</td>
-                <td>@item.Supplier?.SupplierName</td>
-
-                @if (item.ADUser != null)
-                {
-                    <td>@(item.ADUser.Mail)</td>
-                }
-                else
-                {
-                    <td>/</td>
-                }
-
-                <td>
-                    @if (item.InStock)
-                    {
-                        <i class="oi oi-circle-check text-success"></i>
-                    }
-                    else
-                    {
-                        <i class="oi oi-circle-x text-danger"></i>
-                    }
-                </td>
-                <td>
-                    @if (item.IsDefective)
-                    {
-                        <i class="oi oi-circle-check text-success"></i>
-                    }
-                    else
-                    {
-                        <i class="oi oi-circle-x text-danger"></i>
-                    }
-                </td>
-                <td>@item.Comment</td>
-                <td>
+        <div class="row">
+            @foreach (Item item in _product.Items)
+            {
+                <div class="col-md-4">
                     <div class="btn-group btn-group-sm">
                         <a href="/itemhistoriek/@(item.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
                         <a href="/itemform/in/id/@(item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
                         <button @onclick="@(() => DeleteItem(item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
                     </div>
-
-                </td>
-            </tr>
-        }
+                    <ItemComponent Item="item" />
+                </div>
+            }
+        </div>
     }
-
-</table>
 }
 @if (_deleteFail)
 {

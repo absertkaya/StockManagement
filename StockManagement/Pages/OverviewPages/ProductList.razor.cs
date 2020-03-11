@@ -45,9 +45,5 @@ namespace StockManagement.Pages.OverviewPages
             }
         }
 
-        protected void GetItems(int id)
-        {
-            NavigationManager.NavigateTo("/itemlijst/" + id);
-        }
     }
 }

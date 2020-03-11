@@ -18,12 +18,12 @@
         <option value="" selected hidden>Kies een categorie</option>
 
         @if (_categories != null)
+        {
+            @foreach (Category cat in _categories)
             {
-        @foreach (Category cat in _categories)
-                {
-        <option value=@cat.Id>@cat.CategoryName</option>
-                }
+                <option value=@cat.Id>@cat.CategoryName</option>
             }
+        }
     </select>
 </div>
 <div class="form-group">
@@ -31,12 +31,12 @@
     <select id="product" class="form-control" @bind="_selectedDescription">
         <option value="" selected hidden>Kies een product</option>
         @if (_descriptions != null)
+        {
+            @foreach (Product item in _descriptions)
             {
-        @foreach (Product item in _descriptions)
-                {
-        <option value=@item.Id>@item.Description</option>
-                }
+                <option value=@item.Id>@item.Description</option>
             }
+        }
     </select>
 </div>
 <div class="form-group">
@@ -44,13 +44,21 @@
     <select id="supplier" class="form-control" @bind="_selectedSupplier">
         <option value="" selected hidden>Kies een leverancier</option>
         @if (_suppliers != null)
+        {
+            @foreach (Supplier supplier in _suppliers)
             {
-        @foreach (Supplier supplier in _suppliers)
-                {
-        <option value=@supplier.Id>@supplier.SupplierName</option>
-                }
+                <option value=@supplier.Id>@supplier.SupplierName</option>
             }
+        }
     </select>
+</div>
+<div class="form-group">
+    <label for="deliverydate">Leverdatum</label>
+    <input type="date" class="form-control" @bind="_deliveryDate" />
+</div>
+<div class="form-group">
+    <label for="invoicedate">Factuurdatum</label>
+    <input type="date" class="form-control" @bind="_invoiceDate" />
 </div>
 <div class="form-group">
     <label for="isdefective">Is defect</label>
@@ -72,7 +80,7 @@
 }
 @if (_duplicateItem)
 {
-<p class="text-danger">Items hebben een uniek serienummer per product</p>
+    <p class="text-danger">Items hebben een uniek serienummer per product</p>
 }
 @if (_errorMessage != null)
 {

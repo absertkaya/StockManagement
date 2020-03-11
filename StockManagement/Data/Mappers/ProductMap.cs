@@ -7,7 +7,7 @@ namespace StockManagement.Data.Mappers
     {
         public ProductMap()
         {
-            Table("Products");
+            Table("Product");
             Id(x => x.Id).GeneratedBy.Increment();
             Map(x => x.ProductNumber).Unique().Not.Nullable();
             Map(x => x.Description).Not.Nullable();

@@ -6,36 +6,10 @@
 <a href="/gebruikers" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
 <h3 class="d-inline">Gebruiker</h3>
 
-<table class="table table-sm table-responsive table-responsive-sm">
-
-    @if (_user != null)
-    {
-        <tr>
-            <th>Email</th>
-            <td>@_user.Mail</td>
-        </tr>
-        <tr>
-            <th>Voornaam</th>
-            <td>@_user.FirstName</td>
-        </tr>
-        <tr>
-            <th>Naam</th>
-            <td>@_user.LastName</td>
-        </tr>
-        <tr>
-            <th>GSM</th>
-            <td>@_user.MobilePhone</td>
-        </tr>
-        <tr>
-            <th>Kantoor</th>
-            <td>@_user.Office</td>
-        </tr>
-        <tr>
-            <th>Functie</th>
-            <td>@_user.OfficeRole</td>
-        </tr>
-    }
-</table>
+@if (_user != null)
+{
+    <UserComponent ADUser="_user"/>
+}
 
 <h3>Items in gebruik</h3>
 

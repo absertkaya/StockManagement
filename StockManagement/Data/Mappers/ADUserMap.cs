@@ -9,12 +9,12 @@ namespace StockManagement.Data.Mappers
         {
             Table("ADUser");
             Id(x => x.Id);
-            Map(x => x.LastName);
-            Map(x => x.FirstName);
-            Map(x => x.Mail);
+            Map(x => x.LastName).Not.Nullable();
+            Map(x => x.FirstName).Not.Nullable();
+            Map(x => x.Mail).Not.Nullable();
             Map(x => x.MobilePhone);
-            Map(x => x.Office);
-            Map(x => x.OfficeRole);
+            Map(x => x.Office).Not.Nullable();
+            Map(x => x.OfficeRole).Not.Nullable();
             HasMany(x => x.Items)
                 .Inverse()
                 .Cascade

@@ -20,6 +20,7 @@ namespace StockManagement.Pages.ManagePages
         public NavigationManager NavigationManager { get; set; }
 
         protected Category _category;
+        protected Product _selectedProduct;
 
         protected bool _deleteFailProduct;
         protected bool _hasItems;
@@ -30,6 +31,19 @@ namespace StockManagement.Pages.ManagePages
             foreach (Product prod in _category.Products)
             {
                 prod.AmountInStock = Repository.GetAmountInStockValue(prod.Id);
+            }
+        }
+
+        protected async Task<IEnumerable<Product>> SearchProduct(string searchString)
+        {
+            return await Task.FromResult(_category.Products.Where(u => u.Description.ToLower().Contains(searchString.ToLower())));
+        }
+
+        protected void NavigateToProductDetail()
+        {
+            if (_selectedProduct != null)
+            {
+                NavigationManager.NavigateTo("/beheer/itemlijst/" + _selectedProduct.Id);
             }
         }
 

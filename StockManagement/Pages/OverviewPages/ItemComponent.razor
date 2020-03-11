@@ -1,0 +1,66 @@
+﻿@using StockManagement.Domain
+
+<table class="table table-sm table-responsive table-responsive-sm ">
+    <tr>
+        <th>S/N</th>
+        <td>@Item.SerialNumber</td>
+    </tr>
+    <tr>
+        <th>Gebruiker</th>
+        @if (Item.ADUser == null)
+        {
+            <td>/</td>
+        }
+        else
+        {
+            <td>@Item.ADUser.Mail</td>
+        }
+    </tr>
+    <tr>
+        <th>Leverancier</th>
+        <td>@Item.Supplier.SupplierName</td>
+    </tr>
+    <tr>
+        <th>Leverdatum</th>
+        <td>@Item.DeliveryDate.ToString("dd/MM/yyyy")</td>
+    </tr>
+    <tr>
+        <th>Factuurdatum</th>
+        <td>@Item.InvoiceDate.ToString("dd/MM/yyyy")</td>
+    </tr>
+    <tr>
+        <th>In stock</th>
+        <td>
+            @if (@Item.InStock)
+            {
+                <i class="oi oi-circle-check text-success"></i>
+            }
+            else
+            {
+                <i class="oi oi-circle-x text-danger"></i>
+            }
+        </td>
+    </tr>
+    <tr>
+        <th>Is defect</th>
+        <td>
+            @if (@Item.IsDefective)
+            {
+                <i class="oi oi-circle-check text-success"></i>
+            }
+            else
+            {
+                <i class="oi oi-circle-x text-danger"></i>
+            }
+        </td>
+    </tr>
+    <tr>
+        <th>Opmerkingen</th>
+        <td>@Item.Comment</td>
+    </tr>
+</table>
+
+@code {
+    [Parameter]
+    public Item Item { get; set; }
+}

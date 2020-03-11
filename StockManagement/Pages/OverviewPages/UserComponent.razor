@@ -1,0 +1,33 @@
+﻿@using StockManagement.Domain
+
+<table class="table table-sm table-responsive table-responsive-sm">
+    <tr>
+        <th>Email</th>
+        <td>@ADUser.Mail</td>
+    </tr>
+    <tr>
+        <th>Voornaam</th>
+        <td>@ADUser.FirstName</td>
+    </tr>
+    <tr>
+        <th>Naam</th>
+        <td>@ADUser.LastName</td>
+    </tr>
+    <tr>
+        <th>GSM</th>
+        <td>@ADUser.MobilePhone</td>
+    </tr>
+    <tr>
+        <th>Kantoor</th>
+        <td>@ADUser.Office</td>
+    </tr>
+    <tr>
+        <th>Functie</th>
+        <td>@ADUser.OfficeRole</td>
+    </tr>
+</table>
+
+@code {
+    [Parameter]
+    public ADUser ADUser { get; set; }
+}

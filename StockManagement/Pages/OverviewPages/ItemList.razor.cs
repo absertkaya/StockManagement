@@ -20,11 +20,11 @@ namespace StockManagement.Pages.OverviewPages
         public IModalService Modal { get; set; }
         [Parameter]
         public int Id { get; set; }
+        [Parameter]
+        public string Route { get; set; }
 
         protected Product _product;
-
         protected Item _itemToDelete;
-
         protected bool _deleteFail;
 
         protected override void OnInitialized()

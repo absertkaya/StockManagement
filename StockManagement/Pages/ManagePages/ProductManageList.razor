@@ -1,20 +1,28 @@
 ﻿@inherits ProductManageListBase
 
 @page "/beheer/productlijst/{id:int}"
-
+@using Blazored.Typeahead
 @using StockManagement.Domain
 <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
 <h3 class="d-inline">Beheer @_category.CategoryName</h3>
+<div class="form-group">
+    <BlazoredTypeahead SearchMethod="SearchProduct" @bind-Value="_selectedProduct">
+        <SelectedTemplate>@context.Description</SelectedTemplate>
+        <ResultTemplate>@context.Description</ResultTemplate>
+    </BlazoredTypeahead>
+    <button class="btn btn-primary float-right" @onclick="NavigateToProductDetail">Zoek</button>
+</div>
+
 <div>
     <a href="/productscanner/categorie/@(Id)" class="btn btn-success"><i class="oi oi-plus"></i>Product</a>
 </div>
 
 <div>
-    @if(_deleteFailProduct)
+    @if (_deleteFailProduct)
     {
         <p class="text-danger">Product kon niet worden verwijderd</p>
     }
-    @if(_hasItems)
+    @if (_hasItems)
     {
         <p class="text-danger">Product heeft items, kon niet verwijderd worden.</p>
     }
@@ -40,7 +48,7 @@
                     <td>@prod.AmountInStock</td>
                     <td>
                         <div class="btn-group btn-groep-sm">
-                            <a href="/itemlijst/@(prod.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
+                            <a href="/beheer/itemlijst/@(prod.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
                             <a href="/productform/id/@(prod.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
                             @if (prod.Items.Count == 0)
                             {

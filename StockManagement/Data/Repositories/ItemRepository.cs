@@ -101,5 +101,15 @@ namespace StockManagement.Data.Repositories
         {
             return _session.Query<Product>().Any(p => p.Id != id && p.ProductNumber == pn);
         }
+
+        public Product GetByProductNr(string productnr)
+        {
+            return _session.Query<Product>().FirstOrDefault(p => p.ProductNumber == productnr);
+        }
+
+        public Product GetByProductName(string name)
+        {
+            return _session.Query<Product>().FirstOrDefault(p => p.Description == name);
+        }
     }
 }
