@@ -29,8 +29,8 @@
                 <td>@Item.InvoiceDate.ToString("dd/MM/yyyy")</td>
             </tr>
             <tr>
-                <th>In stock</th>
-                <td>
+                <th colspan="2">
+                    In stock
                     @if (@Item.InStock)
                     {
                         <i class="oi oi-circle-check text-success"></i>
@@ -39,11 +39,12 @@
                     {
                         <i class="oi oi-circle-x text-danger"></i>
                     }
-                </td>
+                </th>
+
             </tr>
             <tr>
-                <th>Is defect</th>
-                <td>
+                <th colspan="2">
+                    Is defect
                     @if (@Item.IsDefective)
                     {
                         <i class="oi oi-circle-check text-success"></i>
@@ -52,7 +53,7 @@
                     {
                         <i class="oi oi-circle-x text-danger"></i>
                     }
-                </td>
+                </th>
             </tr>
             <tr>
                 <th>Opmerkingen</th>

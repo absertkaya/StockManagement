@@ -67,28 +67,28 @@
             </thead>
 
             @if (_suppliers != null)
-        {
-            @foreach (Supplier sup in _suppliers)
             {
-            <tr>
-                <td>@sup.Id</td>
-                <td>@sup.SupplierName</td>
-                <td>
-                    <div class="btn-group btn-group-sm">
-                        <a href="/itemlijst/leverancier/@(sup.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                        <a href="/beheer/leverancier/@(sup.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                        @if (sup.Items == null || sup.Items.Count == 0)
+                @foreach (Supplier sup in _suppliers)
+                {
+                <tr>
+                    <td>@sup.Id</td>
+                    <td>@sup.SupplierName</td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <a href="/leverancier/itemlijst/@(sup.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
+                            <a href="/beheer/leverancier/@(sup.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                            @if (sup.Items == null || sup.Items.Count == 0)
                             {
-                        <button @onclick="@(() => DeleteSupplier(sup.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                                <button @onclick="@(() => DeleteSupplier(sup.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
                             }
                             else
                             {
-                        <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
+                                <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
                             }
 
-                    </div>
-                </td>
-            </tr>
+                        </div>
+                    </td>
+                </tr>
             }
         }
 

@@ -62,6 +62,8 @@ namespace StockManagement.Pages.StockPages
                 if (!Repository.ItemDuplicateExists(_item.Id, _item.SerialNumber, _item.Product.Id))
                 {
                     Repository.Save(_item);
+                    product.AddItem(_item);
+                    StateHasChanged();
                     _item = new Item()
                     {
                         Product = product,

@@ -19,45 +19,35 @@ namespace StockManagement.Pages.OverviewPages
         [Inject]
         public IModalService Modal { get; set; }
         [Parameter]
-        public int Id { get; set; }
+        public int? Id { get; set; }
         [Parameter]
         public string Route { get; set; }
+        [Parameter]
+        public int? SupplierId { get; set; }
 
         protected Product _product;
+        protected Supplier _supplier;
         protected Item _itemToDelete;
         protected bool _deleteFail;
 
         protected override void OnInitialized()
         {
-            _product = (Product) Repository.GetById(typeof(Product), Id);
+            if (Id != null)
+            {
+                _product = (Product)Repository.GetById(typeof(Product), Id);
+            }
+            if (SupplierId != null)
+            {
+                _supplier = (Supplier)Repository.GetById(typeof(Supplier), SupplierId);
+            }
         }
 
         protected void DeleteItem(Item item)
         {
-            _itemToDelete = item;
-            Repository.Delete(_itemToDelete);
-            _product.Items.Remove(_itemToDelete);
-            
-        }
-        private void ShowModal()
-        {
-            var options = new ModalOptions()
-            {
-                Position = "blazored-modal-center"
-            };
-            Modal.OnClose += ModalClosed;
-            Modal.Show<Confirmation>("confirmation", options);
-        }
-
-        private void ModalClosed(ModalResult result)
-        {
-            if (!result.Cancelled)
-            {
-
-                    Repository.Delete(_itemToDelete);
-                    _product.Items.Remove(_itemToDelete);
-
-            }
+            Repository.Delete(item);
+            item.Supplier.Items.Remove(item);
+            item.Product.Items.Remove(item);
+            StateHasChanged();
         }
     }
 }

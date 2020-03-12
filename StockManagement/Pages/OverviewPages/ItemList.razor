@@ -2,6 +2,7 @@
 
 @page "/itemlijst/{id:int}"
 @page "/{route}/itemlijst/{id:int}"
+@page "/leverancier/itemlijst/{SupplierId:int}"
 @using StockManagement.Domain
 
 @if (_product != null)
@@ -32,6 +33,29 @@
         </div>
     }
 }
+@if (_supplier != null)
+{
+    <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">@_supplier.SupplierName</h3>
+    @if (_supplier.Items != null)
+    {
+        <div class="row">
+            @foreach (Item item in _supplier.Items)
+            {
+                <div class="col-md-4">
+                    <div class="btn-group btn-group-sm">
+                        <a href="/itemhistoriek/@(item.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
+                        <a href="/itemform/in/id/@(item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                        <button @onclick="@(() => DeleteItem(item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                    </div>
+                    <ItemComponent Item="item" />
+                </div>
+            }
+        </div>
+    }
+}
+
+
 @if (_deleteFail)
 {
     <p class="text-danger">Verwijderen van item mislukt</p>
