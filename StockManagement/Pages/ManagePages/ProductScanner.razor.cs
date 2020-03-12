@@ -14,7 +14,6 @@ namespace StockManagement.Pages.ManagePages
         public NavigationManager NavigationManager { get; set; }
 
         protected IScannerComponent _scanner;
-        protected bool _quagga = true;
         protected void Submit()
         {
             if (Category == null)
@@ -23,9 +22,5 @@ namespace StockManagement.Pages.ManagePages
                 NavigationManager.NavigateTo("/productform/categorie/" + Category + "/" + Regex.Replace(_scanner.GetResult(), @"\s+", ""));
         }
 
-        protected void SwitchScanner()
-        {
-            _quagga = !_quagga;
-        }
     }
 }

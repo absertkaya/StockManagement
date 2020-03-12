@@ -84,7 +84,7 @@ namespace StockManagement.Pages.StockPages
             }
 
         }
-
+        
         public async Task FireChange(ChangeEventArgs e)
         {
             _selectedCategory = int.Parse(e.Value.ToString());
@@ -138,8 +138,7 @@ namespace StockManagement.Pages.StockPages
 
             if (_item.Product != null && !Repository.ItemDuplicateExists(_item.Id, _item.SerialNumber, _item.Product.Id))
             {
-                try
-                {
+                
                     Repository.Save(_item);
                     if (!await _fileUpload.IsEmpty())
                     {
@@ -149,23 +148,21 @@ namespace StockManagement.Pages.StockPages
                         }
                         catch (Exception ex)
                         {
-                            //Log
+                            ToastService.ShowError("Kon foto niet opslaan.");
                         }
                     }
                     if (Id != null)
                     {
-                        NavigationManager.NavigateTo("itemlijst/" + _item.Product.Id);
                         ToastService.ShowSuccess("Item succesvol geëditeerd.");
+                        NavigationManager.NavigateTo("itemlijst/" + _item.Product.Id);
+                    } else
+                    {
+                        ToastService.ShowSuccess("Item in stock geplaatst, er zijn nog " + _item.Product.Items.Count + " items in stock.");
+                        NavigationManager.NavigateTo("scanner/in");
                     }
-                    NavigationManager.NavigateTo("updatesucces/in/" + _selectedDescription);
-                }
-                catch (Exception ex)
-                {
-                    _submitFail = true;
-                }
             } else
             {
-                _submitFail = true;
+                ToastService.ShowError("Duplicate item bestaat in de databank.");
             }
         }
         protected async Task Clear()

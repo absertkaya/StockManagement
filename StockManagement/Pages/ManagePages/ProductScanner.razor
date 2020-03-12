@@ -6,26 +6,7 @@
 <div class="btn-group">
     <button class="btn btn-primary" @onclick="Submit">Geef in</button>
     <button class="btn btn-secondary" id="resetButton">Reset</button>
-    <button class="btn btn-info float-right" @onclick="SwitchScanner">
-        @if (_quagga)
-        {
-            @("ZXing")
-        }
-        else
-        {
-            @("Quagga")
-        }
-    </button>
+
 </div>
-@if (_quagga)
-{
-    <QuaggaScanner @ref="_scanner" />
-}
-else
-{
-    <Scanner Kind="Serienummer" @ref="_scanner" />
-}
 
-@code {
-
-}
+<QuaggaScanner @ref="_scanner" />

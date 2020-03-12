@@ -22,7 +22,7 @@
 <div class="row">
     @foreach (ADUser user in _users)
     {
-        <div class="col-md-4">
+        <div class="col-lg-4">
             <button class="btn btn-sm btn-primary" @onclick="(() => GetUser(user.Id))"><i class="oi oi-magnifying-glass"></i></button>
             <UserComponent ADUser="user"/>
         </div>

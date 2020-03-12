@@ -1,4 +1,5 @@
 ﻿using Blazor.Extensions.Storage.Interfaces;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
@@ -22,6 +23,8 @@ namespace StockManagement.Pages.StockPages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         private IUserRepository UserRepository { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
         [Inject]
         public MailService MailService { get; set; }
         [Parameter]
@@ -60,7 +63,6 @@ namespace StockManagement.Pages.StockPages
                 _item.ADUser = aduser;
                 _item.InStock = false;
 
-
                 var authState = await authenticationStateTask;
                 var assigner = authState.User;
 
@@ -75,8 +77,7 @@ namespace StockManagement.Pages.StockPages
                 Repository.Save(history);
                 Repository.Save(_item);
 
-
-
+                ToastService.ShowSuccess("Item uit stock gehaald, er zijn nog " + _item.Product.Items.Count + " items in stock.");
                 NavigationManager.NavigateTo("updatesucces/out/" + _item.Product?.Id, true);
             }
             catch (Exception ex)

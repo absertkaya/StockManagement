@@ -19,10 +19,7 @@ namespace StockManagement.Pages.StockPages
         [Inject]
         public IToastService ToastService { get; set; }
         protected ElementReference resetButton;
-
         protected IScannerComponent _scanner;
-        protected bool _quagga = true;
-
         [Parameter]
         public string Method { get; set; }
 
@@ -61,10 +58,6 @@ namespace StockManagement.Pages.StockPages
 
         }
 
-        protected void SwitchScanner()
-        {
-            _quagga = !_quagga;
-        }
 
         protected void Skip()
         {
