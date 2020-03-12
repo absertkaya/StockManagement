@@ -5,21 +5,30 @@
 @page "/leverancier/itemlijst/{SupplierId:int}"
 @using StockManagement.Domain
 
-@if (_product != null)
+@if (_supplier != null || _product != null)
 {
-    @if (Route == "beheer")
+    if (_supplier == null)
     {
-        <a href="/beheer/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        @if (Route == "beheer")
+        {
+            <a href="/beheer/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        }
+        else
+        {
+            <a href="/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        }
+        <h3 class="d-inline">@_product.Description</h3>
     }
     else
     {
-        <a href="/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        <h3 class="d-inline">@_supplier.SupplierName</h3>
     }
-    <h3 class="d-inline">@_product.Description</h3>
-    @if (_product.Items != null)
+
+    @if (_items != null)
     {
         <div class="row">
-            @foreach (Item item in _product.Items)
+            @foreach (Item item in _items)
             {
                 <div class="col-md-4">
                     <div class="btn-group btn-group-sm">
@@ -32,35 +41,4 @@
             }
         </div>
     }
-}
-@if (_supplier != null)
-{
-    <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-    <h3 class="d-inline">@_supplier.SupplierName</h3>
-    @if (_supplier.Items != null)
-    {
-        <div class="row">
-            @foreach (Item item in _supplier.Items)
-            {
-                <div class="col-md-4">
-                    <div class="btn-group btn-group-sm">
-                        <a href="/itemhistoriek/@(item.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                        <a href="/itemform/in/id/@(item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                        <button @onclick="@(() => DeleteItem(item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
-                    </div>
-                    <ItemComponent Item="item" />
-                </div>
-            }
-        </div>
-    }
-}
-
-
-@if (_deleteFail)
-{
-    <p class="text-danger">Verwijderen van item mislukt</p>
-}
-
-@code {
-
 }

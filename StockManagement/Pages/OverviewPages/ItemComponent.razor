@@ -1,8 +1,8 @@
 ﻿@using StockManagement.Domain
-    <div class="table-responsive">
+    <div class="table-responsive border border-dark">
         <table class="table table-sm">
             <tr>
-                <th>S/N</th>
+                <th style="width: 16.66%">S/N</th>
                 <td>@Item.SerialNumber</td>
             </tr>
             <tr>
@@ -17,20 +17,20 @@
                 }
             </tr>
             <tr>
-                <th>Leverancier</th>
+                <th style="width: 16.66%">Leverancier</th>
                 <td>@Item.Supplier.SupplierName</td>
             </tr>
             <tr>
-                <th>Leverdatum</th>
+                <th style="width: 16.66%">Leverdatum</th>
                 <td>@Item.DeliveryDate.ToString("dd/MM/yyyy")</td>
             </tr>
             <tr>
-                <th>Factuurdatum</th>
+                <th style="width: 16.66%">Factuurdatum</th>
                 <td>@Item.InvoiceDate.ToString("dd/MM/yyyy")</td>
             </tr>
             <tr>
-                <th colspan="2">
-                    In stock
+                <th>In stock</th>
+                <td>
                     @if (@Item.InStock)
                     {
                         <i class="oi oi-circle-check text-success"></i>
@@ -39,12 +39,11 @@
                     {
                         <i class="oi oi-circle-x text-danger"></i>
                     }
-                </th>
-
+                </td>
             </tr>
             <tr>
-                <th colspan="2">
-                    Is defect
+                <th>Is defect</th>
+                <td>
                     @if (@Item.IsDefective)
                     {
                         <i class="oi oi-circle-check text-success"></i>
@@ -53,10 +52,10 @@
                     {
                         <i class="oi oi-circle-x text-danger"></i>
                     }
-                </th>
+                </td>
             </tr>
             <tr>
-                <th>Opmerkingen</th>
+                <th style="width: 16.66%">Opmerkingen</th>
                 <td>@Item.Comment</td>
             </tr>
         </table>

@@ -14,28 +14,12 @@ namespace StockManagement.Pages.OverviewPages
     {
         [Inject]
         public IItemRepository Repository { get; set; }
-        [Inject]
-        public NavigationManager NavigationManager { get; set; }
-
-        protected List<string> _uris;
-
-        protected bool _dBError;
 
         protected IList<Category> _categories;
 
         protected override void OnInitialized()
         {
              _categories = Repository.GetAll<Category>();
-        }
-
-        protected void GetProductList(int id)
-        {
-            NavigationManager.NavigateTo("/productlijst/" + id);
-        }
-
-        protected void GetUsers()
-        {
-            NavigationManager.NavigateTo("/gebruikers");
         }
     }
 }

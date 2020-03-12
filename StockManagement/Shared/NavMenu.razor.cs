@@ -30,32 +30,34 @@ namespace StockManagement.Shared
         public IConfiguration Configuration { get; set; }
         [Inject]
         public ProtectedApiCallHelper ProtectedApiCallHelper { get; set; }
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstrender)
         {
-
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-            await JSRuntime.InvokeVoidAsync("console.log", "test");
-            if (UserRepository.GetByEmail(user.Identity.Name) == null)
+            if (firstrender)
             {
-                IConfidentialClientApplication confidentialClientApplication =
-                ConfidentialClientApplicationBuilder
-                .Create(Configuration["AzureAd:ClientId"])
-                .WithTenantId(Configuration["AzureAd:TenantId"])
-                .WithClientSecret(Configuration["AzureAd:ClientSecret"])
-                .Build();
-                string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
-                AuthenticationResult result = null;
-                result = await confidentialClientApplication.AcquireTokenForClient(scopes)
-                    .ExecuteAsync();
-                var httpClient = new HttpClient();
-                var apiCaller = new ProtectedApiCallHelper(httpClient);
-                var res = await apiCaller
-                    .CallWebApiAndProcessResultASync(
-                    $"https://graph.microsoft.com/v1.0/users/{user.Identity.Name}",
-                    result.AccessToken
-                    );
-                SaveAndUpdateUser(res);
+                var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+                await JSRuntime.InvokeVoidAsync("console.log", "test");
+                if (UserRepository.GetByEmail(user.Identity.Name) == null)
+                {
+                    IConfidentialClientApplication confidentialClientApplication =
+                    ConfidentialClientApplicationBuilder
+                    .Create(Configuration["AzureAd:ClientId"])
+                    .WithTenantId(Configuration["AzureAd:TenantId"])
+                    .WithClientSecret(Configuration["AzureAd:ClientSecret"])
+                    .Build();
+                    string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
+                    AuthenticationResult result = null;
+                    result = await confidentialClientApplication.AcquireTokenForClient(scopes)
+                        .ExecuteAsync();
+                    var httpClient = new HttpClient();
+                    var apiCaller = new ProtectedApiCallHelper(httpClient);
+                    var res = await apiCaller
+                        .CallWebApiAndProcessResultASync(
+                        $"https://graph.microsoft.com/v1.0/users/{user.Identity.Name}",
+                        result.AccessToken
+                        );
+                    SaveAndUpdateUser(res);
+                }
             }
         }
 

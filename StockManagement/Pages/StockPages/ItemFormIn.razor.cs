@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Pages.ReuseableComponents;
@@ -16,6 +17,8 @@ namespace StockManagement.Pages.StockPages
         public IItemRepository Repository { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
         [Parameter]
         public string SerialNr { get; set; }
 
@@ -149,7 +152,12 @@ namespace StockManagement.Pages.StockPages
                             //Log
                         }
                     }
-                    NavigationManager.NavigateTo("updatesucces/in/" + _selectedDescription, true);
+                    if (Id != null)
+                    {
+                        NavigationManager.NavigateTo("itemlijst/" + _item.Product.Id);
+                        ToastService.ShowSuccess("Item succesvol geëditeerd.");
+                    }
+                    NavigationManager.NavigateTo("updatesucces/in/" + _selectedDescription);
                 }
                 catch (Exception ex)
                 {
