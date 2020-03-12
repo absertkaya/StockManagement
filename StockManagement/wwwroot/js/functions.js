@@ -79,14 +79,21 @@
                 patchSize: "medium",
                 halfSample: true
             },
-            numOfWorkers: 2,
+            numOfWorkers: 4,
             frequency: 2,
             decoder: {
                 readers: [
                     "code_128_reader",
-                    "ean_reader",
+                    {
+                        format: "ean_reader",
+                        config: {
+                            supplements: [
+                                'ean_5_reader', 'ean_2_reader'
+                            ]
+                        }
+                    },
                     //"code_93_reader",
-                    "ean_8_reader",
+                    //"ean_8_reader",
                     "upc_reader",
                     "upc_e_reader",
                     //"code_39_reader"
@@ -131,9 +138,9 @@
             App.found.push(code);
             var $node = null, canvas = Quagga.canvas.dom.image;
 
-            $node = $('<li><div class="thumbnail"><div class="imgWrapper"><img /></div><div class="caption"><h4 class="code"></h4></div></div></li>');
+            $node = $('<li><div class="thumbnail"><div class="imgWrapper"><img /></div><div class="caption"><h5 class="code"></h5></div></div></li>');
             $node.find("img").attr("src", canvas.toDataURL());
-            $node.find("h4.code").html(code);
+            $node.find("h5.code").html(code);
             $("#result_strip ul.thumbnails").append($node);
             $node.on("click", function (e) {
                 document.getElementById("codeField").value = code;

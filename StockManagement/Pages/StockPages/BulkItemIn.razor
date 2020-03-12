@@ -61,10 +61,6 @@
     </div>
     <label>Serienummer</label>
     <QuaggaScanner @ref="_scanner" />
-    @if (_duplicateExists)
-    {
-        <p class="text-danger">Duplicate item bestaat in de databank.</p>
-    }
     <ValidationSummary />
     <button class="btn btn-outline-primary w-100"><i class="oi oi-arrow-bottom"></i>Plaats<i class="oi oi-arrow-bottom"></i></button>
 </EditForm>

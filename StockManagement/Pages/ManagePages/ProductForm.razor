@@ -53,14 +53,6 @@
     </div>
 </EditForm>
 
-@if (_submitFail)
-{
-    <p class="text-danger">Fout bij het persisteren van de data.</p>
-}
-@if (_duplicateExists)
-{
-    <p class="text-danger">Product met identiek productnummer bestaat al.</p>
-}
 <div class="form-group">
     @if (Id == null)
     {
@@ -71,10 +63,4 @@
         <button @onclick="Submit" class="btn btn-primary">Update</button>
     }
 
-    <button @onclick="Back" class="btn btn-secondary">Terug</button>
 </div>
-
-
-@code {
-
-}

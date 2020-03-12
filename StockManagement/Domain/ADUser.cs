@@ -20,7 +20,8 @@ namespace StockManagement.Domain
 
         public ADUser()
         {
-
+            Items = new List<Item>();
+            ItemUsers = new List<ItemUser>();
         }
 
         public ADUser(GraphUser user)

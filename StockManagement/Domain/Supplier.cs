@@ -9,5 +9,10 @@ namespace StockManagement.Domain
         [Required(ErrorMessage = "Leveranciernaam is verplicht.")]
         public virtual string SupplierName { get; set; }
         public virtual IList<Item> Items { get; set; }
+
+        public Supplier()
+        {
+            Items = new List<Item>();
+        }
     }
 }

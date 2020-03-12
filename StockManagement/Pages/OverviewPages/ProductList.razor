@@ -14,34 +14,31 @@
     <button class="btn btn-primary float-right" @onclick="NavigateToProductDetail">Zoek</button>
 </div>
 
-
-<table id="productList" class="table table-sm table-responsive table-responsive-sm">
-    <thead class="thead-dark">
-        <tr>
-            <th class="d-none d-md-table-cell">Id</th>
-            <th>Productnaam</th>
-            <th class="d-none d-md-table-cell">Productnummer</th>
-            <th>#</th>
-            <th></th>
-        </tr>
-    </thead>
-
-    @if (_products != null)
-    {
-        @foreach (Product prod in _products)
-        {
-            <tr id="product@(prod.Id)">
-                <td class="d-none d-md-table-cell">@prod.Id</td>
-                <td>@prod.Description</td>
-                <td class="d-none d-md-table-cell">@prod.ProductNumber</td>
-                <td>@prod.AmountInStock</td>
-                <td><a href="itemlijst/@(prod.Id)" class="btn btn-primary btn-sm"><i class="oi oi-magnifying-glass"></i></a></td>
+<div class="table-responsive">
+    <table id="productList" class="table table-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th class="d-none d-md-table-cell">Id</th>
+                <th>Productnaam</th>
+                <th class="d-none d-md-table-cell">Productnummer</th>
+                <th>#</th>
+                <th></th>
             </tr>
+        </thead>
+
+        @if (_products != null)
+        {
+            @foreach (Product prod in _products)
+            {
+                <tr id="product@(prod.Id)">
+                    <td class="d-none d-md-table-cell">@prod.Id</td>
+                    <td>@prod.Description</td>
+                    <td class="d-none d-md-table-cell">@prod.ProductNumber</td>
+                    <td>@prod.AmountInStock</td>
+                    <td><a href="itemlijst/@(prod.Id)" class="btn btn-primary btn-sm"><i class="oi oi-magnifying-glass"></i></a></td>
+                </tr>
+            }
         }
-    }
 
-</table>
-
-@code {
-
-}
+    </table>
+</div>

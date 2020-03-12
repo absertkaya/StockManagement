@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
@@ -12,8 +13,12 @@ namespace StockManagement.Pages.ManagePages
 {
     public class ProductFormBase : ComponentBase
     {
-        [Inject] public IItemRepository Repository { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
+        [Inject] 
+        public IItemRepository Repository { get; set; }
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
 
         [Parameter]
         public string ProductNr { get; set; }
@@ -26,9 +31,6 @@ namespace StockManagement.Pages.ManagePages
         protected IList<Category> _categories;
         protected Product _product = new Product();
         protected EditContext _editContext;
-
-        protected bool _submitFail;
-        protected bool _duplicateExists;
 
         protected override void OnInitialized()
         {
@@ -64,8 +66,6 @@ namespace StockManagement.Pages.ManagePages
 
         protected void Submit()
         {
-            _duplicateExists = false;
-            _submitFail = false;
             if (_editContext.Validate())
             {
                 _product.ProductNumber = Regex.Replace(_product.ProductNumber, @"\s+", "");
@@ -74,24 +74,21 @@ namespace StockManagement.Pages.ManagePages
                     try
                     {
                         Repository.Save(_product);
-                        NavigationManager.NavigateTo("/beheer", true);
+                        _product.Category.Products.Add(_product);
+                        ToastService.ShowSuccess("Product: " + _product.Description + " werd toegevoegd in categorie: " + _product.Category.CategoryName);
+                        NavigationManager.NavigateTo("/beheer");
                     }
                     catch (Exception ex)
                     {
-                        _submitFail = true;
+                        ToastService.ShowError("Kon product niet opslaan.");
                     }
                 } else
                 {
-                    _duplicateExists = true;
+                    ToastService.ShowError("Product met identiek productnummer bestaat al.");
                 }
 
             }
 
-        }
-
-        protected void Back()
-        {
-            NavigationManager.NavigateTo("/beheer");
         }
     }
 }

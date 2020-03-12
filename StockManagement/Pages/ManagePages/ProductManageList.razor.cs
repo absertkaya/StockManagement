@@ -28,9 +28,12 @@ namespace StockManagement.Pages.ManagePages
         protected override void OnInitialized()
         {
             _category = (Category) Repository.GetById(typeof(Category),Id);
-            foreach (Product prod in _category.Products)
+            if (_category.Products != null)
             {
-                prod.AmountInStock = Repository.GetAmountInStockValue(prod.Id);
+                foreach (Product prod in _category.Products)
+                {
+                    prod.AmountInStock = Repository.GetAmountInStockValue(prod.Id);
+                }
             }
         }
 

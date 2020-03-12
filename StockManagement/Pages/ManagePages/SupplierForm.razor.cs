@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
@@ -17,6 +18,8 @@ namespace StockManagement.Pages.ManagePages
         public IItemRepository Repository { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
         protected Supplier _supplier;
         protected EditContext _editContext;
 
@@ -44,10 +47,11 @@ namespace StockManagement.Pages.ManagePages
                 try
                 {
                     Repository.Save(_supplier);
+                    ToastService.ShowSuccess("Leverancier " + _supplier.SupplierName + " toegevoegd.");
                     NavigationManager.NavigateTo("/beheer");
                 } catch (Exception ex)
                 {
-                    //Log
+                    ToastService.ShowError("Kon leverancier niet toevoegen.");
                 }
             }
         }

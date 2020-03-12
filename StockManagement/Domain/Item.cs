@@ -39,6 +39,7 @@ namespace StockManagement.Domain
             DeliveryDate = DateTime.Today;
             InvoiceDate = DateTime.Today;
             InStock = true;
+            ItemUsers = new List<ItemUser>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Blazor.FileReader;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using StockManagement.Data;
@@ -25,21 +26,12 @@ namespace StockManagement.Pages.ManagePages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IFileReaderService FileReaderService { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
 
         protected ElementReference inputElement;
         protected string _value;
 
-        protected bool _loadFail;
-        protected bool _deleteFailCategory;
-        protected bool _hasProducts;
-
-        protected bool _supplierHasItems;
-        protected bool _deleteFailSupplier;
-
-        protected bool _showDialog;
-
-        [Inject]
-        public IBlobService BlobService { get; set; }
         protected override void OnInitialized()
         {
             try
@@ -48,14 +40,12 @@ namespace StockManagement.Pages.ManagePages
                 _suppliers = Repository.GetAll<Supplier>();
             } catch (Exception e)
             {
-                _loadFail = true;
+                ToastService.ShowWarning("Probleem bij het inladen van data, herlaad de pagina.");
             }
         }
 
         protected void DeleteSupplier(int id)
         {
-            _supplierHasItems = false;
-            _deleteFailSupplier = false;
             Supplier sup = _suppliers.FirstOrDefault(s => s.Id == id);
             if (sup.Items == null || sup.Items.Count == 0)
             {
@@ -65,20 +55,18 @@ namespace StockManagement.Pages.ManagePages
                     _suppliers.Remove(sup);
                 } catch (Exception ex)
                 {
-                    _deleteFailSupplier = true;
+                    ToastService.ShowError("Kon leverancier niet verwijderen.");
                 }
             } else
             {
-                _supplierHasItems = true;
+                ToastService.ShowError("Leverancier heeft items.");
             }
         }
 
         protected void DeleteCategory(int id)
         {
-            _deleteFailCategory = false;
-            _hasProducts = false;
             Category cat = _categories.FirstOrDefault(p => p.Id == id);
-            if (cat.Products?.Count == 0)
+            if (cat.Products == null || cat.Products.Count == 0)
             {
                 try
                 {
@@ -87,11 +75,11 @@ namespace StockManagement.Pages.ManagePages
                 }
                 catch (Exception ex)
                 {
-                    _deleteFailCategory = true;
+                    ToastService.ShowError("Kon categorie niet verwijderen.");
                 }
             } else
             {
-                _hasProducts = true;
+                ToastService.ShowError("Categorie heeft producten.");
             }
         }
 

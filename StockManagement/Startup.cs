@@ -18,6 +18,8 @@ using Blazor.Extensions.Storage;
 using Blazor.Extensions.Storage.Interfaces;
 using Blazored.Modal;
 using StockManagement.Data;
+using Blazored.Toast;
+using Blazored.Toast.Services;
 
 namespace StockManagement
 {
@@ -50,6 +52,7 @@ namespace StockManagement
 
             services.AddStorage();
             services.AddBlazoredModal();
+            services.AddBlazoredToast();
             services.AddScoped<IRepository, RepositoryBase>();
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
@@ -13,14 +14,15 @@ namespace StockManagement.Pages.ManagePages
         [Parameter]
         public int? Id { get; set; }
 
-        [Inject] public IItemRepository Repository { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
+        [Inject] 
+        public IItemRepository Repository { get; set; }
+        [Inject] 
+        public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
 
         protected Category _category = new Category();
         protected EditContext _editContext;
-
-
-        protected bool _submitFail;
 
         protected override void OnInitialized()
         { 
@@ -32,26 +34,22 @@ namespace StockManagement.Pages.ManagePages
         }
 
 
-        protected async Task Submit()
+        protected void Submit()
         {
             if (_editContext.Validate())
             {
                 try
                 {
                     Repository.Save(_category);
+                    ToastService.ShowSuccess("Categorie " + _category.CategoryName + " toegevoegd.");
                     NavigationManager.NavigateTo("/beheer");
                 }
                 catch (Exception ex)
                 {
-                    _submitFail = true;
+                    ToastService.ShowError("Kon categorie niet toevoegen.");
                 }
             }
 
-        }
-
-        protected void Back()
-        {
-            NavigationManager.NavigateTo("/beheer");
         }
     }
 }

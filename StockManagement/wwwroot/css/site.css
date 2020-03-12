@@ -79,40 +79,9 @@ app {
     padding: 0;
 }
 
-.controls .input-group {
-    float: left;
-}
-
-    .controls .input-group input, .controls .input-group button {
-        display: block;
-    }
-
-.controls .reader-config-group {
-    float: right;
-}
-
-.controls .reader-config-group label {
-    display: block;
-}
-
-.controls .reader-config-group label span {
-    width: 9rem;
-    display: inline-block;
-    text-align: right;
-}
-
-.controls:after {
-    content: '';
-    display: block;
-    clear: both;
-}
-
-#result_strip > ul > li .thumbnail .caption h4 {
+#result_strip > ul > li .thumbnail .caption h5 {
     text-align: center;
     word-wrap: break-word;
-    height: 40px;
-    margin: 0px;
-
 }
 
 #result_strip > ul:after {
@@ -371,7 +340,7 @@ app {
 
     #result_strip ul.thumbnails > li .thumbnail .imgWrapper {
         width: 130px;
-        height: 130px;
+        height: 80px;
         overflow: hidden;
     }
 

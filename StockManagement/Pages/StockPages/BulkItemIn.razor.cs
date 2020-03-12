@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
@@ -16,6 +17,9 @@ namespace StockManagement.Pages.StockPages
         [Inject]
         public IItemRepository Repository { get; set; }
 
+        [Inject]
+        public IToastService ToastService { get; set; }
+
         protected int? _selectedCategory;
         protected IList<Category> _categories;
         protected int? _selectedSupplier;
@@ -28,7 +32,6 @@ namespace StockManagement.Pages.StockPages
         protected QuaggaScanner _scanner;
         protected string _comment;
 
-        protected bool _duplicateExists;
         protected override void OnInitialized()
         {
             _editContext = new EditContext(_item);
@@ -44,7 +47,6 @@ namespace StockManagement.Pages.StockPages
 
         protected void Submit()
         {
-            _duplicateExists = false;
             Product product = null;
             Supplier supplier = null;
             string serialnr = null;
@@ -62,6 +64,7 @@ namespace StockManagement.Pages.StockPages
                 if (!Repository.ItemDuplicateExists(_item.Id, _item.SerialNumber, _item.Product.Id))
                 {
                     Repository.Save(_item);
+                    ToastService.ShowSuccess("Item toegevoegd");
                     product.AddItem(_item);
                     StateHasChanged();
                     _item = new Item()
@@ -73,7 +76,7 @@ namespace StockManagement.Pages.StockPages
                 }
                 else
                 {
-                    _duplicateExists = true;
+                    ToastService.ShowError("Duplicate item bestaat al in de databank.");
                 }
                     
             }
