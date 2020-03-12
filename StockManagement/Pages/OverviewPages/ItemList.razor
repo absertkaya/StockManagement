@@ -27,8 +27,22 @@
 
     @if (_items != null)
     {
+        <div class="form-group row">
+            <div class="input-group col-sm-6">
+                <input class="form-control" type="text" @bind="_filterString" @onkeydown="Filter" />
+                <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+            </div>
+            <div class="form-check col-sm-3">
+                <input class="form-check-input" type="checkbox" id="inStock" @onchange="CheckInStock">
+                <label class="form-check-label" for="inStock">
+                    In stock
+                </label>
+            </div>
+        </div>
+
+        
         <div class="row">
-            @foreach (Item item in _items)
+            @foreach (Item item in _filteredItems)
             {
                 <div class="col-lg-4">
                     <div class="btn-group btn-group-sm">
