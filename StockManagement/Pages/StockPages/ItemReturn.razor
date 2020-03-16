@@ -1,0 +1,99 @@
+﻿@inherits ItemBase
+
+@using StockManagement.Domain
+@using StockManagement.Pages.ReuseableComponents
+
+<div class="border p-2">
+    @if (!_hideSettings)
+    {
+    <div class="btn-group">
+        <button class="btn btn-outline-primary active btn-sm" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
+    </div>
+        
+        
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" class="form-control" value="@_selectedCategory" @onchange="FetchProducts">
+                <option value="" selected hidden>Kies een categorie</option>
+
+                @if (_categories != null)
+                {
+                    @foreach (Category cat in _categories)
+                    {
+                        <option value=@cat.Id>@cat.CategoryName</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="product">Product</label>
+            <select id="product" class="form-control" value="_selectedProduct" @onchange="FetchItems">
+                <option value="" selected hidden>Kies een product</option>
+                @if (_products != null)
+                {
+                    @foreach (Product product in _products)
+                    {
+                        <option value=@product.ProductNumber>@product.Description</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="product">Items @(Method == "out" ? "in stock" : "uit stock")</label>
+            <select id="product" class="form-control" value="_selectedItem" @onchange="SelectItem">
+                <option value="" selected hidden>Kies een item</option>
+                @if (_items != null)
+                {
+                    @foreach (Item item in _items)
+                    {
+                        <option value=@item.SerialNumber>@item.SerialNumber</option>
+                    }
+                }
+            </select>
+        </div>
+    }
+    else
+    {
+        <button class="btn btn-sm btn-outline-primary" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
+    }
+
+</div>
+@if (Method == "out")
+{
+    <UserSearchBox @ref="userSearch" />
+}
+
+<div class="form-group row">
+    <div class="col-6">
+        <label>Productnummer</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <button @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">Scan</button>
+            </div>
+            <input id="@(_serialScan ? "" : "codeField")" value="@_productNumber" class="form-control" />
+
+        </div>
+    </div>
+
+    <div class="col-6">
+        <label>Serienummer</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <button @onclick="(() => _serialScan = true)" class="btn @(_serialScan ? "btn-secondary" : "btn-outline-secondary") input-group-prepend">Scan</button>
+            </div>
+            <input id="@(_serialScan ? "codeField" : "" )" value="@_serialNumber" class="form-control" />
+        </div>
+    </div>
+</div>
+
+<QuaggaScanner @ref="_scanner" />
+@if (Method == "out")
+{
+    <button class="btn btn-outline-primary w-100" @onclick="Submit"><i class="oi oi-arrow-top"></i>Haal uit<i class="oi oi-arrow-top"></i></button>
+}
+else
+{
+    <button class="btn btn-outline-primary w-100" @onclick="Submit"><i class="oi oi-arrow-bottom"></i>Retourneer<i class="oi oi-arrow-bottom"></i></button>
+}

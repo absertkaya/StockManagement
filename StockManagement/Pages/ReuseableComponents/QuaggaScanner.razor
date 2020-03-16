@@ -1,8 +1,9 @@
 ﻿@inherits QuaggaScannerBase
 @page "/qScanner"
-<input class="form-control" @bind="_code" type="text" id="codeField" />
+
 <section id="quaggaContainer" class="container">
-    <div id="interactive" class="viewport container container-fluid"></div>
+    
+    <div id="interactive" class="viewport"></div>
     <div id="result_strip" class="container-fluid">
         <ul class="thumbnails"></ul>
         <ul class="collector"></ul>

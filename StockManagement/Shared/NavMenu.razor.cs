@@ -32,6 +32,7 @@ namespace StockManagement.Shared
         public ProtectedApiCallHelper ProtectedApiCallHelper { get; set; }
         protected override async Task OnAfterRenderAsync(bool firstrender)
         {
+
             if (firstrender)
             {
                 var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();

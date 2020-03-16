@@ -8,6 +8,7 @@ namespace StockManagement.Domain
         public virtual Item Item { get; set; }
         public virtual ADUser User { get; set; }
         public virtual ADUser AssignedBy { get; set; }
+        public virtual ADUser? ReturnedBy { get; set; }
         public virtual DateTime FromDate { get; set; }
         public virtual DateTime? ToDate { get; set; }
 
@@ -15,9 +16,17 @@ namespace StockManagement.Domain
         {
             FromDate = DateTime.Now;
         }
-
-        public virtual void Close()
+        public ItemUser(Item item, ADUser user, ADUser assigner)
         {
+            Item = item;
+            User = user;
+            AssignedBy = assigner;
+            FromDate = DateTime.Now;
+        }
+
+        public virtual void Close(ADUser returner)
+        {
+            ReturnedBy = returner;
             ToDate = DateTime.Now;
         }
     }

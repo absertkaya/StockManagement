@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace StockManagement.Domain
 {
@@ -30,7 +31,7 @@ namespace StockManagement.Domain
         }
         [Required]
         public virtual DateTime InvoiceDate { get; set; }
-        public virtual bool InStock { get; set; }
+        public virtual ItemStatus ItemStatus { get; set; }
         public virtual Supplier Supplier { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }
 
@@ -38,8 +39,37 @@ namespace StockManagement.Domain
         {
             DeliveryDate = DateTime.Today;
             InvoiceDate = DateTime.Today;
-            InStock = true;
+            ItemStatus = ItemStatus.INSTOCK;
             ItemUsers = new List<ItemUser>();
+        }
+
+        public virtual void RemoveFromStock(ADUser user, ADUser assigner)
+        {
+            if (ItemStatus.INSTOCK != ItemStatus)
+            {
+                throw new Exception("Can't remove in this state");
+            }
+
+            if (ADUser != null)
+            {
+                throw new Exception("Item has a user");
+            }
+            ItemStatus = ItemStatus.OUTSTOCK;
+            ItemUser use = new ItemUser(this, user, assigner);
+            ItemUsers.Add(use);
+            ADUser = user;
+        }
+
+        public virtual void ReturnToStock(ADUser returner)
+        {
+            if (ItemStatus != ItemStatus.OUTSTOCK)
+            {
+                throw new Exception("Can't be returned in this state");
+            }
+            ItemStatus = ItemStatus.INSTOCK;
+            ItemUser use = ItemUsers.First(x => x.ToDate == null);
+            use.Close(returner);
+            ADUser = null;
         }
     }
 }

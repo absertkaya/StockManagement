@@ -1,5 +1,6 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Pages.ReuseableComponents;
@@ -15,6 +16,8 @@ namespace StockManagement.Pages.StockPages
     {
         [Inject]
         public IItemRepository Repository { get; set; }
+        [Inject]
+        private IUserRepository UserRepository { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
@@ -45,7 +48,10 @@ namespace StockManagement.Pages.StockPages
 
         protected bool _submitFail;
         protected bool _duplicateItem;
-        protected string? _errorMessage; 
+        protected string? _errorMessage;
+
+        [CascadingParameter]
+        protected Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
         protected void CheckDefective()
         {
@@ -103,10 +109,12 @@ namespace StockManagement.Pages.StockPages
         protected async Task Submit()
         {
             _errorMessage = null;
+            var auth = await AuthenticationStateTask;
+            var returner = UserRepository.GetByEmail(auth.User.Identity.Name);
             if (_item.ADUser != null)
             {
                 ItemUser lastUse = await Repository.GetLastUse(_item.ADUser.Id, _item.Id);
-                lastUse.Close();
+                lastUse.Close(returner);
                 Repository.Save(lastUse);
             }
 
@@ -132,7 +140,7 @@ namespace StockManagement.Pages.StockPages
             _item.ADUser = null;
             _item.IsDefective = _isDefective;
             _item.Comment = _comment;
-            _item.InStock = true;
+            _item.ItemStatus = ItemStatus.INSTOCK;
             _item.DeliveryDate = _deliveryDate;
             _item.InvoiceDate = _invoiceDate;
 

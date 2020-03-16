@@ -12,11 +12,8 @@ namespace StockManagement.Pages.ReuseableComponents
         public IJSRuntime JSRuntime { get; set; }
 
         protected string _code;
-        protected override async Task OnAfterRenderAsync(bool render)
-        {
-            if (render)
-                await JSRuntime.InvokeVoidAsync("JsFunctions.quagga");
-        }
+
+
 
         public string GetResult()
         {

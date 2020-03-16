@@ -1,6 +1,7 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Pages.ReuseableComponents;
@@ -12,11 +13,14 @@ using System.Threading.Tasks;
 
 namespace StockManagement.Pages.StockPages
 {
-    public class BulkItemInBase : ComponentBase
+    public class ItemInBase : ComponentBase
     {
         [Inject]
         public IItemRepository Repository { get; set; }
 
+        
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
 
@@ -24,8 +28,13 @@ namespace StockManagement.Pages.StockPages
         protected IList<Category> _categories;
         protected int? _selectedSupplier;
         protected IList<Supplier> _suppliers;
-        protected int? _selectedProduct;
+        protected string _productNumber;
         protected IList<Product> _products;
+
+        protected string _serialNumber;
+
+        protected bool _serialScan;
+        protected bool _hideSettings;
 
         protected EditContext _editContext;
         protected Item _item = new Item();
@@ -38,24 +47,33 @@ namespace StockManagement.Pages.StockPages
             _categories = Repository.GetAll<Category>();
             _suppliers = Repository.GetAll<Supplier>();
         }
-
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+                await JSRuntime.InvokeVoidAsync("JsFunctions.quagga");
+        }
         protected void FetchProducts(ChangeEventArgs e)
         {
             _selectedCategory = int.Parse(e.Value.ToString());
             _products = Repository.GetByCategory((int)_selectedCategory);
         }
 
+        protected void ToggleSettings() { 
+            _hideSettings = !_hideSettings;
+        }
+
+
         protected void Submit()
         {
             Product product = null;
             Supplier supplier = null;
             string serialnr = null;
-            if (_selectedProduct != null)
-                product = _products.FirstOrDefault(p => p.Id == _selectedProduct);
+            if (_productNumber != null)
+                product = _products.FirstOrDefault(p => p.ProductNumber == _productNumber);
             if (_selectedSupplier != null)
                 supplier = _suppliers.FirstOrDefault(p => p.Id == _selectedSupplier);
-            if (_scanner.GetResult() != null)
-                serialnr = Regex.Replace(_scanner.GetResult(), @"\s+", "");
+            if (_serialNumber != null)
+                serialnr = Regex.Replace(_serialNumber, @"\s+", "");
             _item.Product = product;
             _item.Supplier = supplier;
             _item.SerialNumber = serialnr;

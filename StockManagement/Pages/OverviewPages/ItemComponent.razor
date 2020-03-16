@@ -15,7 +15,7 @@
         <tr>
             <th style="width: 25%">In stock</th>
             <td>
-                @if (@Item.InStock)
+                @if (@Item.ItemStatus == ItemStatus.INSTOCK)
                 {
                     <i class="oi oi-circle-check text-success"></i>
                 }

@@ -142,6 +142,7 @@ namespace StockManagement.Data
                         }
                         comment += "User: " + row.ItemArray[8].ToString();
                         bool instock = outstockdate == null;
+                        ItemStatus status = instock ? ItemStatus.INSTOCK : ItemStatus.OUTSTOCK;
                         Item item = new Item()
                         {
                             Product = product,
@@ -150,7 +151,7 @@ namespace StockManagement.Data
                             DeliveryDate = delivery == null ? DateTime.Now : (DateTime)delivery,
                             InvoiceDate = invoice == null ? DateTime.Now : (DateTime)invoice,
                             Comment = comment,
-                            InStock = instock
+                            ItemStatus = status
                         };
                         if (!Repo.ItemDuplicateExists(item.Id, sn, product.Id))
                         {

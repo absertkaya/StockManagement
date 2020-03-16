@@ -18,7 +18,6 @@ namespace StockManagement.Pages.StockPages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
-        protected ElementReference resetButton;
         protected IScannerComponent _scanner;
         [Parameter]
         public string Method { get; set; }

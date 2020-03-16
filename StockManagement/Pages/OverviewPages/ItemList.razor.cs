@@ -49,7 +49,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void Filter()
         {
-            _filteredItems = _items.Where(i => i.SerialNumber.ToLower().Contains(_filterString.Trim().ToLower()) && i.InStock == _instock);
+            _filteredItems = _items.Where(i => i.SerialNumber.ToLower().Contains(_filterString.Trim().ToLower()));
         }
 
         protected void CheckInStock()

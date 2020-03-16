@@ -32,12 +32,12 @@ namespace StockManagement.Data.Repositories
             {
                 throw new ArgumentException("Item doesn't exist");
             }
-            return item.InStock;
+            return item.ItemStatus == ItemStatus.INSTOCK;
         }
 
         public virtual async Task<int> GetAmountInStockValueAsync(int productId)
         {
-            return await _session.QueryOver<Item>().Where(i => i.Product.Id == productId && i.InStock).RowCountAsync();
+            return await _session.QueryOver<Item>().Where(i => i.Product.Id == productId && i.ItemStatus == ItemStatus.INSTOCK).RowCountAsync();
         }
 
         public virtual async Task<IList<Item>> GetByProductAsync(int productid)
@@ -94,7 +94,7 @@ namespace StockManagement.Data.Repositories
 
         public int GetAmountInStockValue(int id)
         {
-            return _session.QueryOver<Item>().Where(i => i.Product.Id == id && i.InStock).RowCount();
+            return _session.QueryOver<Item>().Where(i => i.Product.Id == id && i.ItemStatus == ItemStatus.INSTOCK).RowCount();
         }
 
         public bool ProductDuplicateExists(int id, string pn)
