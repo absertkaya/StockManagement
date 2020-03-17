@@ -17,8 +17,6 @@ namespace StockManagement.Pages.StockPages
     {
         [Inject]
         public IItemRepository Repository { get; set; }
-
-        
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
         [Inject]
@@ -47,11 +45,7 @@ namespace StockManagement.Pages.StockPages
             _categories = Repository.GetAll<Category>();
             _suppliers = Repository.GetAll<Supplier>();
         }
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if (firstRender)
-                await JSRuntime.InvokeVoidAsync("JsFunctions.quagga");
-        }
+
         protected void FetchProducts(ChangeEventArgs e)
         {
             _selectedCategory = int.Parse(e.Value.ToString());
@@ -61,7 +55,6 @@ namespace StockManagement.Pages.StockPages
         protected void ToggleSettings() { 
             _hideSettings = !_hideSettings;
         }
-
 
         protected void Submit()
         {

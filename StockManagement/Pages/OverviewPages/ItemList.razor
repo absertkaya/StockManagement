@@ -30,13 +30,17 @@
         <div class="form-group row">
             <div class="input-group col-sm-6">
                 <input class="form-control" type="text" @bind="_filterString" @onkeydown="Filter" />
-                <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
-            </div>
-            <div class="form-check col-sm-3">
-                <input class="form-check-input" type="checkbox" id="inStock" @onchange="CheckInStock">
-                <label class="form-check-label" for="inStock">
-                    In stock
-                </label>
+                <div class="input-group-append">
+                    <select class="form-control" @bind=@_selectedStatus>
+                        <option hidden selected value="">Status</option>
+                        <option value="@ItemStatus.INSTOCK">In stock</option>
+                        <option value="@ItemStatus.OUTSTOCK">Uit stock</option>
+                        <option value="@ItemStatus.STOLEN">Gestolen</option>
+                        <option value="@ItemStatus.INACTIVE">End-of-life</option>
+                        <option value="@ItemStatus.DEFECTIVE">Defective</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+                </div>
             </div>
         </div>
 
@@ -47,8 +51,8 @@
                 <div class="col-lg-4">
                     <div class="btn-group btn-group-sm">
                         <a href="/itemhistoriek/@(item.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                        <a href="/itemform/in/id/@(item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                        <button @onclick="@(() => DeleteItem(item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                        <a href="/stock/edit/@(item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                        <button @onclick="@(() => ShowConfirmation(item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
                     </div>
                     <ItemComponent Item="item" />
                 </div>

@@ -3,7 +3,7 @@
 @inject IModalService ModalService
 @inject IItemRepository Repository
 @inject IToastService ToastService
-<p>Bent u zeker van deze actie?</p>
+<p>Ben je zeker van deze actie?</p>
 <div>
     <button @onclick="Ok" class="btn btn-primary">Ja</button>
     <button @onclick="Cancel" class="btn btn-secondary">Annuleer</button>
@@ -12,15 +12,18 @@
 
 @code {
 
+    [CascadingParameter]
+    private BlazoredModalInstance BlazoredModal { get; set; }
+
     protected void Ok()
     {
 
-        ModalService.Close();
+        BlazoredModal.Close();
     }
 
     protected void Cancel()
     {
-        ModalService.Cancel();
+        BlazoredModal.Cancel();
     }
 
 }

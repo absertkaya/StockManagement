@@ -5,10 +5,41 @@ namespace StockManagement.Domain
     public class ItemUser
     {
         public virtual int Id { get; set; }
-        public virtual Item Item { get; set; }
-        public virtual ADUser User { get; set; }
-        public virtual ADUser AssignedBy { get; set; }
-        public virtual ADUser? ReturnedBy { get; set; }
+        private Item _item;
+
+        public virtual Item Item
+        {
+            get { return _item; }
+            set { 
+                if (value == null)
+                {
+                    throw new ArgumentNullException("Item must not be null");
+                }
+                _item = value; }
+        }
+
+        private ADUser _user;
+
+        public virtual ADUser User 
+        {
+            get { return _user; }
+            set { 
+                if (value == null)
+                {
+                    throw new ArgumentNullException("Item must not be null");
+                }
+                _user = value; }
+        }
+
+        private  ADUser _assignedBy;
+
+        public virtual ADUser AssignedBy
+        {
+            get { return _assignedBy; }
+            set { _assignedBy = value; }
+        }
+
+        public virtual ADUser ReturnedBy { get; set; }
         public virtual DateTime FromDate { get; set; }
         public virtual DateTime? ToDate { get; set; }
 
@@ -20,6 +51,8 @@ namespace StockManagement.Domain
         {
             Item = item;
             User = user;
+            item.ItemUsers.Add(this);
+            User.ItemUsers.Add(this);
             AssignedBy = assigner;
             FromDate = DateTime.Now;
         }

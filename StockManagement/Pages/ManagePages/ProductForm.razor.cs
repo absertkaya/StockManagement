@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
+using StockManagement.Domain.IComponents;
 using StockManagement.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
@@ -21,21 +22,16 @@ namespace StockManagement.Pages.ManagePages
         public IToastService ToastService { get; set; }
 
         [Parameter]
-        public string ProductNr { get; set; }
-
-        [Parameter]
         public int? Id { get; set; }
-        [Parameter]
-        public int? Category { get; set; }
 
         protected IList<Category> _categories;
+        protected int? _selectedCategory;
         protected Product _product = new Product();
         protected EditContext _editContext;
+        protected IScannerComponent _scanner;
 
         protected override void OnInitialized()
         {
-            _product.ProductNumber = ProductNr;
-            
             if (Id != null)
             { 
                 _product = (Product) Repository.GetById(typeof(Product), Id);
@@ -44,15 +40,9 @@ namespace StockManagement.Pages.ManagePages
                     NavigationManager.NavigateTo("/error");
                 }
             }
-            if (Category != null)
-            {
-                Category cat = (Category)Repository.GetById(typeof(Category), Category);
-                _product.Category = cat;
-            }
             _editContext = new EditContext(_product);
             
         }
-
         protected override async Task OnInitializedAsync()
         {
             _categories = await Repository.GetAllAsync<Category>();

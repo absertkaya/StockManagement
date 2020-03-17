@@ -14,7 +14,6 @@ namespace StockManagement.Domain
         public virtual Product Product { get; set; }
         public virtual ADUser ADUser { get; set; }
         public virtual string Comment { get; set; }
-        public virtual bool IsDefective { get; set; }
         [Required(ErrorMessage = "Serienummer is verplicht")]
         public virtual string SerialNumber { get; set; }
         [Required]
@@ -54,9 +53,9 @@ namespace StockManagement.Domain
             {
                 throw new Exception("Item has a user");
             }
+
             ItemStatus = ItemStatus.OUTSTOCK;
             ItemUser use = new ItemUser(this, user, assigner);
-            ItemUsers.Add(use);
             ADUser = user;
         }
 
@@ -67,9 +66,16 @@ namespace StockManagement.Domain
                 throw new Exception("Can't be returned in this state");
             }
             ItemStatus = ItemStatus.INSTOCK;
-            ItemUser use = ItemUsers.First(x => x.ToDate == null);
-            use.Close(returner);
-            ADUser = null;
+            ItemUser use = ItemUsers.FirstOrDefault(x => x.ToDate == null);
+            if (use != null)
+            {
+                use.Close(returner);
+            }
+            if (ADUser != null)
+            {
+                ADUser.Items.Remove(this);
+                ADUser = null;
+            }
         }
     }
 }

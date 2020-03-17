@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Modal.Services;
+using Blazored.Toast.Services;
+using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;
+using StockManagement.Pages.ModalComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +21,10 @@ namespace StockManagement.Pages.ManagePages
         public IItemRepository Repository { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IModalService ModalService { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
 
         protected Category _category;
         protected Product _selectedProduct;
@@ -50,9 +57,8 @@ namespace StockManagement.Pages.ManagePages
             }
         }
 
-        protected void DeleteProduct(int id)
+        private void DeleteProduct(Product product)
         {
-            Product product = _category.Products.FirstOrDefault(p => p.Id == id);
             if (product.Items.Count == 0)
             {
                 try
@@ -62,14 +68,22 @@ namespace StockManagement.Pages.ManagePages
                 }
                 catch (Exception ex)
                 {
-                    _deleteFailProduct = true;
+                    ToastService.ShowError("Kon product niet verwijderen.");
                 }
             } else
             {
-                _hasItems = true;
+                ToastService.ShowWarning("Product heeft nog items.");
             }
-            
+        }
 
+        protected async Task ShowConfirmation(Product product)
+        {
+            var modal = ModalService.Show<Confirmation>("Delete Confirm");
+            var res = await modal.Result;
+            if (! res.Cancelled)
+            {
+                DeleteProduct(product);
+            }
         }
     }
 }

@@ -13,7 +13,11 @@ namespace StockManagement.Pages.ReuseableComponents
 
         protected string _code;
 
-
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+                await JSRuntime.InvokeVoidAsync("JsFunctions.quagga");
+        }
 
         public string GetResult()
         {

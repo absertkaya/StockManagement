@@ -40,17 +40,8 @@
                 <td>@Item.InvoiceDate.ToString("dd/MM/yyyy")</td>
             </tr>
             <tr>
-                <th style="width: 25%">Is defect</th>
-                <td>
-                    @if (@Item.IsDefective)
-                    {
-                        <i class="oi oi-circle-check text-success"></i>
-                    }
-                    else
-                    {
-                        <i class="oi oi-circle-x text-danger"></i>
-                    }
-                </td>
+                <th style="width: 25%">Status</th>
+                <td>@Item.ItemStatus.ToString()</td>
             </tr>
             <tr>
                 <th style="width: 25%">Opmerkingen</th>

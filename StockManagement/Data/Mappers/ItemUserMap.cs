@@ -14,6 +14,7 @@ namespace StockManagement.Data.Mappers
             References(x => x.User).Not.Nullable();
             References(x => x.Item).Not.Nullable();
             References(x => x.AssignedBy).Not.Nullable();
+            References(x => x.ReturnedBy);
         }
     }
 }

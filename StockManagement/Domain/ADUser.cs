@@ -24,7 +24,7 @@ namespace StockManagement.Domain
             ItemUsers = new List<ItemUser>();
         }
 
-        public ADUser(GraphUser user)
+        public ADUser(GraphUser user) : this()
         {
             Id = user.Id;
             DisplayName = user.DisplayName;
@@ -33,7 +33,7 @@ namespace StockManagement.Domain
             OfficeRole = user.JobTitle;
             Mail = user.Mail;
             MobilePhone = user.MobilePhone;
-            Office = (string)user.OfficeLocation;
+            Office = user.OfficeLocation.ToString();
         }
 
 

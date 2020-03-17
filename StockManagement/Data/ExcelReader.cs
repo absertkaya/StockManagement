@@ -61,12 +61,12 @@ namespace StockManagement.Data
                         string pn = row.ItemArray[2].ToString();
                         if (string.IsNullOrWhiteSpace(pn))
                         {
-                            pn = table.ToString() + " ROWNUMBER: " + rowNr;
+                            pn = table.ToString() + ": " + rowNr;
                         }
                         string sn = row.ItemArray[3].ToString();
                         if (string.IsNullOrWhiteSpace(sn))
                         {
-                            sn = table.ToString() + " ROWNUMBER: " + rowNr;
+                            sn = table.ToString() + ": " + rowNr;
                         }
                         DateTime? delivery;
                         try
@@ -107,6 +107,7 @@ namespace StockManagement.Data
                             invoice = DateTime.Today;
                         }
                         string comment = row.ItemArray[10].ToString();
+                        bool stolen = comment.ToLower().Trim() == "gestolen";
 
                         string desc = row.ItemArray[0].ToString() + " | " + row.ItemArray[1].ToString();
                         string ex = Regex.Replace(desc.Trim().ToLower(), @"\s+", "");
@@ -140,9 +141,28 @@ namespace StockManagement.Data
                         {
                             outstockdate = null;
                         }
-                        comment += "User: " + row.ItemArray[8].ToString();
-                        bool instock = outstockdate == null;
+
+                        string loc = row.ItemArray[7].ToString().ToLower().Trim();
+                        bool locStock = true;
+                        if (!string.IsNullOrEmpty(loc) && loc != "stock")
+                        {
+                            locStock = false;
+                            comment += " | Locatie: " + loc;
+                        }
+
+                        string u = row.ItemArray[8].ToString();
+
+                        if (!string.IsNullOrEmpty(u))
+                        {
+                            comment += " | User: " + u;
+                        }
+                        bool instock = outstockdate == null && locStock;
                         ItemStatus status = instock ? ItemStatus.INSTOCK : ItemStatus.OUTSTOCK;
+                        if(stolen)
+                        {
+                            status = ItemStatus.STOLEN;
+                        }
+                        
                         Item item = new Item()
                         {
                             Product = product,

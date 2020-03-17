@@ -1,66 +1,50 @@
 ﻿@inherits ProductFormBase
 
 @using StockManagement.Domain
+@using StockManagement.Pages.ReuseableComponents
 
-@page "/productform"
-@page "/productform/{productnr}"
-@page "/productform/id/{id:int}"
-@page "/productform/categorie/{category:int}/{productnr}"
+@page "/beheer/product"
+@page "/beheer/product/id/{id:int}"
 
-<a href="/productscanner" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+<a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
 <h3 class="d-inline">ProductForm</h3>
 <EditForm EditContext="@_editContext" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="form-group">
-        <label for="productnr">Productnummer</label>
-        <InputText @bind-Value="@_product.ProductNumber" type="text" class="form-control" id="productnr" placeholder="Productnummer" />
-    </div>
+
     <div class="form-group">
         <label for="description">Productnaam</label>
         <InputText @bind-Value="@_product.Description" type="text" class="form-control" id="description" placeholder="Productnaam" />
     </div>
     <div class="form-group">
         <label for="category">Category</label>
-        @if (Category == null)
-        {
-            <select value="@_product.Category?.Id" @onchange="SelectCategory" id="category" class="form-control">
-                <option value="" selected hidden>Kies een categorie</option>
-                @if (_categories != null)
-                {
-                    @foreach (Category cat in _categories)
-                    {
-                        <option value=@cat.Id>@cat.CategoryName</option>
-                    }
-                }
-            </select>
-        }
-        else
-        {
+        <select value="@_selectedCategory" @onchange="SelectCategory" id="category" class="form-control">
             @if (_categories != null)
             {
-                <select value="@Category" @onchange="SelectCategory" id="category" class="form-control">
-                    <option value="" selected hidden>Kies een categorie</option>
 
-                    @foreach (Category cat in _categories)
-                    {
-                        <option value=@cat.Id>@cat.CategoryName</option>
-                    }
+                <option value="" selected hidden>Kies een categorie</option>
 
-                </select>
+                @foreach (Category cat in _categories)
+                {
+                    <option value=@cat.Id>@cat.CategoryName</option>
+                }
+
+
             }
-        }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="codeField">Productnummer</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <button class="btn btn-secondary btn-sm">Scan</button>
+            </div>
+            <InputText @bind-Value="@_product.ProductNumber" type="text" class="form-control" id="codeField" placeholder="Productnummer" />
+        </div>
+    </div>
+    <QuaggaScanner @ref="_scanner" />
+    <div class="form-group">
+        <button type="submit" class="btn btn-outline-primary w-100"><i class="oi oi-arrow-bottom"></i>@(Id == null ? "Voeg toe" : "Update")<i class="oi oi-arrow-bottom"></i></button>
     </div>
 </EditForm>
 
-<div class="form-group">
-    @if (Id == null)
-    {
-        <button @onclick="Submit" class="btn btn-primary">Voeg toe</button>
-    }
-    else
-    {
-        <button @onclick="Submit" class="btn btn-primary">Update</button>
-    }
-
-</div>

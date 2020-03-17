@@ -66,7 +66,7 @@ namespace StockManagement.Pages.ReuseableComponents
                     url,
                     result.AccessToken
                     );
-            DisplayUsers(res);
+            await DisplayUsers(res);
             if (res.Properties().FirstOrDefault(p => p.Name == "@odata.nextLink") != null)
             {
                 await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
@@ -93,7 +93,7 @@ namespace StockManagement.Pages.ReuseableComponents
             return await Task.FromResult(_colGraphUsers.Where(u => u.FirstAndLastName.ToLower().Contains(searchString.ToLower())));
         }
 
-        protected void DisplayUsers(JObject result)
+        protected async Task DisplayUsers(JObject result)
         {
 
             foreach (JProperty child in result.Properties().Where(p => !p.Name.StartsWith("@")))
@@ -110,10 +110,10 @@ namespace StockManagement.Pages.ReuseableComponents
             }
 
             _colGraphUsers = _colGraphUsers
-              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && u.OfficeLocation != null)
+              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && u.OfficeLocation != null && u.JobTitle != null)
               .ToList();
 
-            JSRuntime.InvokeVoidAsync("console.log", _colGraphUsers);
+            await JSRuntime.InvokeVoidAsync("console.log", _colGraphUsers);
         }
     }
 }

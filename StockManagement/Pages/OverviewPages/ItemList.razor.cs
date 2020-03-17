@@ -18,6 +18,8 @@ namespace StockManagement.Pages.OverviewPages
         public IItemRepository Repository { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
+        [Inject]
+        public IModalService ModalService { get; set; }
         [Parameter]
         public int? Id { get; set; }
         [Parameter]
@@ -31,6 +33,7 @@ namespace StockManagement.Pages.OverviewPages
         protected IEnumerable<Item> _filteredItems;
         protected string _filterString = "";
         protected bool _instock;
+        protected ItemStatus? _selectedStatus;
         protected override void OnInitialized()
         {
             if (Id != null)
@@ -49,7 +52,9 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void Filter()
         {
-            _filteredItems = _items.Where(i => i.SerialNumber.ToLower().Contains(_filterString.Trim().ToLower()));
+            _filteredItems = _items.Where(i => i.SerialNumber.Trim().ToLower()
+            .Contains(_filterString.Trim().ToLower()) && (i.ItemStatus == _selectedStatus || _selectedStatus == null));
+            
         }
 
         protected void CheckInStock()
@@ -58,17 +63,29 @@ namespace StockManagement.Pages.OverviewPages
             Filter();
         }
 
-        protected void DeleteItem(Item item)
+        private void DeleteItem(Item item)
         {
             try
             {
                 Repository.Delete(item);
+                _items.Remove(item);
                 item.Supplier.Items.Remove(item);
                 item.Product.Items.Remove(item);
-                StateHasChanged();
+                Filter();
             } catch (Exception ex)
             {
                 ToastService.ShowError("Kon item niet verwijderen.");
+            }
+        }
+
+        protected async Task ShowConfirmation(Item item)
+        {
+            var modal = ModalService.Show<Confirmation>("Delete Confirmation");
+            var res = await modal.Result;
+
+            if (!res.Cancelled)
+            {
+                DeleteItem(item);
             }
         }
     }

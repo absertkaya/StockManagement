@@ -7,6 +7,6 @@ namespace StockManagement.Domain
 {
     public enum ItemStatus
     {
-        INSTOCK, OUTSTOCK, STOLEN, INACTIVE
+        INSTOCK, OUTSTOCK, STOLEN, INACTIVE, DEFECTIVE
     }
 }

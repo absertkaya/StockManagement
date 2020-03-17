@@ -13,7 +13,6 @@ namespace StockManagement.Data.Mappers
             Map(x => x.SerialNumber).UniqueKey("SerialNumberProductNumber").Not.Nullable();
             Map(x => x.Comment);
             Map(x => x.ItemStatus).Not.Nullable();
-            Map(x => x.IsDefective).Not.Nullable();
             Map(x => x.DeliveryDate).Not.Nullable();
             Map(x => x.InvoiceDate).Not.Nullable();
             References(x => x.ADUser);

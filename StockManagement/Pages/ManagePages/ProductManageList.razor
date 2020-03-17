@@ -14,10 +14,6 @@
 </div>
 
 <div>
-    <a href="/productscanner/categorie/@(Id)" class="btn btn-success"><i class="oi oi-plus"></i>Product</a>
-</div>
-
-<div>
     @if (_deleteFailProduct)
     {
         <p class="text-danger">Product kon niet worden verwijderd</p>
@@ -51,10 +47,10 @@
                     <td>
                         <div class="btn-group btn-groep-sm">
                             <a href="/beheer/itemlijst/@(prod.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                            <a href="/productform/id/@(prod.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                            <a href="/beheer/product/id/@(prod.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
                             @if (prod.Items.Count == 0)
                             {
-                                <button @onclick="@(() => DeleteProduct(@prod.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                                <button @onclick="@(() => ShowConfirmation(prod))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
                             }
                             else
                             {
