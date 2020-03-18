@@ -32,12 +32,10 @@ namespace StockManagement.Shared
         public ProtectedApiCallHelper ProtectedApiCallHelper { get; set; }
         protected override async Task OnAfterRenderAsync(bool firstrender)
         {
-
             if (firstrender)
             {
                 var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
                 var user = authState.User;
-                await JSRuntime.InvokeVoidAsync("console.log", "test");
                 if (UserRepository.GetByEmail(user.Identity.Name) == null)
                 {
                     IConfidentialClientApplication confidentialClientApplication =
