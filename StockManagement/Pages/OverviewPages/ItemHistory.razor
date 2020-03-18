@@ -2,6 +2,7 @@
 
 @using StockManagement.Domain;
 @using StockManagement.Pages.ReuseableComponents
+@using StockManagement.Pages.OverviewPages
 @page "/itemhistoriek/{id:int}"
 <a href="/itemlijst/@(_item.Product.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
 <h4 class="d-inline">Upload foto</h4>
@@ -15,27 +16,16 @@
 </div>
 <BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />
 <h3>Gebruikshistoriek</h3>
-<table class="table table-sm table-responsive table-responsive-sm">
-    <thead class="thead-dark">
-        <tr>
-            <th>Gebruiker</th>
-            <th>Door</th>
-            <th>Van</th>
-            <th>Tot</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (_itemusers != null)
+
+@if (_itemusers != null)
+{
+    <div class="row">
+        @foreach (ItemUser iu in _itemusers)
         {
-            @foreach (ItemUser iu in _itemusers)
-            {
-                <tr>
-                    <td>@iu.User.Mail</td>
-                    <td>@iu.AssignedBy.Mail</td>
-                    <td>@iu.FromDate</td>
-                    <td>@iu.ToDate</td>
-                </tr>
-            }
+            <div class="col-md-4">
+                <ItemHistoryComponent ItemUser=iu />
+            </div>
         }
-    </tbody>
-</table>
+    </div>
+
+}
