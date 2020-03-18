@@ -8,7 +8,7 @@
 
 <EditForm EditContext="_editContext" OnSubmit="Submit">
     <DataAnnotationsValidator />
-    <div class="border p-2">
+    <div class="border p-2 form-group">
         @if (!_hideSettings)
         {
             <button type="button" class="btn btn-outline-primary active btn-sm" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
@@ -77,7 +77,9 @@
             <label>Productnummer</label>
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <button type="button" @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">Scan</button>
+                    <button type="button" @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">
+                        <i class="oi oi-eye"></i>
+                    </button>
                 </div>
                 <input id="@(_serialScan ? "" : "codeField")" value="@_productNumber" class="form-control" />
 
@@ -88,7 +90,9 @@
             <label>Serienummer</label>
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <button type="button" @onclick="(() => _serialScan = true)" class="btn @(_serialScan ? "btn-secondary" : "btn-outline-secondary") input-group-prepend">Scan</button>
+                    <button type="button" @onclick="(() => _serialScan = true)" class="btn @(_serialScan ? "btn-secondary" : "btn-outline-secondary") input-group-prepend">
+                        <i class="oi oi-eye"></i>
+                    </button>
                 </div>
                 <InputText id="@(_serialScan ? "codeField" : "" )" @bind-Value="_serialNumber" class="form-control" />
             </div>

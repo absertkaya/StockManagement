@@ -3,7 +3,7 @@
 @using StockManagement.Domain
 @using StockManagement.Pages.ReuseableComponents
 
-<div class="border p-2">
+<div class="border p-2 form-group">
     @if (!_hideSettings)
     {
         <div class="btn-group">
@@ -78,7 +78,9 @@ else
         <label>Productnummer</label>
         <div class="input-group">
             <div class="input-group-prepend">
-                <button @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">Scan</button>
+                <button @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">
+                    <i class="oi oi-eye"></i>
+                </button>
             </div>
             <input id="@(_serialScan ? "" : "codeField")" value="@_productNumber" class="form-control" />
 
@@ -89,7 +91,9 @@ else
         <label>Serienummer</label>
         <div class="input-group">
             <div class="input-group-prepend">
-                <button @onclick="(() => _serialScan = true)" class="btn @(_serialScan ? "btn-secondary" : "btn-outline-secondary") input-group-prepend">Scan</button>
+                <button @onclick="(() => _serialScan = true)" class="btn @(_serialScan ? "btn-secondary" : "btn-outline-secondary") input-group-prepend">
+                    <i class="oi oi-eye"></i>
+                </button>
             </div>
             <input id="@(_serialScan ? "codeField" : "" )" value="@_serialNumber" class="form-control" />
         </div>
