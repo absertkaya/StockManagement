@@ -30,10 +30,6 @@
                     <td>@item.SerialNumber</td>
                     <td>@item.Product.ProductNumber</td>
                     <td>@item.Product.Description</td>
-                    @if (_itemusers != null)
-                    {
-                        <td>@(GetFromDate(item))</td>
-                    }
                 </tr>
             }
 
@@ -42,30 +38,18 @@
 </table>
 
 <h3>Historiek</h3>
-
-<table class="table table-sm table-responsive table-responsive-sm">
-    <thead class="thead-dark">
-        <tr>
-            <th>S/N</th>
-            <th>P/N</th>
-            <th>Omschrijving</th>
-            <th>Van</th>
-            <th>Tot</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (_itemusers != null)
-        {
+<div class="container">
+    @if (_itemusers != null)
+    {
+        <div class="row">
             @foreach (ItemUser iu in _itemusers)
             {
-                <tr>
-                    <td>@iu.Item.SerialNumber</td>
-                    <td>@iu.Item.Product.ProductNumber</td>
-                    <td>@iu.Item.Product.Description</td>
-                    <td>@iu.FromDate</td>
-                    <td>@iu.ToDate</td>
-                </tr>
+                <div class="col-md-4 mt-2">
+                    <ItemHistoryComponent ItemUser=iu />
+                </div>
             }
-        }
-    </tbody>
-</table>
+        </div>
+
+    }
+
+</div>

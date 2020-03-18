@@ -1,6 +1,6 @@
 ﻿@using StockManagement.Domain
 
-<div class="table-responsive border border-dark">
+<div class="table-responsive border @(ItemUser.ToDate != null ? "border-dark" : "border-success")">
     <table class="table table-sm">
         <tr>
             <th style="width: 16.66%">User</th>
@@ -12,13 +12,13 @@
         </tr>
         <tr>
             <th style="width: 16.66%">Van</th>
-            <td>@ItemUser.FromDate</td>
+            <td>@ItemUser.FromDate.ToString("dd/MM/yyyy")</td>
         </tr>
         @if (ItemUser.ToDate != null)
         {
             <tr>
                 <th style="width: 16.66%">Tot</th>
-                <td>@ItemUser.ToDate</td>
+                <td>@(((DateTime)ItemUser.ToDate).ToString("dd/MM/yyyy"))</td>
             </tr>
             <tr>
                 <th style="width: 16.66%">Teruglegger</th>

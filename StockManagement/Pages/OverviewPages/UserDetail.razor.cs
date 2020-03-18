@@ -29,9 +29,5 @@ namespace StockManagement.Pages.OverviewPages
             _items = await Repository.GetItemsByUser(Id);
         }
 
-        protected DateTime GetFromDate(Item item)
-        {
-            return _itemusers.FirstOrDefault(i => i.Item == item && i.User == _user && i.ToDate == null).FromDate;
-        }
     }
 }

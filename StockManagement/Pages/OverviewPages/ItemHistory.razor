@@ -17,15 +17,18 @@
 <BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />
 <h3>Gebruikshistoriek</h3>
 
-@if (_itemusers != null)
-{
-    <div class="row">
-        @foreach (ItemUser iu in _itemusers)
-        {
-            <div class="col-md-4">
-                <ItemHistoryComponent ItemUser=iu />
-            </div>
-        }
-    </div>
+<div class="container">
+    @if (_itemusers != null)
+    {
+        <div class="row">
+            @foreach (ItemUser iu in _itemusers)
+            {
+                <div class="col-md-4 mt-2">
+                    <ItemHistoryComponent ItemUser=iu />
+                </div>
+            }
+        </div>
 
-}
+    }
+</div>
+

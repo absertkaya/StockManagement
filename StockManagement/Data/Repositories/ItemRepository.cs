@@ -1,4 +1,6 @@
-﻿using NHibernate.Criterion;
+﻿using NHibernate;
+using NHibernate.Criterion;
+using NHibernate.Dialect.Function;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using System;
@@ -65,14 +67,20 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<ItemUser>> GetItemUsersByUser(string id)
         {
             var crit = _session.CreateCriteria<ItemUser>()
-                .Add(Restrictions.Eq("User.Id", id));
+                .Add(Restrictions.Eq("User.Id", id))
+                .AddOrder(Order.Desc("ToDate"));
+            
             return await crit.ListAsync<ItemUser>();
         }
 
         public virtual async Task<IList<ItemUser>> GetItemUsersByItem(int id)
         {
+            var sqlFunction = new SQLFunctionTemplate(NHibernateUtil.String
+                                         , "COALESCE(ToDate, '03/19/2020')");
+            var projection = Projections.SqlFunction(sqlFunction, NHibernateUtil.String);
             var crit = _session.CreateCriteria<ItemUser>()
-                .Add(Restrictions.Eq("Item.Id", id));
+                .Add(Restrictions.Eq("Item.Id", id))
+                .AddOrder(Order.Desc(projection)); 
             return await crit.ListAsync<ItemUser>();
         }
 
