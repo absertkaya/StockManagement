@@ -3,46 +3,47 @@
 @page "/beheer/productlijst/{id:int}"
 @using Blazored.Typeahead
 @using StockManagement.Domain
-<a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-<h3 class="d-inline">Beheer @_category.CategoryName</h3>
-<div class="form-group">
-    <BlazoredTypeahead SearchMethod="SearchProduct" @bind-Value="_selectedProduct">
-        <SelectedTemplate>@context.Description</SelectedTemplate>
-        <ResultTemplate>@context.Description</ResultTemplate>
-    </BlazoredTypeahead>
-    <button class="btn btn-primary float-right" @onclick="NavigateToProductDetail">Zoek</button>
-</div>
+@if (_category != null)
+{
+    <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">Beheer @_category.CategoryName</h3>
+    <div class="form-group">
+        <BlazoredTypeahead SearchMethod="SearchProduct" @bind-Value="_selectedProduct">
+            <SelectedTemplate>@context.Description</SelectedTemplate>
+            <ResultTemplate>@context.Description</ResultTemplate>
+        </BlazoredTypeahead>
+        <button class="btn btn-primary float-right" @onclick="NavigateToProductDetail">Zoek</button>
+    </div>
+}
 
-<div>
-    @if (_deleteFailProduct)
-    {
-        <p class="text-danger">Product kon niet worden verwijderd</p>
-    }
-    @if (_hasItems)
-    {
-        <p class="text-danger">Product heeft items, kon niet verwijderd worden.</p>
-    }
-
-<div class="table-responsive">
-    <table class="table table-sm">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Omschrijving</th>
-                <th scope="col">P/N</th>
-                <th scope="col">#</th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-
-        @if (_category != null && _category.Products != null)
+@if (_products != null)
+{
+    <div class="table-responsive">
+        @if (_deleteFailProduct)
         {
-            @foreach (Product prod in _category.Products)
+            <p class="text-danger">Product kon niet worden verwijderd</p>
+        }
+        @if (_hasItems)
+        {
+            <p class="text-danger">Product heeft items, kon niet verwijderd worden.</p>
+        }
+
+        <table class="table table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Omschrijving</th>
+                    <th class="d-none d-md-table-cell">P/N</th>
+                    <th>#</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+
+            @foreach (Product prod in _products)
             {
                 <tr>
-                    <td>@prod.Id</td>
                     <td>@prod.Description</td>
-                    <td>@prod.ProductNumber</td>
+                    <td class="d-none d-md-table-cell">@prod.ProductNumber</td>
                     <td>@prod.AmountInStock</td>
                     <td>
                         <div class="btn-group btn-groep-sm">
@@ -61,9 +62,10 @@
                     </td>
                 </tr>
             }
-        }
-
-    </table>
-</div>
-
-</div>
+        </table>
+    </div>
+}
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+}

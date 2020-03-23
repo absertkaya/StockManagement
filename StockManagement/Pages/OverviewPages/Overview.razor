@@ -17,11 +17,15 @@
             <div class="list-group">
                 @foreach (var cat in _categories)
                 {
-                    <a href="/productlijst/@(cat.Id)"  class="list-group-item list-group-item-action">
+                    <a href="/productlijst/@(cat.Id)" class="list-group-item list-group-item-action">
                         @cat.CategoryName
                     </a>
                 }
             </div>
+        }
+        else
+        {
+            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
         }
     </div>
 </div>

@@ -24,11 +24,11 @@ namespace StockManagement.Pages.ManagePages
         protected Category _category = new Category();
         protected EditContext _editContext;
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         { 
             if (Id != null)
             {
-                _category = (Category) Repository.GetById(typeof(Category), Id);
+                _category = (Category) await Repository.GetByIdAsync(typeof(Category), Id);
             }
             _editContext = new EditContext(_category);
         }

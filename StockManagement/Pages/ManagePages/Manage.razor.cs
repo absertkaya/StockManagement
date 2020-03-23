@@ -1,4 +1,5 @@
 ﻿using Blazor.FileReader;
+using Blazored.Modal.Services;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -6,6 +7,7 @@ using StockManagement.Data;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;
+using StockManagement.Pages.ModalComponents;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,12 +34,12 @@ namespace StockManagement.Pages.ManagePages
         protected ElementReference inputElement;
         protected string _value;
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
             try
             {
-                _categories = Repository.GetAll<Category>();
-                _suppliers = Repository.GetAll<Supplier>();
+                _categories = await Repository.GetAllAsync<Category>();
+                _suppliers = await Repository.GetAllAsync<Supplier>();
             } catch (Exception e)
             {
                 ToastService.ShowWarning("Probleem bij het inladen van data, herlaad de pagina.");

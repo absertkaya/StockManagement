@@ -34,10 +34,5 @@ namespace StockManagement.Pages.OverviewPages
                 NavigationManager.NavigateTo("/gebruiker/" + _selectedUser.Id);
             }
         }
-
-        protected void GetUser(string id)
-        {
-            NavigationManager.NavigateTo("/gebruiker/" + id);
-        }
     }
 }

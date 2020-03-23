@@ -31,7 +31,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected override async Task OnInitializedAsync()
         {
-            _item = (Item) Repository.GetById(typeof(Item), Id);
+            _item =  (Item) await Repository.GetByIdAsync(typeof(Item), Id);
             _itemusers = (await Repository.GetItemUsersByItem(Id))?.OrderByDescending(i => i.ToDate).ToList();
         }
 

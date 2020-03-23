@@ -1,6 +1,11 @@
 ﻿@using StockManagement.Domain
-<div class="table-responsive border border-dark" @onclick="SwitchOpen">
-    <table class="table table-sm">
+@using StockManagement.Domain.IRepositories
+@using StockManagement.Pages.ModalComponents 
+@inject IModalService ModalService
+@inject IToastService ToastService
+@inject IItemRepository Repository   
+<div class="table-responsive">
+    <table class="table table-sm border">
         <tr>
             <th style="width: 25%">S/N</th>
             <td>@Item.SerialNumber</td>
@@ -25,42 +30,68 @@
                 }
             </td>
         </tr>
-        @if (Open)
-        {
-            <tr>
-                <th style="width: 25%">Leverancier</th>
-                <td>@Item.Supplier.SupplierName</td>
-            </tr>
-            <tr>
-                <th style="width: 25%">Leverdatum</th>
-                <td>@Item.DeliveryDate.ToString("dd/MM/yyyy")</td>
-            </tr>
-            <tr>
-                <th style="width: 25%">Factuurdatum</th>
-                <td>@Item.InvoiceDate.ToString("dd/MM/yyyy")</td>
-            </tr>
-            <tr>
-                <th style="width: 25%">Status</th>
-                <td>@Item.ItemStatus.ToString()</td>
-            </tr>
-            <tr>
-                <th style="width: 25%">Opmerkingen</th>
-                <td>@Item.Comment</td>
-            </tr>
-        }
+
+        <tr>
+            <th style="width: 25%">Leverancier</th>
+            <td>@Item.Supplier.SupplierName</td>
+        </tr>
+        <tr>
+            <th style="width: 25%">Leverdatum</th>
+            <td>@Item.DeliveryDate.ToString("dd/MM/yyyy")</td>
+        </tr>
+        <tr>
+            <th style="width: 25%">Factuurdatum</th>
+            <td>@Item.InvoiceDate.ToString("dd/MM/yyyy")</td>
+        </tr>
+        <tr>
+            <th style="width: 25%">Status</th>
+            <td>@Item.ItemStatus.ToString()</td>
+        </tr>
+        <tr>
+            <th style="width: 25%">Opmerkingen</th>
+            <td>@Item.Comment</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div class="btn-group btn-group-sm">
+                    <a href="/itemhistoriek/@(Item.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
+                    <a href="/stock/edit/@(Item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                    <button @onclick="@(() => ShowConfirmation(Item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                </div>
+            </td>
+        </tr>
     </table>
 </div>
-
-
 @code {
+    [CascadingParameter]
+    public BlazoredModalInstance BlazoredModal { get; set; }
 
-    [Parameter]
-    public bool Open { get; set; }
     [Parameter]
     public Item Item { get; set; }
 
-    private void SwitchOpen()
+    protected async Task ShowConfirmation(Item item)
     {
-       Open = !Open;
+        var modal = ModalService.Show<Confirmation>("Delete Confirmation");
+        var res = await modal.Result;
+
+        if (!res.Cancelled)
+        {
+            DeleteItem(item);
+        }
+    }
+
+    private void DeleteItem(Item item)
+    {
+        try
+        {
+            Repository.Delete(item);
+            item.Supplier.Items.Remove(item);
+            item.Product.Items.Remove(item);
+            BlazoredModal.Close();
+        }
+        catch (Exception ex)
+        {
+            ToastService.ShowError("Kon item niet verwijderen.");
+        }
     }
 }

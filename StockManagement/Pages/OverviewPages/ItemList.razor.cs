@@ -34,18 +34,19 @@ namespace StockManagement.Pages.OverviewPages
         protected string _filterString = "";
         protected bool _instock;
         protected ItemStatus? _selectedStatus;
-        protected override void OnInitialized()
+
+        protected override async Task OnInitializedAsync()
         {
             if (Id != null)
             {
-                _product = (Product)Repository.GetById(typeof(Product), Id);
-                _items = _product.Items;
+                _product =  (Product) await Repository.GetByIdAsync(typeof(Product), Id);
+                _items = await Repository.GetByProductAsync(_product.Id);
                 
             }
             if (SupplierId != null)
             {
-                _supplier = (Supplier)Repository.GetById(typeof(Supplier), SupplierId);
-                _items = _supplier.Items;
+                _supplier = (Supplier) await Repository.GetByIdAsync(typeof(Supplier), SupplierId);
+                _items = await Repository.GetBySupplierAsync(_supplier.Id);
             }
             _filteredItems = new List<Item>(_items);
         }
@@ -87,6 +88,17 @@ namespace StockManagement.Pages.OverviewPages
             {
                 DeleteItem(item);
             }
+        }
+
+        protected void RowExpand(Item item)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(Item), item);
+            var options = new ModalOptions()
+            {
+                HideHeader = true
+            };
+            var modal = ModalService.Show<ItemComponent>("Item Detail", parameters, options);
         }
     }
 }
