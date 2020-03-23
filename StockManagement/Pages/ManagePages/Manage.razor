@@ -15,40 +15,35 @@
     {
         <div class="col col-md-6">
             <div class="table-responsive">
-                <table class="table table-sm">
+                <table class="table table-sm table-hover">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Id</th>
                             <th>Categorie</th>
                             <th></th>
                         </tr>
                     </thead>
+                    <tbody>
+                        @foreach (Category cat in _categories)
+                        {
+                            <tr>
+                                <td @onclick="(() => NavigateToCategory(cat))">@cat.CategoryName</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/beheer/categorie/@(cat.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                                        @if (cat.Products == null || cat.Products.Count == 0)
+                                        {
+                                            <button @onclick="@(() => DeleteCategory(@cat.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
+                                        }
 
-
-                    @foreach (Category cat in _categories)
-                    {
-                        <tr>
-                            <td>@cat.Id</td>
-                            <td>@cat.CategoryName</td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="/beheer/productlijst/@(cat.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                                    <a href="/beheer/categorie/@(cat.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                                    @if (cat.Products == null || cat.Products.Count == 0)
-                                    {
-                                        <button @onclick="@(() => DeleteCategory(@cat.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
-                                    }
-
-                                </div>
-                            </td>
-                        </tr>
-                    }
-
-
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -59,54 +54,48 @@
             <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
         </div>
     }
+
     @if (_suppliers != null)
     {
         <div class="col col-md-6">
             <div class="table-responsive">
-                <table class="table table-sm">
+                <table class="table table-sm table-hover">
                     <thead class="thead-dark">
                         <tr>
-                            <th>Id</th>
                             <th>Leverancier</th>
                             <th></th>
                         </tr>
                     </thead>
+                    <tbody>
+                        @foreach (Supplier sup in _suppliers)
+                        {
+                            <tr>
+                                <td @onclick="(() => NavigateToSupplier(sup))">@sup.SupplierName</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a href="/beheer/leverancier/@(sup.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                                        @if (sup.Items == null || sup.Items.Count == 0)
+                                        {
+                                            <button @onclick="@(() => DeleteSupplier(sup.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
+                                        }
 
-
-                    @foreach (Supplier sup in _suppliers)
-                    {
-                        <tr>
-                            <td>@sup.Id</td>
-                            <td>@sup.SupplierName</td>
-                            <td>
-                                <div class="btn-group btn-group-sm">
-                                    <a href="/leverancier/itemlijst/@(sup.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                                    <a href="/beheer/leverancier/@(sup.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                                    @if (sup.Items == null || sup.Items.Count == 0)
-                                    {
-                                        <button @onclick="@(() => DeleteSupplier(sup.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
-                                    }
-
-                                </div>
-                            </td>
-                        </tr>
-                    }
-
-
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
                 </table>
             </div>
-
         </div>
     }
     else
     {
-        <div class="col col-md-6">
+        <div class="col col-md-6 d-sm-none">
             <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
         </div>
-
     }
 </div>

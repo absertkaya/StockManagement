@@ -46,6 +46,16 @@ namespace StockManagement.Pages.ManagePages
             }
         }
 
+        protected void NavigateToCategory(Category cat)
+        {
+            NavigationManager.NavigateTo("/beheer/productlijst/" + cat.Id);
+        }
+
+        protected void NavigateToSupplier(Supplier sup)
+        {
+            NavigationManager.NavigateTo("/leverancier/itemlijst/" + sup.Id);
+        }
+
         protected void DeleteSupplier(int id)
         {
             Supplier sup = _suppliers.FirstOrDefault(s => s.Id == id);

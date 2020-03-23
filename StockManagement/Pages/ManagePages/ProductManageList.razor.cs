@@ -37,17 +37,22 @@ namespace StockManagement.Pages.ManagePages
 
         protected override async Task OnInitializedAsync()
         {
-            _category = (Category) await Repository.GetByIdAsync(typeof(Category),Id);
-            _products = await Repository.GetByCategoryAsync(Id);
-            if (_products != null)
+            try
             {
-                foreach (Product prod in _products)
+                _category = (Category)await Repository.GetByIdAsync(typeof(Category), Id);
+                _products = await Repository.GetByCategoryAsync(Id);
+                if (_products != null)
                 {
-                    prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
+                    foreach (Product prod in _products)
+                    {
+                        prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
+                    }
                 }
+            } catch (Exception ex)
+            {
+                ToastService.ShowWarning("Probleem bij het inladen van de data, herlaad de pagina.");
             }
         }
-
 
         protected async Task<IEnumerable<Product>> SearchProduct(string searchString)
         {
@@ -60,6 +65,13 @@ namespace StockManagement.Pages.ManagePages
             {
                 NavigationManager.NavigateTo("/beheer/itemlijst/" + _selectedProduct.Id);
             }
+        }
+
+        protected void NavigateToProductDetail(Product prod)
+        {
+
+                NavigationManager.NavigateTo("/beheer/itemlijst/" + prod.Id);
+
         }
 
         private void DeleteProduct(Product product)

@@ -87,15 +87,21 @@
 <div class="container">
     @if (_itemusers != null)
     {
-        <div class="row">
-            @foreach (ItemUser iu in _itemusers)
-            {
-                <div class="col-md-4 mb-2">
-                    <ItemHistoryComponent ItemUser=iu />
-                </div>
-            }
-        </div>
-
+        @if (_itemusers.Count != 0)
+        {
+            <div class="row">
+                @foreach (ItemUser iu in _itemusers)
+                {
+                    <div class="col-md-4 mb-2">
+                        <ItemHistoryComponent ItemUser=iu />
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>Geen data.</p>
+        }
     }
     else
     {

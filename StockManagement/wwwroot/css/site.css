@@ -28,6 +28,11 @@ a, .btn-link {
     border-color: #cef transparent transparent transparent;
 }
 
+.videoWrapper {
+    display: flex;
+    justify-content:center;
+}
+
 .lds-ring div:nth-child(1) {
     animation-delay: -0.45s;
 }
