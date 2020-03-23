@@ -1,4 +1,5 @@
 ﻿using NHibernate;
+using NHibernate.Linq;
 using StockManagement.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
@@ -43,8 +44,8 @@ namespace StockManagement.Data.Repositories
         }
         public virtual async Task<IList<TEntity>> GetAllAsync<TEntity>() where TEntity : class
         {
-            var criteria = _session.CreateCriteria<TEntity>();
-            return await criteria.ListAsync<TEntity>();
+
+            return await _session.Query<TEntity>().ToListAsync();
         }
 
         public virtual IList<TEntity> GetAll<TEntity>() where TEntity : class

@@ -44,19 +44,39 @@
             </div>
         </div>
 
-        
-        <div class="row">
-            @foreach (Item item in _filteredItems)
-            {
-                <div class="col-lg-4 mb-2">
-                    <div class="btn-group btn-group-sm">
-                        <a href="/itemhistoriek/@(item.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                        <a href="/stock/edit/@(item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                        <button @onclick="@(() => ShowConfirmation(item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
-                    </div>
-                    <ItemComponent Item="item" />
-                </div>
-            }
+
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>S/N</th>
+                        <th>In stock</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Item item in _filteredItems)
+                    {
+                        <tr @onclick="(() => RowExpand(item))">
+                            <td>@item.SerialNumber</td>
+                            <td>
+                                @if (item.ItemStatus == ItemStatus.INSTOCK)
+                                {
+                                    <i class="oi oi-circle-check text-success"></i>
+                                }
+                                else
+                                {
+                                    <i class="oi oi-circle-x text-danger"></i>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     }
+}
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
 }

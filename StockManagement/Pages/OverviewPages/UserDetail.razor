@@ -7,23 +7,24 @@
 
 @if (_user != null)
 {
-    <UserComponent ADUser="_user"/>
+    <UserComponent ADUser="_user" />
 }
 
 <h3>Items in gebruik</h3>
+@if (_items != null)
+{
+    <table class="table table-sm table-responsive table-responsive-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th>S/N</th>
+                <th>P/N</th>
+                <th>Omschrijving</th>
+                <th>Van</th>
+            </tr>
+        </thead>
 
-<table class="table table-sm table-responsive table-responsive-sm">
-    <thead class="thead-dark">
-        <tr>
-            <th>S/N</th>
-            <th>P/N</th>
-            <th>Omschrijving</th>
-            <th>Van</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (_items != null)
-        {
+        <tbody>
+
             @foreach (Item item in _items)
             {
                 <tr>
@@ -33,10 +34,15 @@
                 </tr>
             }
 
-        }
-    </tbody>
-</table>
 
+        </tbody>
+
+    </table>
+}
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+}
 <h3>Historiek</h3>
 <div class="container">
     @if (_itemusers != null)
@@ -50,6 +56,10 @@
             }
         </div>
 
+    }
+    else
+    {
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
     }
 
 </div>

@@ -14,19 +14,20 @@
     <button class="btn btn-sm btn-primary float-right" @onclick="GetSelectedUser">Zoek</button>
 </div>
 
-
-
-
 @if (_users != null)
 {
-<div class="row">
-    @foreach (ADUser user in _users)
-    {
-        <div class="col-lg-4 mb-2">
-            <button class="btn btn-sm btn-primary" @onclick="(() => GetUser(user.Id))"><i class="oi oi-magnifying-glass"></i></button>
-            <UserComponent ADUser="user"/>
-        </div>
-    }
-</div>
+    <div class="row">
+        @foreach (ADUser user in _users)
+        {
+            <div class="col-lg-4 mb-2">
+                <a href="/gebruiker/@(user.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
+                <UserComponent ADUser="user" />
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
 }
 

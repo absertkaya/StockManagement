@@ -1,6 +1,7 @@
 ﻿using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Dialect.Function;
+using NHibernate.Linq;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using System;
@@ -14,10 +15,7 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<IList<Product>> GetByCategoryAsync(int id)
         {
-            var query = _session.CreateCriteria<Product>()
-                .Add(Restrictions.Eq("Category.Id", id))
-                .AddOrder(Order.Asc("Description"));
-            return await query.ListAsync<Product>();
+            return await _session.Query<Product>().Where(p => p.Category.Id == id).OrderBy(p => p.Description).ToListAsync();
         }
 
         public virtual Item GetBySerialNr(string serialnr)
@@ -44,44 +42,27 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<IList<Item>> GetByProductAsync(int productid)
         {
-            var crit = _session.CreateCriteria<Item>().Add(Restrictions.Eq("Product.Id", productid));
-            return await crit.ListAsync<Item>();
+            return await _session.Query<Item>().Where(i => i.Product.Id == productid).ToListAsync();
         }
 
         public virtual async Task<ItemUser> GetLastUse(string userid, int itemid)
         {
-            var crit = _session.CreateCriteria<ItemUser>()
-                .Add(Restrictions.Eq("User.Id", userid))
-                .Add(Restrictions.Eq("Item.Id", itemid))
-                .Add(Restrictions.Eq("ToDate", null));
-            return await crit.UniqueResultAsync<ItemUser>();
+            return await _session.Query<ItemUser>().FirstOrDefaultAsync(i => i.User.Id == userid && i.Item.Id == itemid && i.ToDate == null);
         }
 
         public virtual async Task<IList<Item>> GetItemsByUser(string id)
         {
-            var crit = _session.CreateCriteria<Item>()
-                .Add(Restrictions.Eq("ADUser.Id", id));
-            return await crit.ListAsync<Item>();
+            return await _session.Query<Item>().Where(i => i.ADUser.Id == id).ToListAsync();
         }
 
         public virtual async Task<IList<ItemUser>> GetItemUsersByUser(string id)
         {
-            var crit = _session.CreateCriteria<ItemUser>()
-                .Add(Restrictions.Eq("User.Id", id))
-                .AddOrder(Order.Desc("ToDate"));
-            
-            return await crit.ListAsync<ItemUser>();
+            return await _session.Query<ItemUser>().Where(i => i.User.Id == id).OrderByDescending(i => i.ToDate).ToListAsync();
         }
 
         public virtual async Task<IList<ItemUser>> GetItemUsersByItem(int id)
         {
-            var sqlFunction = new SQLFunctionTemplate(NHibernateUtil.String
-                                         , "COALESCE(ToDate, '03/19/2020')");
-            var projection = Projections.SqlFunction(sqlFunction, NHibernateUtil.String);
-            var crit = _session.CreateCriteria<ItemUser>()
-                .Add(Restrictions.Eq("Item.Id", id))
-                .AddOrder(Order.Desc(projection)); 
-            return await crit.ListAsync<ItemUser>();
+            return await _session.Query<ItemUser>().Where(i => i.Item.Id == id).OrderByDescending(i => i.ToDate).ToListAsync();
         }
 
         public virtual IList<Product> GetByCategory(int id)
@@ -96,8 +77,7 @@ namespace StockManagement.Data.Repositories
 
         public IList<Item> GetByProduct(int id)
         {
-            var crit = _session.CreateCriteria<Item>().Add(Restrictions.Eq("Product.Id", id));
-            return crit.List<Item>();
+            return _session.Query<Item>().Where(i => i.Product.Id == id).ToList();
         }
 
         public int GetAmountInStockValue(int id)
@@ -118,6 +98,11 @@ namespace StockManagement.Data.Repositories
         public Product GetByProductName(string name)
         {
             return _session.Query<Product>().FirstOrDefault(p => p.Description == name);
+        }
+
+        public virtual async Task<IList<Item>> GetBySupplierAsync(int id)
+        {
+            return await _session.Query<Item>().Where(i => i.Supplier.Id == id).ToListAsync();
         }
     }
 }

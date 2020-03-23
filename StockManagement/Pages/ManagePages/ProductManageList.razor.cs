@@ -1,6 +1,7 @@
 ﻿using Blazored.Modal.Services;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace StockManagement.Pages.ManagePages
 {
-    public class ProductManageListBase : ComponentBase
+    public class ProductManageListBase : ComponentBase, IDisposable
     {
         [Parameter]
         public int Id { get; set; }
@@ -25,24 +26,28 @@ namespace StockManagement.Pages.ManagePages
         public IModalService ModalService { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
-
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
         protected Category _category;
+        protected IList<Product> _products;
         protected Product _selectedProduct;
 
         protected bool _deleteFailProduct;
         protected bool _hasItems;
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            _category = (Category) Repository.GetById(typeof(Category),Id);
-            if (_category.Products != null)
+            _category = (Category) await Repository.GetByIdAsync(typeof(Category),Id);
+            _products = await Repository.GetByCategoryAsync(Id);
+            if (_products != null)
             {
-                foreach (Product prod in _category.Products)
+                foreach (Product prod in _products)
                 {
-                    prod.AmountInStock = Repository.GetAmountInStockValue(prod.Id);
+                    prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
                 }
             }
         }
+
 
         protected async Task<IEnumerable<Product>> SearchProduct(string searchString)
         {
@@ -84,6 +89,11 @@ namespace StockManagement.Pages.ManagePages
             {
                 DeleteProduct(product);
             }
+        }
+
+        public void Dispose()
+        {
+            Repository.Dispose();
         }
     }
 }

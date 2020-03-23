@@ -1,4 +1,9 @@
 ﻿window.JsFunctions = {
+    dataTable: function (table) {
+        $(document).ready(function () {
+            $(table).DataTable();
+        });
+    },
     quagga: function () {
         Quagga.offProcessed();
         Quagga.offDetected();
