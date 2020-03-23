@@ -98,17 +98,17 @@ app {
 #result_strip > ul > li {
     display: inline-block;
     vertical-align: middle;
-    width: 160px;
+    width: 120px;
 }
 
 #result_strip > ul > li .thumbnail {
     padding: 5px;
-    margin: 4px;
+    margin: 1px;
     border: 1px dashed #CCC;
 }
 
 #result_strip > ul > li .thumbnail img {
-    max-width: 140px;
+    max-width: 100px;
 }
 
 #result_strip > ul > li .thumbnail .caption {
@@ -121,9 +121,10 @@ app {
     padding: 0;
 }
 
-#result_strip > ul > li .thumbnail .caption h5 {
+#result_strip > ul > li .thumbnail .caption p {
     text-align: center;
     word-wrap: break-word;
+    margin-bottom:2px;
 }
 
 #result_strip > ul:after {
@@ -146,21 +147,21 @@ app {
     flex: 1;
 }
 
-    .main .top-row {
-        background-color: #f7f7f7;
-        border-bottom: 1px solid #d6d5d5;
-        justify-content: flex-end;
+.main .top-row {
+    background-color: #f7f7f7;
+    border-bottom: 1px solid #d6d5d5;
+    justify-content: flex-end;
+}
+
+    .main .top-row > a, .main .top-row .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
     }
 
-        .main .top-row > a, .main .top-row .btn-link {
-            white-space: nowrap;
-            margin-left: 1.5rem;
-        }
-
-        .main .top-row a:first-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+    .main .top-row a:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
 .sidebar {
     background-color: rgba(16,80,78,1);
@@ -280,12 +281,17 @@ app {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+.thumbnail:hover {
+    background-color: grey;
+    color: white;
+}
 
 @media (max-width: 767.98px) {
     .main .top-row:not(.auth) {
@@ -333,7 +339,11 @@ app {
     }
 }
 
-
+#result_strip ul.thumbnails > li .thumbnail .imgWrapper {
+    width: 95px;
+    height: 80px;
+    overflow: hidden;
+}
 
 @media (max-width: 768px) {
 
@@ -371,22 +381,22 @@ app {
         margin-top: 0px;
     }
 
-    #result_strip {
-        margin-top: 5px;
-        padding-top: 5px;
-    }
+}
 
-    #result_strip ul.thumbnails > li {
-        width: 150px;
-    }
+#result_strip {
+    margin-top: 5px;
+    padding-top: 5px;
+}
 
-    #result_strip ul.thumbnails > li .thumbnail .imgWrapper {
-        width: 130px;
-        height: 80px;
-        overflow: hidden;
-    }
+#result_strip ul.thumbnails > li {
+    width: 110px;
+}
 
-    #result_strip ul.thumbnails > li .thumbnail .imgWrapper img {
-        margin-top: -25px;
-    }
+#result_strip ul.thumbnails > li .thumbnail .imgWrapper {
+    height: 60px;
+    overflow: hidden;
+}
+
+#result_strip ul.thumbnails > li .thumbnail .imgWrapper img {
+    margin-top: -25px;
 }

@@ -7,27 +7,29 @@
 
 @if (_supplier != null || _product != null)
 {
-    if (_supplier == null)
-    {
-        @if (Route == "beheer")
+    <div class="mb-2">
+        @if (_supplier == null)
         {
-            <a href="/beheer/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+
+            @if (Route == "beheer")
+            {
+                <a href="/beheer/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+            }
+            else
+            {
+                <a href="/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+            }
+            <h3 class="d-inline">@_product.Description</h3>
         }
         else
         {
-            <a href="/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+            <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+            <h3 class="d-inline">@_supplier.SupplierName</h3>
         }
-        <h3 class="d-inline">@_product.Description</h3>
-    }
-    else
-    {
-        <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-        <h3 class="d-inline">@_supplier.SupplierName</h3>
-    }
-
+    </div>
     @if (_items != null)
     {
-        <div class="form-group row">
+        <div class="mb-1 row">
             <div class="input-group col-sm-6">
                 <input class="form-control" type="text" @bind="_filterString" @onkeydown="Filter" />
                 <div class="input-group-append">
@@ -44,7 +46,6 @@
             </div>
         </div>
 
-
         <div class="table-responsive">
             <table class="table table-sm table-hover">
                 <thead class="thead-dark">
@@ -57,7 +58,7 @@
                 <tbody>
                     @foreach (Item item in _filteredItems)
                     {
-                        <tr @onclick="(() => RowExpand(item))">
+                        <tr @onclick="(() => NavigateToItemHistory(item))">
                             <td>@item.SerialNumber</td>
                             <td>
                                 @if (item.ItemStatus == ItemStatus.INSTOCK)

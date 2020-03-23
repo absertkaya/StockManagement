@@ -10,6 +10,10 @@ namespace StockManagement.Pages.ReuseableComponents
     {
         [Parameter]
         public string Container { get; set; }
+
+        [Parameter]
+        public BlobsComponent Blobs { get; set; }
+
         [Inject]
         public IFileReaderService FileReaderService { get; set; }
 
@@ -28,14 +32,16 @@ namespace StockManagement.Pages.ReuseableComponents
             return (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList().Count == 0;
         }
 
-        public async Task Upload(string filename)
+        public async Task<string> Upload(string filename)
         {
+            string uri = null;
             var files = (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList();
             foreach (var file in files)
             {
                 await _service.SetContainer(Container);
-                await _service.UploadBlobToContainer(file, filename);
+                uri = await _service.UploadBlobToContainer(file, filename);
             }
+            return uri;
         }
     }
 }

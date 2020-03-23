@@ -14,11 +14,17 @@ namespace StockManagement.Pages.ReuseableComponents
         public string Container { get; set; }
         [Inject]
         public IBlobService BlobService { get; set; }
-        protected List<string> _uris;
+        protected List<string> _uris = new List<string>();
 
         protected override async Task OnInitializedAsync()
         {
             await BlobService.SetContainer(Container);
+            await RefreshBlobs();
+        }
+
+        public async Task AddUri(string uri)
+        {
+            _uris.Add(uri);
             await RefreshBlobs();
         }
 

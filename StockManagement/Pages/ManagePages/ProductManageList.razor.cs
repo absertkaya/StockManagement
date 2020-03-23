@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace StockManagement.Pages.ManagePages
 {
-    public class ProductManageListBase : ComponentBase, IDisposable
+    public class ProductManageListBase : ComponentBase
     {
         [Parameter]
         public int Id { get; set; }
@@ -69,6 +69,7 @@ namespace StockManagement.Pages.ManagePages
                 try
                 {
                     Repository.Delete(product);
+                    _products.Remove(product);
                     _category.Products.Remove(product);
                 }
                 catch (Exception ex)
@@ -91,9 +92,6 @@ namespace StockManagement.Pages.ManagePages
             }
         }
 
-        public void Dispose()
-        {
-            Repository.Dispose();
-        }
+
     }
 }

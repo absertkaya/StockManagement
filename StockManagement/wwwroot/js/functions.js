@@ -76,14 +76,17 @@
                 found.push(code);
                 var $node = null, canvas = Quagga.canvas.dom.image;
 
-                $node = $('<li><div class="thumbnail"><div class="imgWrapper"><img /></div><div class="caption"><h5 class="code"></h5></div></div></li>');
+                $node = $('<li><div class="thumbnail"><div class="imgWrapper"><img /></div><div class="caption"><p class="code"></p></div></div></li>');
                 $node.find("img").attr("src", canvas.toDataURL());
-                $node.find("h5.code").html(code);
+                $node.find("p.code").html(code);
                 $("#result_strip ul.thumbnails").append($node);
                 $node.on("click", function (e) {
                     document.getElementById("codeField").value = code;
                     document.getElementById('codeField').dispatchEvent(new Event("change"))
+                    found.pop(found.indexOf(code))
+                    $node.remove()
                 })
+
             }
             document.getElementById("codeField").value = code;
             document.getElementById('codeField').dispatchEvent(new Event("change"))

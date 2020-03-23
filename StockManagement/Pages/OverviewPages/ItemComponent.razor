@@ -67,6 +67,9 @@
     public BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter]
+    public bool Open { get; set; }
+
+    [Parameter]
     public Item Item { get; set; }
 
     protected async Task ShowConfirmation(Item item)

@@ -20,6 +20,8 @@ namespace StockManagement.Pages.OverviewPages
         public IToastService ToastService { get; set; }
         [Inject]
         public IModalService ModalService { get; set; }
+        [Inject]
+        public NavigationManager NavigationManager { get; set; }
         [Parameter]
         public int? Id { get; set; }
         [Parameter]
@@ -64,41 +66,11 @@ namespace StockManagement.Pages.OverviewPages
             Filter();
         }
 
-        private void DeleteItem(Item item)
-        {
-            try
-            {
-                Repository.Delete(item);
-                _items.Remove(item);
-                item.Supplier.Items.Remove(item);
-                item.Product.Items.Remove(item);
-                Filter();
-            } catch (Exception ex)
-            {
-                ToastService.ShowError("Kon item niet verwijderen.");
-            }
-        }
 
-        protected async Task ShowConfirmation(Item item)
-        {
-            var modal = ModalService.Show<Confirmation>("Delete Confirmation");
-            var res = await modal.Result;
 
-            if (!res.Cancelled)
-            {
-                DeleteItem(item);
-            }
-        }
-
-        protected void RowExpand(Item item)
+        protected void NavigateToItemHistory(Item item)
         {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(Item), item);
-            var options = new ModalOptions()
-            {
-                HideHeader = true
-            };
-            var modal = ModalService.Show<ItemComponent>("Item Detail", parameters, options);
+            NavigationManager.NavigateTo("/itemhistoriek/" + item.Id);
         }
     }
 }

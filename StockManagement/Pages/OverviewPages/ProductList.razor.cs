@@ -46,5 +46,12 @@ namespace StockManagement.Pages.OverviewPages
             }
         }
 
+        protected void NavigateToProductDetail(Product product)
+        {
+
+                NavigationManager.NavigateTo("/itemlijst/" + product.Id);
+
+        }
+
     }
 }

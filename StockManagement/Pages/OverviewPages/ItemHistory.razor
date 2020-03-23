@@ -4,7 +4,12 @@
 @using StockManagement.Pages.ReuseableComponents
 @using StockManagement.Pages.OverviewPages
 @page "/itemhistoriek/{id:int}"
+@if (_item != null)
+{
+
+
 <div class="mb-2">
+
     <a href="/itemlijst/@(_item.Product.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
     <h4 class="d-inline">Upload foto</h4>
 </div>
@@ -21,7 +26,61 @@
     <h3>Item</h3>
     @if (_item != null)
     {
-        <ItemComponent Item="_item" Open="true" />
+        <div class="table-responsive">
+            <table class="table table-sm border">
+                <tr>
+                    <th style="width: 25%">S/N</th>
+                    <td>@_item.SerialNumber</td>
+                </tr>
+                @if (_item.ADUser != null)
+                {
+                    <tr>
+                        <th>Gebruiker</th>
+                        <td>@_item.ADUser.Mail</td>
+                    </tr>
+                }
+                <tr>
+                    <th style="width: 25%">In stock</th>
+                    <td>
+                        @if (_item.ItemStatus == ItemStatus.INSTOCK)
+                        {
+                            <i class="oi oi-circle-check text-success"></i>
+                        }
+                        else
+                        {
+                            <i class="oi oi-circle-x text-danger"></i>
+                        }
+                    </td>
+                </tr>
+
+                <tr>
+                    <th style="width: 25%">Leverancier</th>
+                    <td>@_item.Supplier.SupplierName</td>
+                </tr>
+                <tr>
+                    <th style="width: 25%">Leverdatum</th>
+                    <td>@_item.DeliveryDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th style="width: 25%">Factuurdatum</th>
+                    <td>@_item.InvoiceDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th style="width: 25%">Status</th>
+                    <td>@_item.ItemStatus.ToString()</td>
+                </tr>
+                <tr>
+                    <th style="width: 25%">Opmerkingen</th>
+                    <td>@_item.Comment</td>
+                </tr>
+
+
+            </table>
+            <div class="btn-group btn-group-sm">
+                <a href="/stock/edit/@(_item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                <button @onclick="@(() => ShowConfirmation(_item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+            </div>
+        </div>
     }
 </div>
 <h3>Gebruikshistoriek</h3>
@@ -44,3 +103,4 @@
     }
 </div>
 
+}

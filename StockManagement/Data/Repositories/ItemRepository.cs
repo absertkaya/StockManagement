@@ -24,6 +24,11 @@ namespace StockManagement.Data.Repositories
                 .FirstOrDefault(i => i.SerialNumber == serialnr);
         }
 
+        public virtual async Task<Item> GetItemWithUser(int id)
+        {
+            return await _session.Query<Item>().Fetch(x => x.ADUser).FirstOrDefaultAsync(i => i.Id == id);
+        }
+
         public virtual bool GetItemInStock(string serialnr)
         {
             Item item = _session.Query<Item>()
