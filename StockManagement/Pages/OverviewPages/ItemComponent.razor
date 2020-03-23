@@ -25,7 +25,7 @@
                 }
             </td>
         </tr>
-        @if (_open)
+        @if (Open)
         {
             <tr>
                 <th style="width: 25%">Leverancier</th>
@@ -54,13 +54,13 @@
 
 @code {
 
-    private bool _open;
-
+    [Parameter]
+    public bool Open { get; set; }
     [Parameter]
     public Item Item { get; set; }
 
     private void SwitchOpen()
     {
-        _open = !_open;
+       Open = !Open;
     }
 }

@@ -4,19 +4,27 @@
 @using StockManagement.Pages.ReuseableComponents
 @using StockManagement.Pages.OverviewPages
 @page "/itemhistoriek/{id:int}"
-<a href="/itemlijst/@(_item.Product.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-<h4 class="d-inline">Upload foto</h4>
-<div class="form-group">
+<div class="mb-2">
+    <a href="/itemlijst/@(_item.Product.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h4 class="d-inline">Upload foto</h4>
+</div>
+<div class="mb-2">
 
     <FileUploadComponent @ref="_fileUpload" Container="@("item"+Id)" />
-    <div>
+    <div class="pt-1">
         <button class="btn btn-primary" @onclick="Upload">Upload</button>
         <button class="btn btn-secondary" @onclick="Clear">Clear</button>
     </div>
 </div>
 <BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />
+<div class="mb-2">
+    <h3>Item</h3>
+    @if (_item != null)
+    {
+        <ItemComponent Item="_item" Open="true" />
+    }
+</div>
 <h3>Gebruikshistoriek</h3>
-
 <div class="container">
     @if (_itemusers != null)
     {
