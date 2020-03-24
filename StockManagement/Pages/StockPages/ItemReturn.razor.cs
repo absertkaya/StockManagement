@@ -46,7 +46,9 @@ namespace StockManagement.Pages.StockPages
         protected bool _isDefective;
 
         protected Item _item;
+        protected string _comment;
 
+        protected FileUploadComponent _fileUpload;
         protected QuaggaScanner _scanner;
         protected UserSearchBox userSearch;
 
@@ -79,11 +81,66 @@ namespace StockManagement.Pages.StockPages
         {
             _serialNumber = e.Value.ToString();
             _item = _items.First(i => i.SerialNumber == _serialNumber);
+            _comment = _item.Comment;
         }
 
         protected void ToggleSettings()
         {
             _hideSettings = !_hideSettings;
+        }
+
+        private void HandleOut(ADUser stockUser)
+        {
+            if (_item.ItemStatus != ItemStatus.INSTOCK)
+            {
+                ToastService.ShowWarning("Item kan niet uit stock gehaald worden met status: " + _item.ItemStatus.ToString());
+                return;
+            }
+            GraphUser graphUser = userSearch.GetSelectedUser();
+            if (graphUser == null)
+            {
+                ToastService.ShowWarning("Selecteer een gebruiker.");
+                return;
+            }
+            ADUser aduser = UserRepository.GetByEmail(graphUser.Mail);
+            if (aduser == null)
+            {
+                aduser = new ADUser(graphUser);
+                Repository.Save(aduser);
+            }
+            _item.RemoveFromStock(aduser, stockUser);
+
+            Repository.Save(_item);
+            ToastService.ShowSuccess("Item uit stock gehaald, er zijn nog " + _item.Product.Items.Where(i => i.ItemStatus == ItemStatus.INSTOCK).Count() + " items van dit product.");
+        }
+
+        private async Task HandleReturn(ADUser stockUser)
+        {
+            if (_item.ItemStatus != ItemStatus.OUTSTOCK)
+            {
+                ToastService.ShowWarning("Item kan niet geretourneerd worden met status: " + _item.ItemStatus.ToString());
+                return;
+            }
+
+            _item.ReturnToStock(stockUser);
+            if (_isDefective)
+            {
+                _item.ItemStatus = ItemStatus.DEFECTIVE;
+            }
+            _item.Comment = _comment;
+            Repository.Save(_item);
+            ToastService.ShowSuccess("Item in stock geplaatst, er zijn " + _item.Product.Items.Where(i => i.ItemStatus == ItemStatus.INSTOCK).Count() + " items van dit product.");
+            if (! await _fileUpload.IsEmpty())
+            {
+                try
+                {
+                    await _fileUpload.Upload("item" + _item.Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
+                }
+                catch (Exception ex)
+                {
+                    ToastService.ShowWarning("Kon bestand niet uploaden.");
+                }
+            }
         }
 
         protected async Task Submit()
@@ -114,43 +171,12 @@ namespace StockManagement.Pages.StockPages
 
             if (Method == "out")
             {
-                if (_item.ItemStatus != ItemStatus.INSTOCK)
-                {
-                    ToastService.ShowWarning("Item kan niet uit stock gehaald worden met status: " + _item.ItemStatus.ToString());
-                    return;
-                }
-                GraphUser graphUser = userSearch.GetSelectedUser();
-                if (graphUser == null)
-                {
-                    ToastService.ShowWarning("Selecteer een gebruiker.");
-                    return;
-                }
-                ADUser aduser = UserRepository.GetByEmail(graphUser.Mail);
-                if (aduser == null)
-                {
-                    aduser = new ADUser(graphUser);
-                    Repository.Save(aduser);
-                }
-                _item.RemoveFromStock(aduser, stockUser);
-                
-                Repository.Save(_item);
-                ToastService.ShowSuccess("Item uit stock gehaald, er zijn nog " + _item.Product.Items.Where(i => i.ItemStatus == ItemStatus.INSTOCK).Count() + " items van dit product.");
+                HandleOut(stockUser);
             } else
             {
-                if (_item.ItemStatus != ItemStatus.OUTSTOCK)
-                {
-                    ToastService.ShowWarning("Item kan niet geretourneerd worden met status: " + _item.ItemStatus.ToString());
-                    return;
-                }
-
-                _item.ReturnToStock(stockUser);
-                if (_isDefective)
-                {
-                    _item.ItemStatus = ItemStatus.DEFECTIVE;
-                }
-                Repository.Save(_item);
-                ToastService.ShowSuccess("Item in stock geplaatst, er zijn " + _item.Product.Items.Where(i => i.ItemStatus == ItemStatus.INSTOCK).Count() + " items van dit product.");
+                await HandleReturn(stockUser);
             }
+
             _item = null;
             _serialNumber = _items.FirstOrDefault()?.SerialNumber;
             StateHasChanged();

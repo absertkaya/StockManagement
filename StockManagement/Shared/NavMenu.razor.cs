@@ -36,29 +36,31 @@ namespace StockManagement.Shared
             {
                 var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
                 var user = authState.User;
-                if (UserRepository.GetByEmail(user.Identity.Name) == null)
-                {
-                    IConfidentialClientApplication confidentialClientApplication =
-                    ConfidentialClientApplicationBuilder
+                IConfidentialClientApplication confidentialClientApplication =
+                ConfidentialClientApplicationBuilder
                     .Create(Configuration["AzureAd:ClientId"])
                     .WithTenantId(Configuration["AzureAd:TenantId"])
                     .WithClientSecret(Configuration["AzureAd:ClientSecret"])
                     .Build();
-                    string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
-                    AuthenticationResult result = null;
-                    result = await confidentialClientApplication.AcquireTokenForClient(scopes)
-                        .ExecuteAsync();
-                    var httpClient = new HttpClient();
-                    var apiCaller = new ProtectedApiCallHelper(httpClient);
-                    var res = await apiCaller
-                        .CallWebApiAndProcessResultASync(
-                        $"https://graph.microsoft.com/v1.0/users/{user.Identity.Name}",
-                        result.AccessToken
-                        );
+                string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
+                AuthenticationResult result = null;
+                result = await confidentialClientApplication.AcquireTokenForClient(scopes)
+                    .ExecuteAsync();
+                var httpClient = new HttpClient();
+                var apiCaller = new ProtectedApiCallHelper(httpClient);
+                var res = await apiCaller
+                    .CallWebApiAndProcessResultASync(
+                    $"https://graph.microsoft.com/v1.0/users/{user.Identity.Name}",
+                    result.AccessToken
+                    );
+
+                if (UserRepository.GetByEmail(user.Identity.Name) == null)
+                {
                     SaveAndUpdateUser(res);
                 }
             }
         }
+
 
         private void SaveAndUpdateUser(JObject res)
         {

@@ -8,16 +8,17 @@
     <h3 class="d-inline">@_category</h3>
 </div>
 
-<div class="mb-1">
-    <BlazoredTypeahead SearchMethod="SearchProduct" ShowDropDownOnFocus="true" @bind-Value="_selectedProduct">
-        <SelectedTemplate>@context.Description</SelectedTemplate>
-        <ResultTemplate>@context.Description</ResultTemplate>
-    </BlazoredTypeahead>
-    <button class="btn btn-primary float-right" @onclick="NavigateToProductDetail">Zoek</button>
+<div class="mb-1 row">
+    <div class="input-group col-sm-6">
+        <input class="form-control" type="text" @bind="_filterString" />
+        <div class="input-group-append">
+            <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+        </div>
+    </div>
 </div>
 
 <div class="table-responsive">
-    @if (_products != null)
+    @if (_filteredProducts != null)
     {
         <table id="productList" class="table table-sm table-hover">
             <thead class="thead-dark">
@@ -28,7 +29,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (Product prod in _products)
+                @foreach (Product prod in _filteredProducts)
                 {
                     <tr id="product@(prod.Id)" @onclick="(() => NavigateToProductDetail(prod))">
                         <td class="w-50">@prod.Description</td>

@@ -1,4 +1,7 @@
 ﻿window.JsFunctions = {
+    goBack: function () {
+        window.history.go(-1);
+    },
     dataTable: function (table) {
         $(document).ready(function () {
             $(table).DataTable();

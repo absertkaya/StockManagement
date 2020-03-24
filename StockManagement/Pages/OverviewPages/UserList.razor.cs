@@ -14,25 +14,25 @@ namespace StockManagement.Pages.OverviewPages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        protected IList<ADUser> _users;
+        private IEnumerable<ADUser> _users;
+        protected IEnumerable<ADUser> _filteredUsers;
         protected ADUser _selectedUser;
+        protected string _filterString = "";
 
         protected override async Task OnInitializedAsync()
         {
             _users = await Repository.GetAllAsync<ADUser>();
+            _filteredUsers = new List<ADUser>(_users);
         }
 
-        protected async Task<IEnumerable<ADUser>> SearchUser(string searchString)
+        protected void Filter()
         {
-            return await Task.FromResult(_users.Where(u => u.NormalizedSearchInfo.Contains(searchString.Trim().ToLower())));
+            _filteredUsers = _users.Where(u => u.NormalizedSearchInfo.Contains(_filterString.Trim().ToLower())); 
         }
 
-        protected void GetSelectedUser()
+        protected void NavigateToUserDetail(ADUser user)
         {
-            if (_selectedUser != null)
-            {
-                NavigationManager.NavigateTo("/gebruiker/" + _selectedUser.Id);
-            }
+            NavigationManager.NavigateTo("/gebruiker/" + user.Id);
         }
     }
 }

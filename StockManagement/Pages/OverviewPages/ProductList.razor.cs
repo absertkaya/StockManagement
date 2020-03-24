@@ -19,9 +19,11 @@ namespace StockManagement.Pages.OverviewPages
         [Parameter]
         public int Id { get; set; }
 
-        protected IEnumerable<Product> _products;
-        protected Product _selectedProduct;
+        private IEnumerable<Product> _products;
+        protected IEnumerable<Product> _filteredProducts;
+        protected string _filterString = "";
         protected string _category;
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -31,26 +33,18 @@ namespace StockManagement.Pages.OverviewPages
             {
                 prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
             }
+            _filteredProducts = new List<Product>(_products);
         }
 
-        protected async Task<IEnumerable<Product>> SearchProduct(string searchString)
+        protected void Filter()
         {
-            return await Task.FromResult(_products.Where(u => u.Description.ToLower().Contains(searchString.ToLower())));
-        }
-
-        protected void NavigateToProductDetail()
-        {
-            if (_selectedProduct != null)
-            {
-                NavigationManager.NavigateTo("/itemlijst/" + _selectedProduct.Id);
-            }
+            _filteredProducts = _products.Where(i => (i.Description.Trim().ToLower() + i.ProductNumber.Trim().ToLower())
+                .Contains(_filterString.Trim().ToLower()));
         }
 
         protected void NavigateToProductDetail(Product product)
         {
-
                 NavigationManager.NavigateTo("/itemlijst/" + product.Id);
-
         }
 
     }

@@ -9,28 +9,37 @@
     <h3 class="d-inline">Gebruikers</h3>
 </div>
 
-<div class="form-group">
-    <BlazoredTypeahead SearchMethod="SearchUser" @bind-Value="_selectedUser">
-        <SelectedTemplate>@context.FirstName @context.LastName | @context.Mail</SelectedTemplate>
-        <ResultTemplate>@context.FirstName @context.LastName | @context.Mail</ResultTemplate>
-    </BlazoredTypeahead>
-    <button class="btn btn-sm btn-primary float-right" @onclick="GetSelectedUser">Zoek</button>
+<div class="mb-1 row">
+    <div class="input-group col-sm-6">
+        <input class="form-control" type="text" @bind="_filterString" />
+        <div class="input-group-append">
+            <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+        </div>
+    </div>
 </div>
 
-@if (_users != null)
-{
-    <div class="row">
-        @foreach (ADUser user in _users)
-        {
-            <div class="col-lg-4 mb-2">
-                <a href="/gebruiker/@(user.Id)" class="btn btn-sm btn-primary"><i class="oi oi-magnifying-glass"></i></a>
-                <UserComponent ADUser="user" />
-            </div>
-        }
-    </div>
-}
-else
-{
-    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-}
+<div class="table-responsive">
+    @if (_filteredUsers != null)
+    {
+        <table id="productList" class="table table-sm table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ADUser user in _filteredUsers)
+                {
+                    <tr @onclick="(() => NavigateToUserDetail(user))">
+                        <td>@user.Mail</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
 
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    }
+</div>

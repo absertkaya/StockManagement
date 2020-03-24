@@ -3,13 +3,13 @@
 @page "/stock/edit/{id:int}"
 @using StockManagement.Domain;
 @using StockManagement.Pages.ReuseableComponents
-
-@if (_item != null) {
-    <a href="/itemlijst/@(_item.Product.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+@if (_item != null)
+{
+    <div class="mb-2">
+        <a href="/itemhistoriek/@(_item.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        <h4 class="d-inline">Edit item</h4>
+    </div>
 }
-
-<h1 class="d-inline">Zet item in stock</h1>
-
 <div class="form-group">
     <label for="serialnr">Serienummer</label>
     <input class="form-control" type="text" @bind="_serialNumber" />

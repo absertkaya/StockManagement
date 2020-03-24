@@ -71,6 +71,17 @@ else
         <input class="form-check-input" type="checkbox" @bind="_isDefective" id="defective" />
         <label for="defective">Is defect</label>
     </div>
+    <div class="form-group">
+        <label for="comment">Opmerking</label>
+        <textarea class="form-control" id="comment" @bind="_comment" />
+    </div>
+    @if (_item != null)
+    {
+        <div class="form-group">
+            <label for="file">Upload</label>
+            <FileUploadComponent @ref="_fileUpload" Container="@("item"+_item.Id)" />
+        </div>
+    }
 }
 
 <div class="form-group row">
@@ -101,11 +112,4 @@ else
 </div>
 
 <QuaggaScanner @ref="_scanner" />
-@if (Method == "out")
-{
-    <button class="btn btn-outline-primary w-100" @onclick="Submit"><i class="oi oi-arrow-top"></i>Haal uit<i class="oi oi-arrow-top"></i></button>
-}
-else
-{
-    <button class="btn btn-outline-primary w-100" @onclick="Submit"><i class="oi oi-arrow-bottom"></i>Retourneer<i class="oi oi-arrow-bottom"></i></button>
-}
+<button class="btn btn-outline-primary w-100" @onclick="Submit"><i class="oi oi-arrow-top"></i>@(Method == "out" ? "Haal uit" : "Retourneer")<i class="oi oi-arrow-top"></i></button>

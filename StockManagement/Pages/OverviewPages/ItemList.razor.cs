@@ -60,14 +60,6 @@ namespace StockManagement.Pages.OverviewPages
             
         }
 
-        protected void CheckInStock()
-        {
-            _instock = !_instock;
-            Filter();
-        }
-
-
-
         protected void NavigateToItemHistory(Item item)
         {
             NavigationManager.NavigateTo("/itemhistoriek/" + item.Id);

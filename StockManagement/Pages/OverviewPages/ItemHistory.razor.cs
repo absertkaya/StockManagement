@@ -56,7 +56,6 @@ namespace StockManagement.Pages.OverviewPages
             await _fileUpload.Upload("item"+ Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
             await Clear();
             NavigationManager.NavigateTo("/itemhistoriek/"+Id, true);
-
         }
 
         private void DeleteItem(Item item)
