@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs.Models;
+using Blazored.Modal;
 using Blazored.Modal.Services;
 using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
@@ -56,6 +57,18 @@ namespace StockManagement.Pages.OverviewPages
             await _fileUpload.Upload("item"+ Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
             await Clear();
             NavigationManager.NavigateTo("/itemhistoriek/"+Id, true);
+        }
+
+        protected void RowExpand(ItemUser iu)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add("ItemUser", iu);
+            var opts = new ModalOptions()
+            {
+                HideHeader = true
+            };
+
+            ModalService.Show<ItemHistoryComponent>("History", parameters, opts);
         }
 
         private void DeleteItem(Item item)

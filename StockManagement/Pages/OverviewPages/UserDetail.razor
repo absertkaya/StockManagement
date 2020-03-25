@@ -2,64 +2,87 @@
 
 @page "/gebruiker/{id}"
 @using StockManagement.Domain
-<a href="/gebruikers" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-<h3 class="d-inline">Gebruiker</h3>
+<div class="mb-2">
+    <a href="/gebruikers" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">Gebruiker</h3>
+</div>
 
 @if (_user != null)
 {
-    <UserComponent ADUser="_user" />
+    <div class="mb-1">
+        <UserComponent ADUser="_user" />
+    </div>
 }
 
 <h3>Items in gebruik</h3>
 @if (_items != null)
 {
-    <table class="table table-sm table-responsive table-responsive-sm">
-        <thead class="thead-dark">
-            <tr>
-                <th>S/N</th>
-                <th>P/N</th>
-                <th>Omschrijving</th>
-                <th>Van</th>
-            </tr>
-        </thead>
+    @if (_items.Count != 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>S/N</th>
+                    </tr>
+                </thead>
+                <tbody>
 
-        <tbody>
+                    @foreach (Item item in _items)
+                    {
+                        <tr @onclick="(() => NavigateToItem(item))">
+                            <td>@item.SerialNumber</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p>Geen items.</p>
+    }
 
-            @foreach (Item item in _items)
-            {
-                <tr>
-                    <td>@item.SerialNumber</td>
-                    <td>@item.Product.ProductNumber</td>
-                    <td>@item.Product.Description</td>
-                </tr>
-            }
-
-
-        </tbody>
-
-    </table>
 }
 else
 {
     <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
 }
 <h3>Historiek</h3>
-<div class="container">
-    @if (_itemusers != null)
-    {
-        <div class="row">
-            @foreach (ItemUser iu in _itemusers)
-            {
-                <div class="col-md-4 mb-2">
-                    <ItemHistoryComponent ItemUser=iu />
-                </div>
-            }
-        </div>
 
-    }
-    else
+@if (_itemusers != null)
+{
+    @if (_itemusers.Count != 0)
     {
-        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-    }
 
-</div>
+    <div class="table-responsive">
+        <table class="table table-sm table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>S/N</th>
+                    <th>Tot</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (ItemUser iu in _itemusers)
+                {
+                    <tr @onclick="(() => RowExpand(iu))">
+                        <td>@iu.Item.SerialNumber</td>
+                        <td class="w-50">@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    } else
+    {
+        <p>Geen data.</p>
+    }
+}
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+}
+
+

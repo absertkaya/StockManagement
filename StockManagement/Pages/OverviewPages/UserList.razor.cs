@@ -27,7 +27,8 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void Filter()
         {
-            _filteredUsers = _users.Where(u => u.NormalizedSearchInfo.Contains(_filterString.Trim().ToLower())); 
+            _filteredUsers = _users.Where(u => u.NormalizedSearchInfo.Contains(_filterString.Trim().ToLower()));
+            StateHasChanged();
         }
 
         protected void NavigateToUserDetail(ADUser user)

@@ -10,16 +10,18 @@
         <h3 class="d-inline">Beheer @_category.CategoryName</h3>
     </div>
 
-    <div class="form-group">
-        <BlazoredTypeahead SearchMethod="SearchProduct" @bind-Value="_selectedProduct">
-            <SelectedTemplate>@context.Description</SelectedTemplate>
-            <ResultTemplate>@context.Description</ResultTemplate>
-        </BlazoredTypeahead>
-        <button class="btn btn-primary float-right" @onclick="NavigateToProductDetail">Zoek</button>
+    <div class="mb-1 row">
+        <div class="input-group col-sm-6">
+            <input class="form-control" type="text" @bind="_filterString" @onkeydown="Filter"/>
+            <div class="input-group-append">
+                <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+            </div>
+        </div>
     </div>
+
 }
 
-@if (_products != null)
+@if (_filteredProducts != null)
 {
     <div class="table-responsive">
         @if (_deleteFailProduct)
@@ -41,12 +43,12 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (Product prod in _products)
+                @foreach (Product prod in _filteredProducts)
                 {
                     <tr>
                         <td @onclick="(() => NavigateToProductDetail(prod))">@prod.Description</td>
                         <td class="d-none d-md-table-cell">@prod.ProductNumber</td>
-                        <td>@prod.AmountInStock</td>
+                        <td class="w-25 @(prod.AmountInStock == 0 ? "text-danger" : "text-success")">@prod.AmountInStock</td>
                         <td>
                             <div class="btn-group btn-groep-sm">
                                 <a href="/beheer/product/id/@(prod.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>

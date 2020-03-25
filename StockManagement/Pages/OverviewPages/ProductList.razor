@@ -10,7 +10,7 @@
 
 <div class="mb-1 row">
     <div class="input-group col-sm-6">
-        <input class="form-control" type="text" @bind="_filterString" />
+        <input class="form-control" type="text" @bind="_filterString" @onkeydown="Filter" />
         <div class="input-group-append">
             <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
         </div>

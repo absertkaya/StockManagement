@@ -84,18 +84,29 @@
     }
 </div>
 <h3>Gebruikshistoriek</h3>
-<div class="container">
     @if (_itemusers != null)
     {
         @if (_itemusers.Count != 0)
         {
-            <div class="row">
-                @foreach (ItemUser iu in _itemusers)
-                {
-                    <div class="col-md-4 mb-2">
-                        <ItemHistoryComponent ItemUser=iu />
-                    </div>
-                }
+
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Van</th>
+                            <th>Tot</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (ItemUser iu in _itemusers)
+                        {
+                            <tr @onclick="(() => RowExpand(iu))">
+                                <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
+                                <td class="w-50">@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         }
         else
@@ -107,6 +118,5 @@
     {
         <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
     }
-</div>
 
 }

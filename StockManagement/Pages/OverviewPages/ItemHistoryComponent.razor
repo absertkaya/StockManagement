@@ -1,5 +1,4 @@
 ﻿@using StockManagement.Domain
-
 <div class="table-responsive border @(ItemUser.ToDate != null ? "border-dark" : "border-success")">
     <table class="table table-sm">
         <tr>
@@ -30,6 +29,8 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    public BlazoredModalInstance BlazoredModal { get; set; }
     [Parameter]
     public ItemUser ItemUser { get; set; }
 }

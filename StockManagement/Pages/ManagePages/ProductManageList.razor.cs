@@ -29,8 +29,9 @@ namespace StockManagement.Pages.ManagePages
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
         protected Category _category;
-        protected IList<Product> _products;
-        protected Product _selectedProduct;
+        private IList<Product> _products;
+        protected IEnumerable<Product> _filteredProducts;
+        protected string _filterString = "";
 
         protected bool _deleteFailProduct;
         protected bool _hasItems;
@@ -41,6 +42,7 @@ namespace StockManagement.Pages.ManagePages
             {
                 _category = (Category)await Repository.GetByIdAsync(typeof(Category), Id);
                 _products = await Repository.GetByCategoryAsync(Id);
+                _filteredProducts = new List<Product>(_products);
                 if (_products != null)
                 {
                     foreach (Product prod in _products)
@@ -54,24 +56,14 @@ namespace StockManagement.Pages.ManagePages
             }
         }
 
-        protected async Task<IEnumerable<Product>> SearchProduct(string searchString)
+        protected void Filter()
         {
-            return await Task.FromResult(_category.Products.Where(u => u.Description.ToLower().Contains(searchString.ToLower())));
-        }
-
-        protected void NavigateToProductDetail()
-        {
-            if (_selectedProduct != null)
-            {
-                NavigationManager.NavigateTo("/beheer/itemlijst/" + _selectedProduct.Id);
-            }
+            _filteredProducts = _products.Where(p => (p.Description + p.ProductNumber).Trim().ToLower().Contains(_filterString.Trim().ToLower()));
         }
 
         protected void NavigateToProductDetail(Product prod)
         {
-
-                NavigationManager.NavigateTo("/beheer/itemlijst/" + prod.Id);
-
+            NavigationManager.NavigateTo("/beheer/itemlijst/" + prod.Id);
         }
 
         private void DeleteProduct(Product product)
