@@ -3,7 +3,7 @@
 @page "/beheer/productlijst/{id:int}"
 @using Blazored.Typeahead
 @using StockManagement.Domain
-@if (_category != null)
+@if (_category != null && _filteredProducts != null)
 {
     <div class="mb-2">
         <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
