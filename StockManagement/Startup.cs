@@ -98,7 +98,7 @@ namespace StockManagement
 
 
             //new DataInitializer().Initialize();
-            //new ExcelReader().ReadAndPopulateDatabase("C:\\Users\\bse\\Desktop\\Stock Overzicht.xlsx");
+            new ExcelReader().ReadAndPopulateDatabase("C:\\Users\\bse\\Desktop\\Stock Overzicht.xlsx");
         }
     }
 }

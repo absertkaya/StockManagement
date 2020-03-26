@@ -43,8 +43,8 @@ namespace StockManagement.Pages.StockPages
         protected int? _selectedSupplier;
         protected string _comment;
         protected string _serialNumber;
-        protected DateTime _deliveryDate;
-        protected DateTime _invoiceDate;
+        protected DateTime? _deliveryDate;
+        protected DateTime? _invoiceDate;
         protected ItemStatus _selectedStatus;
 
         [CascadingParameter]
