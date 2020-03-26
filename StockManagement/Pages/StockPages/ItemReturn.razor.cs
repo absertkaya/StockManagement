@@ -54,9 +54,9 @@ namespace StockManagement.Pages.StockPages
         protected QuaggaScanner _scanner;
         protected UserSearchBox userSearch;
 
-        protected override void OnInitialized()
+        protected override async Task OnInitializedAsync()
         {
-            _categories = Repository.GetAll<Category>();
+            _categories = await Repository.GetAllAsync<Category>();
         }
 
         protected void FetchProducts(ChangeEventArgs e)

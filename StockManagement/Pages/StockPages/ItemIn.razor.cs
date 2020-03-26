@@ -45,8 +45,13 @@ namespace StockManagement.Pages.StockPages
         protected override void OnInitialized()
         {
             _editContext = new EditContext(_item);
-            _categories = Repository.GetAll<Category>();
-            _suppliers = Repository.GetAll<Supplier>();
+
+        }
+
+        protected override async Task OnInitializedAsync()
+        {
+            _categories = await Repository.GetAllAsync<Category>();
+            _suppliers = await Repository.GetAllAsync<Supplier>();
         }
 
         protected void FetchProducts(ChangeEventArgs e)
@@ -68,11 +73,13 @@ namespace StockManagement.Pages.StockPages
                 product = _products.FirstOrDefault(p => p.ProductNumber == _productNumber);
             if (_selectedSupplier != null)
                 supplier = _suppliers.FirstOrDefault(p => p.Id == _selectedSupplier);
-            if (_serialNumber != null)
+            if (_serialNumber != null) {
                 serialnr = Regex.Replace(_serialNumber, @"\s+", "");
+                _item.SerialNumber = serialnr;
+            }
             _item.Product = product;
             _item.Supplier = supplier;
-            _item.SerialNumber = serialnr;
+
             if (_editContext.Validate())
             {
                 if (!Repository.ItemDuplicateExists(_item.Id, _item.SerialNumber, _item.Product.Id))
@@ -82,12 +89,13 @@ namespace StockManagement.Pages.StockPages
                     ToastService.ShowSuccess("Item toegevoegd");
                     product.AddItem(_item);
                     StateHasChanged();
+                    _serialNumber = null;
                     _item = new Item()
                     {
                         Product = product,
-                        Supplier = supplier,
-                        SerialNumber = serialnr
+                        Supplier = supplier
                     };
+                    _editContext = new EditContext(_item);
                 }
                 else
                 {
