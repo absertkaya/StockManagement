@@ -77,11 +77,7 @@ namespace StockManagement.Data
                             delivery = null;
                         }
                         
-                        if (delivery == null)
-                        {
-                            delivery = DateTime.Today;
-                        }
-                        string supplierName = row.ItemArray[5].ToString().Trim().ToUpper();
+                        string supplierName = row.ItemArray[5].ToString().Trim().ToLower();
                         if (string.IsNullOrWhiteSpace(supplierName))
                         {
                             supplier = unknown;
@@ -102,10 +98,7 @@ namespace StockManagement.Data
                         {
                             invoice = null;
                         }
-                        if (invoice == null)
-                        {
-                            invoice = DateTime.Today;
-                        }
+
                         string comment = row.ItemArray[10].ToString();
                         bool stolen = comment.ToLower().Trim() == "gestolen";
 

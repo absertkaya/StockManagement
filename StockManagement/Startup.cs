@@ -64,7 +64,7 @@ namespace StockManagement
             services.AddRazorPages();
             services.AddServerSideBlazor().AddHubOptions(o =>
             {
-                o.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10MB
+               // o.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10MB
             });
             
         }
@@ -98,7 +98,7 @@ namespace StockManagement
 
 
             //new DataInitializer().Initialize();
-            //new ExcelReader().ReadAndPopulateDatabase("C:\\Users\\bse\\Desktop\\Stock Overzicht.xlsx");
+            new ExcelReader().ReadAndPopulateDatabase("C:\\Users\\bse\\Desktop\\Stock Overzicht.xlsx");
         }
     }
 }
