@@ -1,4 +1,5 @@
 ﻿using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
@@ -20,7 +21,8 @@ namespace StockManagement.Pages.ManagePages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
-
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
         [Parameter]
         public int? Id { get; set; }
 
@@ -66,14 +68,17 @@ namespace StockManagement.Pages.ManagePages
                         Repository.Save(_product);
                         _product.Category.Products.Add(_product);
                         ToastService.ShowSuccess("Product: " + _product.Description + " werd toegevoegd in categorie: " + _product.Category.CategoryName);
+                        Telemetry.TrackEvent("NonUniqueProductNumber");
                         NavigationManager.NavigateTo("/beheer");
                     }
                     catch (Exception ex)
                     {
+                        Telemetry.TrackException(ex);
                         ToastService.ShowError("Kon product niet opslaan.");
                     }
                 } else
                 {
+                    Telemetry.TrackEvent("NonUniqueProductNumber");
                     ToastService.ShowError("Product met identiek productnummer bestaat al.");
                 }
 

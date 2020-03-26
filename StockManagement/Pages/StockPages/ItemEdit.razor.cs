@@ -1,4 +1,5 @@
 ﻿using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using StockManagement.Domain;
@@ -22,6 +23,8 @@ namespace StockManagement.Pages.StockPages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
 
         [Parameter]
         public int Id { get; set; }
@@ -49,27 +52,32 @@ namespace StockManagement.Pages.StockPages
 
         protected override async Task OnInitializedAsync()
         {
-
-            _categories = await Repository.GetAllAsync<Category>();
-            _suppliers = await Repository.GetAllAsync<Supplier>();
-            _item = (Item)await Repository.GetByIdAsync(typeof(Item), Id);
-
-            if (_item == null)
+            try
             {
-                NavigationManager.NavigateTo("error");
-            }
-            else
-            {
-                _selectedCategory = _item.Product.Category.Id;
-                _serialNumber = _item.SerialNumber;
-                await FetchProducts();
-                _selectedSupplier = _item.Supplier?.Id;
-                _comment = _item.Comment;
-                _deliveryDate = _item.DeliveryDate;
-                _invoiceDate = _item.InvoiceDate;
-                _selectedStatus = _item.ItemStatus;
-            }
+                _categories = await Repository.GetAllAsync<Category>();
+                _suppliers = await Repository.GetAllAsync<Supplier>();
+                _item = (Item)await Repository.GetByIdAsync(typeof(Item), Id);
 
+                if (_item == null)
+                {
+                    NavigationManager.NavigateTo("error");
+                }
+                else
+                {
+                    _selectedCategory = _item.Product.Category.Id;
+                    _serialNumber = _item.SerialNumber;
+                    await FetchProducts();
+                    _selectedSupplier = _item.Supplier?.Id;
+                    _comment = _item.Comment;
+                    _deliveryDate = _item.DeliveryDate;
+                    _invoiceDate = _item.InvoiceDate;
+                    _selectedStatus = _item.ItemStatus;
+                }
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
+            }
         }
         
         public async Task FireChange(ChangeEventArgs e)
@@ -80,11 +88,19 @@ namespace StockManagement.Pages.StockPages
 
         public async Task FetchProducts()
         {
-            if (_selectedCategory != null)
+            try
             {
-                _products = await Repository.GetByCategoryAsync((int)_selectedCategory);
-                _selectedProduct = _item.Product?.Id;
+                if (_selectedCategory != null)
+                {
+                    _products = await Repository.GetByCategoryAsync((int)_selectedCategory);
+                    _selectedProduct = _item.Product?.Id;
+                }
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de producten, herlaad de pagina.");
             }
+
         }
 
         protected async Task Submit()
@@ -112,7 +128,15 @@ namespace StockManagement.Pages.StockPages
             _item.DeliveryDate = _deliveryDate;
             _item.InvoiceDate = _invoiceDate;
             _item.ItemStatus = _selectedStatus;
-            Repository.Save(_item);
+            try
+            {
+                Repository.Save(_item);
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowError("Kon item niet opslaan.");
+            }
+
             if (!await _fileUpload.IsEmpty())
             {
                 try
@@ -121,12 +145,13 @@ namespace StockManagement.Pages.StockPages
                 }
                 catch (Exception ex)
                 {
+                    Telemetry.TrackException(ex);
                     ToastService.ShowError("Kon foto niet opslaan.");
                 }
             }
-
-                ToastService.ShowSuccess("Item succesvol geëditeerd.");
-                NavigationManager.NavigateTo("itemlijst/" + _item.Product.Id);
+            Telemetry.TrackEvent("ItemUpdate");
+            ToastService.ShowSuccess("Item succesvol geëditeerd.");
+            NavigationManager.NavigateTo("itemlijst/" + _item.Product.Id);
         }
         protected async Task Clear()
         {

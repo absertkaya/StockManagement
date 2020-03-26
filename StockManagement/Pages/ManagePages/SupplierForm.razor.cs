@@ -1,4 +1,5 @@
 ﻿using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
@@ -20,6 +21,8 @@ namespace StockManagement.Pages.ManagePages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
         protected Supplier _supplier;
         protected EditContext _editContext;
 
@@ -48,9 +51,11 @@ namespace StockManagement.Pages.ManagePages
                 {
                     Repository.Save(_supplier);
                     ToastService.ShowSuccess("Leverancier " + _supplier.SupplierName + " toegevoegd.");
+                    Telemetry.TrackEvent("AddSupplier");
                     NavigationManager.NavigateTo("/beheer");
                 } catch (Exception ex)
                 {
+                    Telemetry.TrackException(ex);
                     ToastService.ShowError("Kon leverancier niet toevoegen.");
                 }
             }

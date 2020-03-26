@@ -2,6 +2,7 @@
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
@@ -34,6 +35,8 @@ namespace StockManagement.Pages.OverviewPages
         public IModalService ModalService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
 
         protected FileUploadComponent _fileUpload;
         protected BlobsComponent _blobsComponent;
@@ -42,8 +45,16 @@ namespace StockManagement.Pages.OverviewPages
 
         protected override async Task OnInitializedAsync()
         {
-            _item = await Repository.GetItemWithUser(Id);
-            _itemusers = (await Repository.GetItemUsersByItem(Id))?.OrderByDescending(i => i.ToDate).ToList();
+            try
+            {
+                _item = await Repository.GetItemWithUser(Id);
+                _itemusers = (await Repository.GetItemUsersByItem(Id))?.OrderByDescending(i => i.ToDate).ToList();
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
+            }
+
             
         }
 
@@ -56,6 +67,7 @@ namespace StockManagement.Pages.OverviewPages
         {
             await _fileUpload.Upload("item"+ Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
             await Clear();
+            Telemetry.TrackEvent("ItemImageUpload");
             NavigationManager.NavigateTo("/itemhistoriek/"+Id, true);
         }
 
@@ -78,10 +90,12 @@ namespace StockManagement.Pages.OverviewPages
                 Repository.Delete(item);
                 item.Supplier.Items.Remove(item);
                 item.Product.Items.Remove(item);
+                Telemetry.TrackEvent("ItemDelete");
                 NavigationManager.NavigateTo("/itemlijst/" + item.Product.Id);
             }
             catch (Exception ex)
             {
+                Telemetry.TrackException(ex);
                 ToastService.ShowError("Kon item niet verwijderen.");
             }
         }

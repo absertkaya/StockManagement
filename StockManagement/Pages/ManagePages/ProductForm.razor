@@ -5,9 +5,11 @@
 
 @page "/beheer/product"
 @page "/beheer/product/id/{id:int}"
+<div class="mb-2">
+    <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">ProductForm</h3>
+</div>
 
-<a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-<h3 class="d-inline">ProductForm</h3>
 <EditForm EditContext="@_editContext" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <ValidationSummary />

@@ -3,6 +3,8 @@ using StockManagement.Domain.IServices;
 using System.Linq;
 using System.Threading.Tasks;
 using Blazor.FileReader;
+using Microsoft.ApplicationInsights;
+using System;
 
 namespace StockManagement.Pages.ReuseableComponents
 {
@@ -16,6 +18,8 @@ namespace StockManagement.Pages.ReuseableComponents
 
         [Inject]
         public IFileReaderService FileReaderService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
 
         protected ElementReference inputElement;
 
@@ -38,8 +42,16 @@ namespace StockManagement.Pages.ReuseableComponents
             var files = (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList();
             foreach (var file in files)
             {
-                await _service.SetContainer(Container);
-                uri = await _service.UploadBlobToContainer(file, filename);
+                try
+                {
+                    await _service.SetContainer(Container);
+                    uri = await _service.UploadBlobToContainer(file, filename);
+                }
+                catch (Exception ex)
+                {
+                    Telemetry.TrackException(ex);
+                }
+
             }
             return uri;
         }

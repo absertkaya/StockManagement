@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +19,10 @@ namespace StockManagement.Pages.OverviewPages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
         [Parameter]
         public int Id { get; set; }
 
@@ -24,16 +31,23 @@ namespace StockManagement.Pages.OverviewPages
         protected string _filterString = "";
         protected string _category;
 
-
         protected override async Task OnInitializedAsync()
         {
-            _category = ((Category) await Repository.GetByIdAsync(typeof(Category), Id)).CategoryName;
-            _products = await Repository.GetByCategoryAsync(Id);
-            foreach (Product prod in _products)
+            try
             {
-                prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
+                _category = ((Category)await Repository.GetByIdAsync(typeof(Category), Id)).CategoryName;
+                _products = await Repository.GetByCategoryAsync(Id);
+                foreach (Product prod in _products)
+                {
+                    prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
+                }
+                _filteredProducts = new List<Product>(_products);
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
             }
-            _filteredProducts = new List<Product>(_products);
+
         }
 
         protected void Filter()

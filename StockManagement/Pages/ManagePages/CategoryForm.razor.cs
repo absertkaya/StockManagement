@@ -1,4 +1,5 @@
 ﻿using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
@@ -20,17 +21,27 @@ namespace StockManagement.Pages.ManagePages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
 
         protected Category _category = new Category();
         protected EditContext _editContext;
 
         protected override async Task OnInitializedAsync()
         { 
-            if (Id != null)
+            try
             {
-                _category = (Category) await Repository.GetByIdAsync(typeof(Category), Id);
+                if (Id != null)
+                {
+                    _category = (Category)await Repository.GetByIdAsync(typeof(Category), Id);
+                }
+                _editContext = new EditContext(_category);
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
             }
-            _editContext = new EditContext(_category);
+
         }
 
 
@@ -42,10 +53,12 @@ namespace StockManagement.Pages.ManagePages
                 {
                     Repository.Save(_category);
                     ToastService.ShowSuccess("Categorie " + _category.CategoryName + " toegevoegd.");
+                    Telemetry.TrackEvent("CategorieAdd");
                     NavigationManager.NavigateTo("/beheer");
                 }
                 catch (Exception ex)
                 {
+                    Telemetry.TrackException(ex);
                     ToastService.ShowError("Kon categorie niet toevoegen.");
                 }
             }

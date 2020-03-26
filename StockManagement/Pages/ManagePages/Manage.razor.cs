@@ -1,6 +1,7 @@
 ﻿using Blazor.FileReader;
 using Blazored.Modal.Services;
 using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using StockManagement.Data;
@@ -30,7 +31,8 @@ namespace StockManagement.Pages.ManagePages
         public IFileReaderService FileReaderService { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
-
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
         protected ElementReference inputElement;
         protected string _value;
 
@@ -42,6 +44,7 @@ namespace StockManagement.Pages.ManagePages
                 _suppliers = await Repository.GetAllAsync<Supplier>();
             } catch (Exception e)
             {
+                Telemetry.TrackException(e);
                 ToastService.ShowWarning("Probleem bij het inladen van data, herlaad de pagina.");
             }
         }
@@ -65,12 +68,15 @@ namespace StockManagement.Pages.ManagePages
                 {
                     Repository.Delete(sup);
                     _suppliers.Remove(sup);
+                    Telemetry.TrackEvent("SupplierDelete");
                 } catch (Exception ex)
                 {
+                    Telemetry.TrackException(ex);
                     ToastService.ShowError("Kon leverancier niet verwijderen.");
                 }
             } else
             {
+                Telemetry.TrackEvent("SupplierDeleteFail");
                 ToastService.ShowError("Leverancier heeft items.");
             }
         }
@@ -84,13 +90,16 @@ namespace StockManagement.Pages.ManagePages
                 {
                     Repository.Delete(cat);
                     _categories.Remove(cat);
+                    Telemetry.TrackEvent("CategoryDelete");
                 }
                 catch (Exception ex)
                 {
+                    Telemetry.TrackException(ex);
                     ToastService.ShowError("Kon categorie niet verwijderen.");
                 }
             } else
             {
+                Telemetry.TrackEvent("CategoryDeleteFail");
                 ToastService.ShowError("Categorie heeft producten.");
             }
         }

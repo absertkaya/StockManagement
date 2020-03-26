@@ -1,5 +1,6 @@
 ﻿using Blazored.Modal.Services;
 using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using StockManagement.Domain;
@@ -28,6 +29,8 @@ namespace StockManagement.Pages.ManagePages
         public IToastService ToastService { get; set; }
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
         protected Category _category;
         private IList<Product> _products;
         protected IEnumerable<Product> _filteredProducts;
@@ -52,6 +55,7 @@ namespace StockManagement.Pages.ManagePages
                 }
             } catch (Exception ex)
             {
+                Telemetry.TrackException(ex);
                 ToastService.ShowWarning("Probleem bij het inladen van de data, herlaad de pagina.");
             }
         }
@@ -75,13 +79,16 @@ namespace StockManagement.Pages.ManagePages
                     Repository.Delete(product);
                     _products.Remove(product);
                     _category.Products.Remove(product);
+                    Telemetry.TrackEvent("ProductDelete");
                 }
                 catch (Exception ex)
                 {
+                    Telemetry.TrackException(ex);
                     ToastService.ShowError("Kon product niet verwijderen.");
                 }
             } else
             {
+                Telemetry.TrackEvent("ProductDeleteFail");
                 ToastService.ShowWarning("Product heeft nog items.");
             }
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Components;
 using StockManagement.Data.Services;
 using StockManagement.Domain.IServices;
 using System;
@@ -14,6 +15,8 @@ namespace StockManagement.Pages.ReuseableComponents
         public string Container { get; set; }
         [Inject]
         public IBlobService BlobService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
         protected List<string> _uris = new List<string>();
 
         protected override async Task OnInitializedAsync()
@@ -30,7 +33,14 @@ namespace StockManagement.Pages.ReuseableComponents
 
         public async Task RefreshBlobs()
         {
-            _uris = await BlobService.GetBlobs();
+            try
+            {
+                _uris = await BlobService.GetBlobs();
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+            }
+            
         }
 
         protected async Task Delete(string uri)
@@ -39,9 +49,10 @@ namespace StockManagement.Pages.ReuseableComponents
             {
                 await BlobService.DeleteBlob(uri);
                 _uris.Remove(uri);
+
             } catch (Exception ex)
             {
-                //TODDO
+                Telemetry.TrackException(ex);
             }
 
         }

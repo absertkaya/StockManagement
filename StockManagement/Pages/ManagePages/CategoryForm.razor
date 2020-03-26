@@ -2,23 +2,25 @@
 @page "/beheer/categorie"
 @page "/beheer/categorie/{id:int}"
 @using StockManagement.Pages.ReuseableComponents
-<a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-<h3 class="d-inline">Categorie</h3>
-<EditForm EditContext="@_editContext" OnValidSubmit="Submit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-    <div class="form-group">
-        <label for="category">Categorienaam</label>
-        <InputText @bind-Value="@_category.CategoryName" type="text" class="form-control" id="category" placeholder="Categorienaam" />
-    </div>
-    <div class="form-group">
-        @if (Id == null)
-        {
-            <button type="submit" class="btn btn-primary">Voeg toe</button>
-        }
-        else
-        {
-            <button type="submit" class="btn btn-primary">Update</button>
-        }
-    </div>
-</EditForm>
+<div class="mb-2">
+    <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">Categorie</h3>
+    <EditForm EditContext="@_editContext" OnValidSubmit="Submit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label for="category">Categorienaam</label>
+            <InputText @bind-Value="@_category.CategoryName" type="text" class="form-control" id="category" placeholder="Categorienaam" />
+        </div>
+        <div class="form-group">
+            @if (Id == null)
+            {
+                <button type="submit" class="btn btn-primary">Voeg toe</button>
+            }
+            else
+            {
+                <button type="submit" class="btn btn-primary">Update</button>
+            }
+        </div>
+    </EditForm>
+</div>

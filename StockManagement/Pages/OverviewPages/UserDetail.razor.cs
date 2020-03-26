@@ -1,6 +1,7 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
@@ -19,7 +20,10 @@ namespace StockManagement.Pages.OverviewPages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IModalService ModalService { get; set; }
-
+        [Inject]
+        public IToastService ToastService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
         [Parameter]
         public string Id { get; set; }
 
@@ -29,9 +33,17 @@ namespace StockManagement.Pages.OverviewPages
 
         protected override async Task OnInitializedAsync()
         {
-            _itemusers = (await Repository.GetItemUsersByUser(Id)).Where(i => i.ToDate != null).ToList();
-            _user = (ADUser)await Repository.GetByIdAsync(typeof(ADUser), Id);
-            _items = await Repository.GetItemsByUser(Id);
+            try
+            {
+                _itemusers = (await Repository.GetItemUsersByUser(Id)).Where(i => i.ToDate != null).ToList();
+                _user = (ADUser)await Repository.GetByIdAsync(typeof(ADUser), Id);
+                _items = await Repository.GetItemsByUser(Id);
+            }
+            catch (Exception ex) {
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
+            }
+
         }
 
         protected void RowExpand(ItemUser iu)

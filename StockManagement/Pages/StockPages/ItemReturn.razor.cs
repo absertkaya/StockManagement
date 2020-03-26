@@ -1,4 +1,5 @@
 ﻿using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
@@ -28,9 +29,10 @@ namespace StockManagement.Pages.StockPages
         private IUserRepository UserRepository { get; set; }
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
-
         [Inject]
         public IToastService ToastService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
 
         protected int? _selectedCategory;
         protected IList<Category> _categories;
@@ -106,18 +108,33 @@ namespace StockManagement.Pages.StockPages
             if (aduser == null)
             {
                 aduser = new ADUser(graphUser);
-                Repository.Save(aduser);
+                try
+                {
+                    Repository.Save(aduser);
+                } catch (Exception ex)
+                {
+                    Telemetry.TrackException(ex);
+                }
             }
             _item.RemoveFromStock(aduser, stockUser);
+            try
+            {
+                Repository.Save(_item);
+                Telemetry.TrackEvent("ItemOut");
+                ToastService.ShowSuccess("Item uit stock gehaald, er zijn nog " + _item.Product.Items.Where(i => i.ItemStatus == ItemStatus.INSTOCK).Count() + " items van dit product.");
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowError("Kon item niet uit stock halen.");
+            }
 
-            Repository.Save(_item);
-            ToastService.ShowSuccess("Item uit stock gehaald, er zijn nog " + _item.Product.Items.Where(i => i.ItemStatus == ItemStatus.INSTOCK).Count() + " items van dit product.");
         }
 
         private async Task HandleReturn(ADUser stockUser)
         {
             if (_item.ItemStatus != ItemStatus.OUTSTOCK)
             {
+                Telemetry.TrackEvent("InvalidIn");
                 ToastService.ShowWarning("Item kan niet geretourneerd worden met status: " + _item.ItemStatus.ToString());
                 return;
             }
@@ -128,19 +145,28 @@ namespace StockManagement.Pages.StockPages
                 _item.ItemStatus = ItemStatus.DEFECTIVE;
             }
             _item.Comment = _comment;
-            Repository.Save(_item);
-            ToastService.ShowSuccess("Item in stock geplaatst, er zijn " + _item.Product.Items.Where(i => i.ItemStatus == ItemStatus.INSTOCK).Count() + " items van dit product.");
-            if (! await _fileUpload.IsEmpty())
+            try
             {
-                try
+                Repository.Save(_item);
+                ToastService.ShowSuccess("Item in stock geplaatst, er zijn " + _item.Product.Items.Where(i => i.ItemStatus == ItemStatus.INSTOCK).Count() + " items van dit product.");
+                if (!await _fileUpload.IsEmpty())
                 {
-                    await _fileUpload.Upload("item" + _item.Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
+                    try
+                    {
+                        await _fileUpload.Upload("item" + _item.Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
+                    }
+                    catch (Exception ex)
+                    {
+                        Telemetry.TrackException(ex);
+                        ToastService.ShowWarning("Kon bestand niet uploaden.");
+                    }
                 }
-                catch (Exception ex)
-                {
-                    ToastService.ShowWarning("Kon bestand niet uploaden.");
-                }
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowError("Kon item niet in stock plaatsen.");
             }
+
         }
 
         protected async Task Submit()
@@ -164,6 +190,7 @@ namespace StockManagement.Pages.StockPages
                     _item = _items.First(i => i.SerialNumber == _serialNumber);
                 } catch (Exception ex)
                 {
+                    Telemetry.TrackException(ex);
                     ToastService.ShowError("Item bestaat niet.");
                     return;
                 }

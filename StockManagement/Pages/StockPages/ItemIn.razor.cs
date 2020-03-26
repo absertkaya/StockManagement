@@ -1,4 +1,5 @@
 ﻿using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
@@ -21,6 +22,8 @@ namespace StockManagement.Pages.StockPages
         public IJSRuntime JSRuntime { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
 
         protected int? _selectedCategory;
         protected IList<Category> _categories;
@@ -75,6 +78,7 @@ namespace StockManagement.Pages.StockPages
                 if (!Repository.ItemDuplicateExists(_item.Id, _item.SerialNumber, _item.Product.Id))
                 {
                     Repository.Save(_item);
+                    Telemetry.TrackEvent("AddItem");
                     ToastService.ShowSuccess("Item toegevoegd");
                     product.AddItem(_item);
                     StateHasChanged();
@@ -87,6 +91,7 @@ namespace StockManagement.Pages.StockPages
                 }
                 else
                 {
+                    Telemetry.TrackEvent("AddItemFail");
                     ToastService.ShowError("Duplicate item bestaat al in de databank.");
                 }
                     

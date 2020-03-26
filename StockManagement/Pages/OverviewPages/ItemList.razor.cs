@@ -9,6 +9,7 @@ using Blazored.Modal;
 using Blazored.Modal.Services;
 using Blazored.Toast.Services;
 using System.Linq;
+using Microsoft.ApplicationInsights;
 
 namespace StockManagement.Pages.OverviewPages
 {
@@ -22,6 +23,9 @@ namespace StockManagement.Pages.OverviewPages
         public IModalService ModalService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
+
         [Parameter]
         public int? Id { get; set; }
         [Parameter]
@@ -39,18 +43,26 @@ namespace StockManagement.Pages.OverviewPages
 
         protected override async Task OnInitializedAsync()
         {
-            if (Id != null)
+            try
             {
-                _product =  (Product) await Repository.GetByIdAsync(typeof(Product), Id);
-                _items = await Repository.GetByProductAsync(_product.Id);
-                
-            }
-            if (SupplierId != null)
+                if (Id != null)
+                {
+                    _product = (Product)await Repository.GetByIdAsync(typeof(Product), Id);
+                    _items = await Repository.GetByProductAsync(_product.Id);
+
+                }
+                if (SupplierId != null)
+                {
+                    _supplier = (Supplier)await Repository.GetByIdAsync(typeof(Supplier), SupplierId);
+                    _items = await Repository.GetBySupplierAsync(_supplier.Id);
+                }
+                _filteredItems = new List<Item>(_items);
+            } catch (Exception ex)
             {
-                _supplier = (Supplier) await Repository.GetByIdAsync(typeof(Supplier), SupplierId);
-                _items = await Repository.GetBySupplierAsync(_supplier.Id);
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
             }
-            _filteredItems = new List<Item>(_items);
+
         }
 
         protected void Filter()

@@ -1,4 +1,6 @@
 ﻿using Blazor.Extensions.Storage.Interfaces;
+using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Identity.Client;
@@ -23,6 +25,10 @@ namespace StockManagement.Pages.ReuseableComponents
         public ProtectedApiCallHelper ProtectedApiCallHelper { get; set; }
         [Inject]
         public ISessionStorage SessionStorage { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
         public string UserId { get; set; }
 
         protected List<GraphUser> _colGraphUsers = new List<GraphUser>();
@@ -33,49 +39,63 @@ namespace StockManagement.Pages.ReuseableComponents
         {
             if (firstrender)
             {
-                if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
+                try
                 {
-                    await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
-                    await SaveToSession();
-                }
-                else
+                    if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
+                    {
+                        await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
+                        await SaveToSession();
+                    }
+                    else
+                    {
+                        _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
+                    }
+
+                    StateHasChanged();
+                } catch (Exception ex)
                 {
-                    _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
+                    Telemetry.TrackException(ex);
                 }
-                StateHasChanged();
             }
             
         }
 
         protected async Task ApiCall(string url)
         {
-            IConfidentialClientApplication confidentialClientApplication =
-                ConfidentialClientApplicationBuilder
-                .Create(Configuration["AzureAd:ClientId"])
-                .WithTenantId(Configuration["AzureAd:TenantId"])
-                .WithClientSecret(Configuration["AzureAd:ClientSecret"])
-                .Build();
-            string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
-            AuthenticationResult result = null;
-            result = await confidentialClientApplication.AcquireTokenForClient(scopes)
-                .ExecuteAsync();
-            var httpClient = new HttpClient();
-            var apiCaller = new ProtectedApiCallHelper(httpClient);
-            var res = await apiCaller
-                .CallWebApiAndProcessResultASync(
-                    url,
-                    result.AccessToken
-                    );
-            await DisplayUsers(res);
-            if (res.Properties().FirstOrDefault(p => p.Name == "@odata.nextLink") != null)
+            try
             {
-                await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
+                IConfidentialClientApplication confidentialClientApplication =
+                ConfidentialClientApplicationBuilder
+                    .Create(Configuration["AzureAd:ClientId"])
+                    .WithTenantId(Configuration["AzureAd:TenantId"])
+                    .WithClientSecret(Configuration["AzureAd:ClientSecret"])
+                    .Build();
+                string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
+                AuthenticationResult result = null;
+                result = await confidentialClientApplication.AcquireTokenForClient(scopes)
+                    .ExecuteAsync();
+                var httpClient = new HttpClient();
+                var apiCaller = new ProtectedApiCallHelper(httpClient);
+                var res = await apiCaller
+                    .CallWebApiAndProcessResultASync(
+                        url,
+                        result.AccessToken
+                        );
+                await DisplayUsers(res);
+                if (res.Properties().FirstOrDefault(p => p.Name == "@odata.nextLink") != null)
+                {
+                    await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
+                }
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het ophalen van de gebruikers.");
             }
         }
 
         private async Task SaveToSession()
         {
-            await SessionStorage.SetItem<List<GraphUser>>("graphusers", _colGraphUsers);
+            await SessionStorage.SetItem("graphusers", _colGraphUsers);
         }
 
 
