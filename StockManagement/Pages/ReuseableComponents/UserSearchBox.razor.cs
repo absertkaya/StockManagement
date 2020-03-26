@@ -41,15 +41,15 @@ namespace StockManagement.Pages.ReuseableComponents
             {
                 try
                 {
-                    if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
-                    {
+                    //if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
+                    //{
                         await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
-                        await SaveToSession();
-                    }
-                    else
-                    {
-                        _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
-                    }
+                    //    await SaveToSession();
+                    //}
+                    //else
+                    //{
+                    //    _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
+                    //}
 
                     StateHasChanged();
                 } catch (Exception ex)
