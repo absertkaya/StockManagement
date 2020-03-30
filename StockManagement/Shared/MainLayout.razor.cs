@@ -62,7 +62,7 @@ namespace StockManagement.Shared
                         result.AccessToken
                     );
 
-                if (!await CheckGroups(apiCaller, result, user, resLogin))
+                if (!await CheckGroups(apiCaller, result, user, resLogin, aduser))
                 {
                     authorized = false;
                     NavigationManager.NavigateTo("/accessdenied");
@@ -74,7 +74,7 @@ namespace StockManagement.Shared
             }
         }
 
-        private async Task<bool> CheckGroups(ProtectedApiCallHelper apiCaller, AuthenticationResult result, ClaimsPrincipal user, JObject resLogin)
+        private async Task<bool> CheckGroups(ProtectedApiCallHelper apiCaller, AuthenticationResult result, ClaimsPrincipal user, JObject resLogin, ADUser aduser)
         {
             var resAdminGroup = await apiCaller
                 .CallWebApiAndProcessResultASync(
@@ -86,7 +86,15 @@ namespace StockManagement.Shared
             {
                 if (child.Value.ToObject<List<GraphUser>>().Any(x => x.Mail == user.Identity.Name))
                 {
-                    SaveAndUpdateUser(resLogin, StockRole.ADMIN);
+                    if (aduser == null)
+                    {
+                        SaveAndUpdateUser(resLogin, StockRole.ADMIN);
+                    } else
+                    {
+                        aduser.StockRole = StockRole.ADMIN;
+                        UserRepository.Save(aduser);
+                    }
+                    
                     return true;
                 }
             }
@@ -101,7 +109,16 @@ namespace StockManagement.Shared
             {
                 if (child.Value.ToObject<List<GraphUser>>().Any(x => x.Mail == user.Identity.Name))
                 {
-                    SaveAndUpdateUser(resLogin, StockRole.STOCKUSER);
+                    if (aduser == null)
+                    {
+                        SaveAndUpdateUser(resLogin, StockRole.STOCKUSER);
+                    }
+                    else
+                    {
+                        aduser.StockRole = StockRole.STOCKUSER;
+                        UserRepository.Save(aduser);
+                    }
+
                     return true;
                 }
             }
