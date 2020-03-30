@@ -1,6 +1,7 @@
 ﻿using Blazored.Toast.Services;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
 using StockManagement.Domain.IComponents;
@@ -21,6 +22,10 @@ namespace StockManagement.Pages.ManagePages
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IToastService ToastService { get; set; }
+        [CascadingParameter]
+        protected Task<AuthenticationState> AuthenticationStateTask { get; set; }
+        [Inject]
+        private IUserRepository UserRepository { get; set; }
         [Inject]
         public TelemetryClient Telemetry { get; set; }
         [Parameter]
@@ -47,7 +52,24 @@ namespace StockManagement.Pages.ManagePages
         }
         protected override async Task OnInitializedAsync()
         {
-            _categories = await Repository.GetAllAsync<Category>();
+            var auth = await AuthenticationStateTask;
+            var stockUser = UserRepository.GetByEmail(auth.User.Identity.Name);
+
+            if (stockUser == null || stockUser.StockRole != StockRole.ADMIN)
+            {
+                NavigationManager.NavigateTo("/accessdenied");
+                return;
+            }
+
+            try
+            {
+                _categories = await Repository.GetAllAsync<Category>();
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
+            }
+            
         }
 
         protected void SelectCategory(ChangeEventArgs e)

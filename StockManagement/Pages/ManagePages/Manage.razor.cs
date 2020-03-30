@@ -3,6 +3,7 @@ using Blazored.Modal.Services;
 using Blazored.Toast.Services;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
 using StockManagement.Data;
 using StockManagement.Domain;
@@ -33,11 +34,26 @@ namespace StockManagement.Pages.ManagePages
         public IToastService ToastService { get; set; }
         [Inject]
         public TelemetryClient Telemetry { get; set; }
+        [CascadingParameter]
+        protected Task<AuthenticationState> AuthenticationStateTask { get; set; }
+        [Inject]
+        private IUserRepository UserRepository { get; set; }
+
         protected ElementReference inputElement;
         protected string _value;
 
         protected override async Task OnInitializedAsync()
         {
+
+            var auth = await AuthenticationStateTask;
+            var stockUser = UserRepository.GetByEmail(auth.User.Identity.Name);
+
+            if (stockUser == null || stockUser.StockRole != StockRole.ADMIN)
+            {
+                NavigationManager.NavigateTo("/accessdenied");
+                return;
+            }
+
             try
             {
                 _categories = await Repository.GetAllAsync<Category>();

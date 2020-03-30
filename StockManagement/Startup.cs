@@ -41,11 +41,10 @@ namespace StockManagement
             services.AddControllersWithViews(options =>
             {
                 var policy = new AuthorizationPolicyBuilder()
-                
                     .RequireAuthenticatedUser()
                     .Build();
                 
-                options.Filters.Add(new AuthorizeFilter(policy));
+                options.Filters.Add(new AuthorizeFilter(policy));  
             });
 
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
@@ -64,12 +63,12 @@ namespace StockManagement
             services.AddRazorPages();
             services.AddServerSideBlazor().AddHubOptions(o =>
             {
-               // o.MaximumReceiveMessageSize = 10 * 1024 * 1024; // 10MB
+                o.MaximumReceiveMessageSize = 20 * 1024 * 1024; // 20MB
             });
             
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)//, IMapperSession session)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -96,8 +95,6 @@ namespace StockManagement
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-
-            //new DataInitializer().Initialize();
             //new ExcelReader().ReadAndPopulateDatabase("C:\\Users\\bse\\Desktop\\Stock Overzicht.xlsx");
         }
     }

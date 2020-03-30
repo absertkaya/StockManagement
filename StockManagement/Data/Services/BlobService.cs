@@ -44,14 +44,13 @@ namespace StockManagement.Data.Services
         }
 
 
-        public async Task<string> UploadBlobToContainer(IFileReference file, string blobName)
+        public async Task UploadBlobToContainer(IFileReference file, string blobName)
         {
             CloudBlockBlob blob = BlobContainer.GetBlockBlobReference(blobName);
             using (Stream uploadFileStream =  await file.OpenReadAsync())
             {
                 await blob.UploadFromStreamAsync(uploadFileStream);
             }
-            return blob.Uri.AbsoluteUri;
         }
 
         public async Task<List<string>> GetBlobs()

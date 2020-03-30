@@ -61,12 +61,12 @@ namespace StockManagement.Data
                         string pn = row.ItemArray[2].ToString();
                         if (string.IsNullOrWhiteSpace(pn))
                         {
-                            pn = table.ToString() + ": " + rowNr;
+                            pn = "NOPRODUCTNR" + " " + rowNr;
                         }
                         string sn = row.ItemArray[3].ToString();
                         if (string.IsNullOrWhiteSpace(sn))
                         {
-                            sn = table.ToString() + ": " + rowNr;
+                            sn = "NOSERIALNR" + " " + rowNr;
                         }
                         DateTime? delivery;
                         try

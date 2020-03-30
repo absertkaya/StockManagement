@@ -13,9 +13,6 @@ namespace StockManagement.Pages.ReuseableComponents
         [Parameter]
         public string Container { get; set; }
 
-        [Parameter]
-        public BlobsComponent Blobs { get; set; }
-
         [Inject]
         public IFileReaderService FileReaderService { get; set; }
         [Inject]
@@ -36,24 +33,23 @@ namespace StockManagement.Pages.ReuseableComponents
             return (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList().Count == 0;
         }
 
-        public async Task<string> Upload(string filename)
+        public async Task Upload(string filename)
         {
-            string uri = null;
             var files = (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList();
             foreach (var file in files)
             {
                 try
                 {
-                    await _service.SetContainer(Container);
-                    uri = await _service.UploadBlobToContainer(file, filename);
-                }
-                catch (Exception ex)
+                    var fi = await file.ReadFileInfoAsync();
+                    if (fi.Size < 20*1024*1024) {
+                        await _service.SetContainer(Container);
+                        await _service.UploadBlobToContainer(file, filename);
+                    }
+                } catch (Exception ex)
                 {
                     Telemetry.TrackException(ex);
                 }
-
             }
-            return uri;
         }
     }
 }

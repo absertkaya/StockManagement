@@ -148,6 +148,7 @@ namespace StockManagement.Pages.StockPages
             try
             {
                 Repository.Save(_item);
+                _comment = null;
                 ToastService.ShowSuccess("Item in stock geplaatst, er zijn " + _item.Product.Items.Where(i => i.ItemStatus == ItemStatus.INSTOCK).Count() + " items van dit product.");
                 if (!await _fileUpload.IsEmpty())
                 {
