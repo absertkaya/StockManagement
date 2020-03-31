@@ -58,7 +58,7 @@
                     @foreach (Item item in _filteredItems)
                     {
                         <tr @onclick="(() => NavigateToItemHistory(item))">
-                            <td>@item.SerialNumber</td>
+                            <td>@(item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : item.SerialNumber)</td>
                             <td>
                                 @if (item.ItemStatus == ItemStatus.INSTOCK)
                                 {

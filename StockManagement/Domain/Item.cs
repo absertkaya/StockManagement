@@ -21,10 +21,7 @@ namespace StockManagement.Domain
         public virtual DateTime? DeliveryDate { 
             get { return _deliveryDate; } 
             set { 
-                if (value != null && value > DateTime.Today)
-                {
-                    throw new ArgumentException("Delivery Date can't be in the future.");
-                }
+
                 _deliveryDate = value; 
             } 
         }

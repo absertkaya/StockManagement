@@ -1,16 +1,21 @@
 ﻿using Blazor.FileReader;
 using ExcelDataReader;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Identity.Client;
 using Microsoft.JSInterop;
 using Microsoft.Win32.SafeHandles;
+using Newtonsoft.Json.Linq;
 using StockManagement.Data.Repositories;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using StockManagement.Graph;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -19,6 +24,8 @@ namespace StockManagement.Data
     public class ExcelReader
     {
         public IItemRepository Repo { get; set; } = new ItemRepository();
+        protected List<GraphUser> _colGraphUsers = new List<GraphUser>();
+        public IConfiguration Configuration { get; set; }
 
         public void ReadAndPopulateDatabase(string path)
         {
@@ -31,6 +38,54 @@ namespace StockManagement.Data
         public void ReadAndPopulateDatabase(Stream stream)
         {
             ReaderHelper(stream);
+        }
+
+        public async Task ApiCall(string url)
+        {
+            try
+            {
+                IConfidentialClientApplication confidentialClientApplication =
+                ConfidentialClientApplicationBuilder
+                    .Create(Configuration["AzureAd:ClientId"])
+                    .WithTenantId(Configuration["AzureAd:TenantId"])
+                    .WithClientSecret(Configuration["AzureAd:ClientSecret"])
+                    .Build();
+                string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
+                AuthenticationResult result = null;
+                result = await confidentialClientApplication.AcquireTokenForClient(scopes)
+                    .ExecuteAsync();
+                var httpClient = new HttpClient();
+                var apiCaller = new ProtectedApiCallHelper(httpClient);
+                var res = await apiCaller
+                    .CallWebApiAndProcessResultASync(
+                        url,
+                        result.AccessToken
+                        );
+                DisplayUsers(res);
+                if (res.Properties().FirstOrDefault(p => p.Name == "@odata.nextLink") != null)
+                {
+                    await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        protected void DisplayUsers(JObject result)
+        {
+            foreach (JProperty child in result.Properties().Where(p => !p.Name.StartsWith("@")))
+            {
+                _colGraphUsers.AddRange(
+                    child.Value.ToObject<List<GraphUser>>()
+                    );
+            }
+
+            _colGraphUsers = _colGraphUsers
+              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && u.OfficeLocation != null && u.JobTitle != null)
+              .ToList();
+
         }
 
         private void ReaderHelper(Stream stream)
@@ -61,12 +116,12 @@ namespace StockManagement.Data
                         string pn = row.ItemArray[2].ToString();
                         if (string.IsNullOrWhiteSpace(pn))
                         {
-                            pn = "NOPRODUCTNR" + " " + rowNr;
+                            pn = "NOPRODUCTNR " + cat.CategoryName + " " + rowNr;
                         }
                         string sn = row.ItemArray[3].ToString();
                         if (string.IsNullOrWhiteSpace(sn))
                         {
-                            sn = "NOSERIALNR" + " " + rowNr;
+                            sn = "NOSERIALNR " + cat.CategoryName + " " + rowNr;
                         }
                         DateTime? delivery;
                         try
@@ -143,12 +198,20 @@ namespace StockManagement.Data
                             comment += " | Locatie: " + loc;
                         }
 
-                        string u = row.ItemArray[8].ToString();
-
+                        string u = row.ItemArray[8].ToString().ToUpper();
+                        ADUser aduser = null;
                         if (!string.IsNullOrEmpty(u))
                         {
                             comment += " | User: " + u;
+                            GraphUser user = _colGraphUsers.FirstOrDefault(user => (user.GivenName.Substring(0, 1) + user.Surname).ToUpper().Contains(u));
+                            if (user != null)
+                            {
+                                aduser = new ADUser(user);
+                                Repo.Save(aduser);
+                                _colGraphUsers.Remove(user);
+                            }
                         }
+
                         bool instock = outstockdate == null && locStock;
                         ItemStatus status = instock ? ItemStatus.INSTOCK : ItemStatus.OUTSTOCK;
                         if(stolen)
@@ -164,8 +227,10 @@ namespace StockManagement.Data
                             DeliveryDate = delivery == null ? DateTime.Now : (DateTime)delivery,
                             InvoiceDate = invoice == null ? DateTime.Now : (DateTime)invoice,
                             Comment = comment,
-                            ItemStatus = status
+                            ItemStatus = status,
+                            ADUser = aduser
                         };
+
                         if (!Repo.ItemDuplicateExists(item.Id, sn, product.Id))
                         {
                             try

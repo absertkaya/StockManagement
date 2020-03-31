@@ -94,8 +94,9 @@ namespace StockManagement
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-
-            //new ExcelReader().ReadAndPopulateDatabase("C:\\Users\\bse\\Desktop\\Stock Overzicht.xlsx");
+            //var excl = new ExcelReader();
+            //excl.ApiCall("https://graph.microsoft.com/v1.0/users?$top=999").Wait();
+            //excl.ReadAndPopulateDatabase("C:\\Users\\Administrator\\Desktop\\Stock Overzicht.xlsx");
         }
     }
 }
