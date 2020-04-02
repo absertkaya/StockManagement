@@ -56,14 +56,15 @@ namespace StockManagement
             services.AddScoped<IItemRepository, ItemRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBlobService, BlobService>();
-            services.AddScoped<MailService, GmailService>();
+            services.AddScoped<Database>();
+            services.AddScoped<IKeyVaultService, KeyVaultService>();
             services.AddHttpClient<ProtectedApiCallHelper>();
             services.AddApplicationInsightsTelemetry();
             services.AddFileReaderService();
             services.AddRazorPages();
             services.AddServerSideBlazor().AddHubOptions(o =>
             {
-                o.MaximumReceiveMessageSize = 20 * 1024 * 1024; // 20MB
+                o.MaximumReceiveMessageSize = 20 * 1024 * 1024;
             });
             
         }

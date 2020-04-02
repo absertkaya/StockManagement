@@ -23,9 +23,14 @@ namespace StockManagement.Data
 {
     public class ExcelReader
     {
-        public IItemRepository Repo { get; set; } = new ItemRepository();
+        public IItemRepository Repo { get; set; }
         protected List<GraphUser> _colGraphUsers = new List<GraphUser>();
         public IConfiguration Configuration { get; set; }
+
+        public ExcelReader(IItemRepository repository)
+        {
+            Repo = repository;
+        }
 
         public void ReadAndPopulateDatabase(string path)
         {

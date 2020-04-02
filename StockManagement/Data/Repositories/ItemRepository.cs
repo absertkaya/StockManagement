@@ -12,6 +12,9 @@ namespace StockManagement.Data.Repositories
 {
     public class ItemRepository : RepositoryBase, IItemRepository
     {
+        public ItemRepository(Database database) : base(database)
+        {
+        }
 
         public virtual async Task<IList<Product>> GetByCategoryAsync(int id)
         {

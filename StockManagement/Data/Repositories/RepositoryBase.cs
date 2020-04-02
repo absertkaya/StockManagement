@@ -11,14 +11,17 @@ namespace StockManagement.Data.Repositories
     public class RepositoryBase : IRepository, IDisposable
     {
         protected ISession _session = null;
-        public RepositoryBase()
+
+        public RepositoryBase(Database database)
         {
-            _session = Database.OpenSession();
+            _session = database.OpenSession();
         }
+
         public RepositoryBase(ISession session)
         {
             _session = session;
         }
+
         #region Transaction and Session Management Methods
         private void CloseSession()
         {
