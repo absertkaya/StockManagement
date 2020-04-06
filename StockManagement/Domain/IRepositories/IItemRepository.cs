@@ -13,7 +13,8 @@ namespace StockManagement.Domain.IRepositories
         Item GetBySerialNr(string serialnr);
         Product GetByProductNr(string productnr);
         Product GetByProductName(string name);
-        bool GetItemInStock(string serialnr);
+        bool GetItemInStock(int id);
+        bool ItemExists(int id);
         Task<int> GetAmountInStockValueAsync(int id);
         int GetAmountInStockValue(int id);
         Task<IList<Item>> GetItemsByUser(string id);

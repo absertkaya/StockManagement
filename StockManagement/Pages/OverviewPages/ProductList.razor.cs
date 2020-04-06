@@ -31,11 +31,15 @@ namespace StockManagement.Pages.OverviewPages
         protected string _filterString = "";
         protected string _category;
 
+        private bool sortProductNameDesc;
+        private bool sortProductNumberDesc;
+        private bool sortAmountInStockDesc = true;
+
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                _category = ((Category)await Repository.GetByIdAsync(typeof(Category), Id)).CategoryName;
+                _category = ((Category)await Repository.GetByIdAsync(typeof(Category), Id))?.CategoryName;
                 _products = await Repository.GetByCategoryAsync(Id);
                 foreach (Product prod in _products)
                 {
@@ -48,6 +52,44 @@ namespace StockManagement.Pages.OverviewPages
                 ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
             }
 
+        }
+
+        protected void SortByProductNumber()
+        {
+            if (!sortProductNumberDesc)
+            {
+                _filteredProducts = _filteredProducts.OrderBy(p => p.ProductNumber);
+            } else
+            {
+                _filteredProducts = _filteredProducts.OrderByDescending(p => p.ProductNumber);
+            }
+            sortProductNumberDesc = !sortProductNumberDesc;
+        }
+
+        protected void SortByProductName()
+        {
+            if (!sortProductNameDesc)
+            {
+                _filteredProducts = _filteredProducts.OrderBy(p => p.Description);
+            }
+            else
+            {
+                _filteredProducts = _filteredProducts.OrderByDescending(p => p.Description);
+            }
+            sortProductNameDesc = !sortProductNameDesc;
+        }
+
+        protected void SortByAmountInStock()
+        {
+            if (!sortAmountInStockDesc)
+            {
+                _filteredProducts = _filteredProducts.OrderBy(p => p.AmountInStock);
+            }
+            else
+            {
+                _filteredProducts = _filteredProducts.OrderByDescending(p => p.AmountInStock);
+            }
+            sortAmountInStockDesc = !sortAmountInStockDesc;
         }
 
         protected void Filter()

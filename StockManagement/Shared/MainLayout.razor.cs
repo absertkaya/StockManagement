@@ -76,9 +76,11 @@ namespace StockManagement.Shared
 
         private async Task<bool> CheckGroups(ProtectedApiCallHelper apiCaller, AuthenticationResult result, ClaimsPrincipal user, JObject resLogin, ADUser aduser)
         {
+            string adminGroupId = Configuration["AllowedGroups:Admin"];
+            string stockerGroupId = Configuration["AllowedGroups:StockUser"];
             var resAdminGroup = await apiCaller
                 .CallWebApiAndProcessResultASync(
-                    $"https://graph.microsoft.com/v1.0/groups/a410ab6b-b60a-458b-bca9-053c0a7edbf9/members",
+                    $"https://graph.microsoft.com/v1.0/groups/{adminGroupId}/members",
                     result.AccessToken
                 );
 
@@ -101,7 +103,7 @@ namespace StockManagement.Shared
 
             var resStockerGroup = await apiCaller
                 .CallWebApiAndProcessResultASync(
-                    $"https://graph.microsoft.com/v1.0/groups/9ca8c40b-328c-4fe6-a2bf-ed9544611c71/members",
+                    $"https://graph.microsoft.com/v1.0/groups/{stockerGroupId}/members",
                     result.AccessToken
                 );
 

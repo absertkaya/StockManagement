@@ -52,7 +52,7 @@ namespace StockManagement.Domain
             }
 
             ItemStatus = ItemStatus.OUTSTOCK;
-            ItemUser use = new ItemUser(this, user, assigner);
+            new ItemUser(this, user, assigner);
             ADUser = user;
         }
 

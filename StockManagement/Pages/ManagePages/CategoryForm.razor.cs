@@ -42,6 +42,7 @@ namespace StockManagement.Pages.ManagePages
 
             if (stockUser == null || stockUser.StockRole != StockRole.ADMIN)
             {
+                Telemetry.TrackEvent("AccessDenied");
                 NavigationManager.NavigateTo("/accessdenied");
                 return;
             }

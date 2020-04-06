@@ -44,6 +44,7 @@ namespace StockManagement.Pages.ManagePages
                 _product = (Product) Repository.GetById(typeof(Product), Id);
                 if (_product == null)
                 {
+                    Telemetry.TrackEvent("ProductDoesntExist");
                     NavigationManager.NavigateTo("/error");
                 }
             }
@@ -57,6 +58,7 @@ namespace StockManagement.Pages.ManagePages
 
             if (stockUser == null || stockUser.StockRole != StockRole.ADMIN)
             {
+                Telemetry.TrackEvent("AccessDenied");
                 NavigationManager.NavigateTo("/accessdenied");
                 return;
             }

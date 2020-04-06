@@ -11,7 +11,9 @@
 {
     <div class="mb-1">
         <UserComponent ADUser="_user" />
+
     </div>
+    <a href="/mail/@(Id)" class="btn btn-sm btn-primary"><i class="oi oi-envelope-closed"></i></a>
 }
 
 <h3>Items in gebruik</h3>
@@ -55,27 +57,28 @@ else
     @if (_itemusers.Count != 0)
     {
 
-    <div class="table-responsive">
-        <table class="table table-sm table-hover">
-            <thead class="thead-dark">
-                <tr>
-                    <th>S/N</th>
-                    <th>Tot</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (ItemUser iu in _itemusers)
-                {
-                    <tr @onclick="(() => RowExpand(iu))">
-                        <td>@iu.Item.SerialNumber</td>
-                        <td class="w-50">@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>S/N</th>
+                        <th>Tot</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    @foreach (ItemUser iu in _itemusers)
+                    {
+                        <tr @onclick="(() => RowExpand(iu))">
+                            <td>@iu.Item.SerialNumber</td>
+                            <td class="w-50">@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
-    } else
+    }
+    else
     {
         <p>Geen data.</p>
     }

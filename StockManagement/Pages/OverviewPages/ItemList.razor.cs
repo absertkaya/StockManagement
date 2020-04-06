@@ -41,6 +41,9 @@ namespace StockManagement.Pages.OverviewPages
         protected bool _instock;
         protected ItemStatus? _selectedStatus;
 
+        private bool sortSerialNumberDesc;
+        private bool sortStatusDesc;
+
         protected override async Task OnInitializedAsync()
         {
             try
@@ -65,11 +68,36 @@ namespace StockManagement.Pages.OverviewPages
 
         }
 
+        protected void SortBySerialNumber()
+        {
+            if (!sortSerialNumberDesc)
+            {
+                _filteredItems = _filteredItems.OrderBy(i => i.SerialNumber);
+            } else
+            {
+                _filteredItems = _filteredItems.OrderByDescending(i => i.SerialNumber);
+            }
+
+            sortSerialNumberDesc = !sortSerialNumberDesc;
+        }
+
+        protected void SortByInStock()
+        {
+            if (!sortStatusDesc)
+            {
+                _filteredItems = _filteredItems.OrderBy(i => i.ItemStatus);
+            } else
+            {
+                _filteredItems = _filteredItems.OrderByDescending(i => i.ItemStatus);
+            }
+
+            sortStatusDesc = !sortStatusDesc;
+        }
+
         protected void Filter()
         {
             _filteredItems = _items.Where(i => i.SerialNumber.Trim().ToLower()
             .Contains(_filterString.Trim().ToLower()) && (i.ItemStatus == _selectedStatus || _selectedStatus == null));
-            
         }
 
         protected void NavigateToItemHistory(Item item)

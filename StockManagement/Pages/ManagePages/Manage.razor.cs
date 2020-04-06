@@ -21,8 +21,11 @@ namespace StockManagement.Pages.ManagePages
     public class ManageBase : ComponentBase
     {
 
-        protected IList<Category> _categories;
-        protected IList<Supplier> _suppliers;
+        private IList<Category> _categories;
+        private IList<Supplier> _suppliers;
+
+        protected IEnumerable<Category> _sortedCategories;
+        protected IEnumerable<Supplier> _sortedSuppliers;
 
         [Inject] 
         public IItemRepository Repository { get; set; }
@@ -42,6 +45,9 @@ namespace StockManagement.Pages.ManagePages
         protected ElementReference inputElement;
         protected string _value;
 
+        private bool sortCategoryDesc;
+        private bool sortSupplierDesc;
+
         protected override async Task OnInitializedAsync()
         {
 
@@ -50,6 +56,7 @@ namespace StockManagement.Pages.ManagePages
 
             if (stockUser == null || stockUser.StockRole != StockRole.ADMIN)
             {
+                Telemetry.TrackEvent("AccessDenied");
                 NavigationManager.NavigateTo("/accessdenied");
                 return;
             }
@@ -57,7 +64,9 @@ namespace StockManagement.Pages.ManagePages
             try
             {
                 _categories = await Repository.GetAllAsync<Category>();
+                _sortedCategories = new List<Category>(_categories);
                 _suppliers = await Repository.GetAllAsync<Supplier>();
+                _sortedSuppliers = new List<Supplier>(_suppliers);
             } catch (Exception e)
             {
                 Telemetry.TrackException(e);
@@ -73,6 +82,33 @@ namespace StockManagement.Pages.ManagePages
         protected void NavigateToSupplier(Supplier sup)
         {
             NavigationManager.NavigateTo("/leverancier/itemlijst/" + sup.Id);
+        }
+
+        protected void SortByCategory()
+        {
+            if (!sortCategoryDesc)
+            {
+                _sortedCategories = _sortedCategories.OrderBy(c => c.CategoryName);
+            } else
+            {
+                _sortedCategories = _sortedCategories.OrderByDescending(c => c.CategoryName);
+            }
+
+            sortCategoryDesc = !sortCategoryDesc;
+        }
+
+        protected void SortBySupplier()
+        {
+            if (!sortSupplierDesc)
+            {
+                _sortedSuppliers = _sortedSuppliers.OrderBy(c => c.SupplierName);
+            }
+            else
+            {
+                _sortedSuppliers = _sortedSuppliers.OrderByDescending(c => c.SupplierName);
+            }
+
+            sortSupplierDesc = !sortSupplierDesc;
         }
 
         protected void DeleteSupplier(int id)

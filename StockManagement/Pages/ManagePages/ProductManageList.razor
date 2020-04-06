@@ -36,9 +36,9 @@
         <table class="table table-sm table-hover">
             <thead class="thead-dark">
                 <tr>
-                    <th>Omschrijving</th>
-                    <th class="d-none d-md-table-cell">P/N</th>
-                    <th>#</th>
+                    <th @onclick="SortByProductName">Omschrijving</th>
+                    <th class="d-none d-md-table-cell" @onclick="SortByProductNumber">P/N</th>
+                    <th @onclick="SortByAmountInStock">#</th>
                     <th></th>
                 </tr>
             </thead>
@@ -50,7 +50,7 @@
                         <td class="d-none d-md-table-cell">@(prod.ProductNumber.Split(" ")[0] == "NOPRODUCTNR" ? "Geen productnummer beschikbaar." : prod.ProductNumber)</td>
                         <td class="w-25 @(prod.AmountInStock == 0 ? "text-danger" : "text-success")">@prod.AmountInStock</td>
                         <td>
-                            <div class="btn-group btn-groep-sm">
+                            <div class="btn-group btn-groep-sm d-flex justify-content-end">
                                 <a href="/beheer/product/id/@(prod.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
                                 @if (prod.Items.Count == 0)
                                 {

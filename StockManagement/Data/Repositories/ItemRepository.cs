@@ -32,15 +32,11 @@ namespace StockManagement.Data.Repositories
             return await _session.Query<Item>().Fetch(x => x.ADUser).FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public virtual bool GetItemInStock(string serialnr)
+        public virtual bool GetItemInStock(int id)
         {
             Item item = _session.Query<Item>()
-                .FirstOrDefault(i => i.SerialNumber == serialnr);
-            if (item == null)
-            {
-                throw new ArgumentException("Item doesn't exist");
-            }
-            return item.ItemStatus == ItemStatus.INSTOCK;
+                .FirstOrDefault(i => i.Id == id);
+            return item?.ItemStatus == ItemStatus.INSTOCK;
         }
 
         public virtual async Task<int> GetAmountInStockValueAsync(int productId)
@@ -111,6 +107,11 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<Item>> GetBySupplierAsync(int id)
         {
             return await _session.Query<Item>().Where(i => i.Supplier.Id == id).ToListAsync();
+        }
+
+        public bool ItemExists(int id)
+        {
+            return _session.Query<Item>().FirstOrDefault(i => i.Id == id) != null;     
         }
     }
 }

@@ -19,11 +19,43 @@ namespace StockManagement.Pages.OverviewPages
         protected ADUser _selectedUser;
         protected string _filterString = "";
 
+        private bool sortFirstNameDesc;
+        private bool sortLastNameDesc;
+
         protected override async Task OnInitializedAsync()
         {
             _users = await Repository.GetAllAsync<ADUser>();
             _filteredUsers = new List<ADUser>(_users);
         }
+
+        protected void SortByFirstName()
+        {
+            if (!sortFirstNameDesc)
+            {
+                _filteredUsers = _filteredUsers.OrderBy(u => u.FirstName);
+            } else
+            {
+                _filteredUsers = _filteredUsers.OrderByDescending(u => u.FirstName);
+            }
+
+            sortFirstNameDesc = !sortFirstNameDesc;
+        }
+
+        protected void SortByLastName()
+        {
+            if (!sortLastNameDesc)
+            {
+                _filteredUsers = _filteredUsers.OrderBy(u => u.LastName);
+            }
+            else
+            {
+                _filteredUsers = _filteredUsers.OrderByDescending(u => u.LastName);
+            }
+
+            sortLastNameDesc = !sortLastNameDesc;
+        }
+
+
 
         protected void Filter()
         {

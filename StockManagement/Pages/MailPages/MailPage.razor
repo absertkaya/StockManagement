@@ -1,0 +1,15 @@
+﻿@inherits MailPageBase
+
+@page "/mail/{id}"
+
+<div class="mb-2">
+    <a href="/gebruiker/@(Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">Mail</h3>
+</div>
+
+<div class="input-group">
+    <div class="input-group-prepend">
+        <span class="input-group-text">To</span>
+    </div>
+    <input type="email" id="email" class="form-control" placeholder="example@email.com" />
+</div>
