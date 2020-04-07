@@ -50,7 +50,11 @@
             <table class="table table-sm table-hover">
                 <thead class="thead-dark">
                     <tr>
+                        @if (_hasHostnames) {
+                            <th @onclick="SortByHostname">Hostname</th>
+                        }
                         <th @onclick="SortBySerialNumber">S/N</th>
+                        <th class="d-none d-md-table-cell" @onclick="SortByUser">Gebruiker</th>
                         <th @onclick="SortByInStock">In stock</th>
                     </tr>
                 </thead>
@@ -58,7 +62,11 @@
                     @foreach (Item item in _filteredItems)
                     {
                         <tr @onclick="(() => NavigateToItemHistory(item))">
+                            @if (_hasHostnames) {
+                                <td>@item.Hostname</td>
+                            }
                             <td>@(item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : item.SerialNumber)</td>
+                            <td class="d-none d-md-table-cell">@item.ADUser?.Mail</td>
                             <td>
                                 @if (item.ItemStatus == ItemStatus.INSTOCK)
                                 {

@@ -99,6 +99,6 @@ namespace StockManagement
             //excl.ApiCall("https://graph.microsoft.com/v1.0/users?$top=999").Wait();
             //excl.ReadUsers("C:\\Users\\Administrator\\Desktop\\VGDGebruikers.xlsx");
             //excl.ReadAndPopulateDatabase("C:\\Users\\Administrator\\Desktop\\Stock Overzicht.xlsx");
-        }
+        } 
     }
 }

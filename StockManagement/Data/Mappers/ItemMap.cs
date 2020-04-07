@@ -15,6 +15,11 @@ namespace StockManagement.Data.Mappers
             Map(x => x.ItemStatus).Not.Nullable();
             Map(x => x.DeliveryDate);
             Map(x => x.InvoiceDate);
+            Map(x => x.Imei);
+            Map(x => x.Hostname);
+            Map(x => x.License);
+            Map(x => x.Carepack);
+            Map(x => x.VGDNumber);
             References(x => x.ADUser);
             References(x => x.Product).UniqueKey("SerialNumberProductNumber").Not.Nullable();
             References(x => x.Supplier);

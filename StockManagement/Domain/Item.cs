@@ -31,6 +31,12 @@ namespace StockManagement.Domain
         public virtual Supplier Supplier { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }
 
+        public virtual string Imei { get; set; }
+        public virtual string Hostname { get; set; }
+        public virtual string License { get; set; }
+        public virtual string Carepack { get; set; }
+        public virtual string VGDNumber { get; set; }
+
         public Item()
         {
             DeliveryDate = DateTime.Today;

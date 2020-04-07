@@ -43,6 +43,10 @@ namespace StockManagement.Pages.OverviewPages
 
         private bool sortSerialNumberDesc;
         private bool sortStatusDesc;
+        private bool sortHostnameDesc;
+        private bool sortUserDesc = true;
+
+        protected bool _hasHostnames;
 
         protected override async Task OnInitializedAsync()
         {
@@ -59,6 +63,7 @@ namespace StockManagement.Pages.OverviewPages
                     _supplier = (Supplier)await Repository.GetByIdAsync(typeof(Supplier), SupplierId);
                     _items = await Repository.GetBySupplierAsync(_supplier.Id);
                 }
+                _hasHostnames = _items.Any(i => i.Hostname != null);
                 _filteredItems = new List<Item>(_items);
             } catch (Exception ex)
             {
@@ -94,9 +99,37 @@ namespace StockManagement.Pages.OverviewPages
             sortStatusDesc = !sortStatusDesc;
         }
 
+        protected void SortByHostname()
+        {
+            if (!sortHostnameDesc)
+            {
+                _filteredItems = _filteredItems.OrderBy(i => i.Hostname);
+            }
+            else
+            {
+                _filteredItems = _filteredItems.OrderByDescending(i => i.Hostname);
+            }
+
+            sortHostnameDesc = !sortHostnameDesc;
+        }
+
+        protected void SortByUser()
+        {
+            if (!sortUserDesc)
+            {
+                _filteredItems = _filteredItems.OrderBy(i => i.ADUser?.Mail);
+            }
+            else
+            {
+                _filteredItems = _filteredItems.OrderByDescending(i => i.ADUser?.Mail);
+            }
+
+            sortUserDesc = !sortUserDesc;
+        }
+
         protected void Filter()
         {
-            _filteredItems = _items.Where(i => i.SerialNumber.Trim().ToLower()
+            _filteredItems = _items.Where(i => (i.SerialNumber + i.Hostname).Trim().ToLower()
             .Contains(_filterString.Trim().ToLower()) && (i.ItemStatus == _selectedStatus || _selectedStatus == null));
         }
 

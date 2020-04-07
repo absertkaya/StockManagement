@@ -46,7 +46,7 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<IList<Item>> GetByProductAsync(int productid)
         {
-            return await _session.Query<Item>().Where(i => i.Product.Id == productid).ToListAsync();
+            return await _session.QueryOver<Item>().Where(i => i.Product.Id == productid).Left.JoinQueryOver(i => i.ADUser).ListAsync();
         }
 
         public virtual async Task<ItemUser> GetLastUse(string userid, int itemid)

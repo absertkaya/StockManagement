@@ -193,6 +193,21 @@ namespace StockManagement.Data
                         }
 
                         string comment = row.ItemArray[10].ToString();
+
+
+                        string imei = row.ItemArray[11].ToString();
+                        string vgdnr = row.ItemArray[12].ToString();
+                        string care = row.ItemArray[13].ToString();
+                        string hostname = row.ItemArray[14].ToString();
+                        string lic = row.ItemArray[15].ToString();
+
+                        imei = imei == "" ? null : imei;
+                        vgdnr = vgdnr == "" ? null : vgdnr;
+                        care = care == "" ? null : care;
+                        hostname = hostname == "" ? null : hostname;
+                        lic = lic == "" ? null : lic;
+
+
                         bool stolen = comment.ToLower().Trim() == "gestolen";
 
                         string desc = row.ItemArray[0].ToString() + " | " + row.ItemArray[1].ToString();
@@ -268,7 +283,7 @@ namespace StockManagement.Data
                         {
                             status = ItemStatus.STOLEN;
                         }
-                        
+
                         Item item = new Item()
                         {
                             Product = product,
@@ -278,6 +293,11 @@ namespace StockManagement.Data
                             InvoiceDate = invoice == null ? DateTime.Now : (DateTime)invoice,
                             Comment = comment,
                             ItemStatus = status,
+                            License = lic,
+                            VGDNumber = vgdnr,
+                            Carepack = care,
+                            Hostname = hostname,
+                            Imei = imei,
                             ADUser = aduser
                         };
 
