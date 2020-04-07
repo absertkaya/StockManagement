@@ -2,7 +2,7 @@
 
 @page "/itemlijst/{id:int}"
 @page "/{route}/itemlijst/{id:int}"
-@page "/leverancier/itemlijst/{SupplierId:int}"
+@page "/leverancier/{SupplierId:int}"
 @using StockManagement.Domain
 
 @if (_supplier != null || _product != null)
@@ -66,7 +66,7 @@
                                 <td>@item.Hostname</td>
                             }
                             <td>@(item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : item.SerialNumber)</td>
-                            <td class="d-none d-md-table-cell">@item.ADUser?.Mail</td>
+                            <td class="d-none d-md-table-cell">@(item.ADUser?.FirstName + " " + item.ADUser?.LastName)</td>
                             <td>
                                 @if (item.ItemStatus == ItemStatus.INSTOCK)
                                 {

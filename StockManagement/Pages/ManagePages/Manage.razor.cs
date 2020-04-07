@@ -81,7 +81,7 @@ namespace StockManagement.Pages.ManagePages
 
         protected void NavigateToSupplier(Supplier sup)
         {
-            NavigationManager.NavigateTo("/leverancier/itemlijst/" + sup.Id);
+            NavigationManager.NavigateTo("/leverancier/" + sup.Id);
         }
 
         protected void SortByCategory()

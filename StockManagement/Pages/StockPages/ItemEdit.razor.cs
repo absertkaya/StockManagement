@@ -47,6 +47,12 @@ namespace StockManagement.Pages.StockPages
         protected DateTime? _invoiceDate;
         protected ItemStatus _selectedStatus;
 
+        protected string _imei;
+        protected string _vgdnumber;
+        protected string _license;
+        protected string _hostname;
+        protected string _carepack;
+
         [CascadingParameter]
         protected Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
@@ -72,6 +78,11 @@ namespace StockManagement.Pages.StockPages
                     _deliveryDate = _item.DeliveryDate;
                     _invoiceDate = _item.InvoiceDate;
                     _selectedStatus = _item.ItemStatus;
+                    _imei = _item.Imei;
+                    _vgdnumber = _item.Imei;
+                    _license = _item.License;
+                    _hostname = _item.Hostname;
+                    _carepack = _item.Carepack;
                 }
             } catch (Exception ex)
             {
@@ -123,11 +134,18 @@ namespace StockManagement.Pages.StockPages
                 ToastService.ShowWarning("Selecteer een leverancier.");
                 return;
             }
+
+
             _item.Supplier = _suppliers.First(i => _selectedSupplier == i.Id);
             _item.Comment = _comment;
             _item.DeliveryDate = _deliveryDate;
             _item.InvoiceDate = _invoiceDate;
             _item.ItemStatus = _selectedStatus;
+            _item.Carepack = string.IsNullOrWhiteSpace(_carepack) ? null : _carepack;
+            _item.Hostname = string.IsNullOrWhiteSpace(_hostname) ? null : _hostname;
+            _item.Imei = string.IsNullOrWhiteSpace(_imei) ? null : _imei;
+            _item.License = string.IsNullOrWhiteSpace(_license) ? null : _license;
+            _item.VGDNumber = string.IsNullOrWhiteSpace(_vgdnumber) ? null : _vgdnumber;
             try
             {
                 Repository.Save(_item);
@@ -151,7 +169,7 @@ namespace StockManagement.Pages.StockPages
             }
             Telemetry.TrackEvent("ItemUpdate");
             ToastService.ShowSuccess("Item succesvol geëditeerd.");
-            NavigationManager.NavigateTo("itemlijst/" + _item.Product.Id);
+            NavigationManager.NavigateTo("itemhistoriek/" + _item.Id);
         }
         protected async Task Clear()
         {

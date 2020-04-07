@@ -135,7 +135,14 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void NavigateToItemHistory(Item item)
         {
-            NavigationManager.NavigateTo("/itemhistoriek/" + item.Id);
+            if (SupplierId == null)
+            {
+                NavigationManager.NavigateTo($"{(Route == "beheer"?"beheer":null)}/itemhistoriek/{item.Id}");
+            } else
+            {
+                NavigationManager.NavigateTo($"/leverancier/{SupplierId}/itemhistoriek/{item.Id}");
+            }
+            
         }
     }
 }

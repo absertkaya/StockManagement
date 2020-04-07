@@ -42,36 +42,31 @@
         }
     </select>
 </div>
-<div class="form-group">
-    <label for="supplier">Leverancier</label>
-    <select id="supplier" class="form-control" @bind="_selectedSupplier">
-        <option value="" selected hidden>Kies een leverancier</option>
-        @if (_suppliers != null)
-        {
-            @foreach (Supplier supplier in _suppliers)
+
+<div class="form-row">
+    <div class="form-group col-md-4">
+        <label for="supplier">Leverancier</label>
+        <select id="supplier" class="form-control" @bind="_selectedSupplier">
+            <option value="" selected hidden>Kies een leverancier</option>
+            @if (_suppliers != null)
             {
-                <option value=@supplier.Id>@supplier.SupplierName</option>
+                @foreach (Supplier supplier in _suppliers)
+                {
+                    <option value=@supplier.Id>@supplier.SupplierName</option>
+                }
             }
-        }
-    </select>
-</div>
-<div class="form-group">
-    <label for="deliverydate">Leverdatum</label>
-    <input type="date" class="form-control" @bind="_deliveryDate" />
-</div>
-<div class="form-group">
-    <label for="invoicedate">Factuurdatum</label>
-    <input type="date" class="form-control" @bind="_invoiceDate" />
+        </select>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="deliverydate">Leverdatum</label>
+        <input type="date" class="form-control" @bind="_deliveryDate" />
+    </div>
+    <div class="form-group col-md-4">
+        <label for="invoicedate">Factuurdatum</label>
+        <input type="date" class="form-control" @bind="_invoiceDate" />
+    </div>
 </div>
 
-<div class="form-group row">
-    <div class="col-8">
-        <FileUploadComponent @ref="_fileUpload" Container="@("item"+Id)" />
-    </div>
-    <div class="col-2">
-        <button class="btn btn-secondary" @onclick="Clear">Clear</button>
-    </div>
-</div>
 <div class="form-group">
     <label for="status">Status</label>
     <select class="form-control" @bind=_selectedStatus>
@@ -83,9 +78,41 @@
         <option value="@ItemStatus.DEFECTIVE">Defect</option>
     </select>
 </div>
-<div class="form-group">
-    <label for="comment">Opmerkingen</label>
-    <input id="comment" class="form-control " @bind="_comment" />
+<h5>Optioneel</h5>
+<div class="border p-2 m-2">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="host">Hostname</label>
+            <input id="host" class="form-control " @bind="_hostname" />
+        </div>
+        <div class="form-group col-md-6">
+            <label for="care">Carepack</label>
+            <input id="care" class="form-control " @bind="_carepack" />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="imei">IMEI</label>
+            <input id="imei" class="form-control " @bind="_imei" />
+        </div>
+        <div class="form-group col-md-4">
+            <label for="vgd">VGD Nummer</label>
+            <input id="vgd" class="form-control " @bind="_vgdnumber" />
+        </div>
+        <div class="form-group col-md-4">
+            <label for="lic">License</label>
+            <input id="lic" class="form-control " @bind="_license" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="comment">Opmerkingen</label>
+        <input id="comment" class="form-control " @bind="_comment" />
+    </div>
+    <div class="form-group">
+        <label>Foto</label>
+        <FileUploadComponent @ref="_fileUpload" Container="@("item"+Id)" />
+    </div>
 </div>
 
-<button class="btn btn-primary" @onclick="Submit">Verzend</button>
+<button class="btn btn-primary" @onclick="Submit">Update</button>

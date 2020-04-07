@@ -3,16 +3,25 @@
 @using StockManagement.Domain;
 @using StockManagement.Pages.ReuseableComponents
 @using StockManagement.Pages.OverviewPages
-
+@page "/leverancier/{supplierId:int}/itemhistoriek/{id:int}" 
 @page "/itemhistoriek/{id:int}/{userId}"
 @page "/itemhistoriek/{id:int}"
+@page "/{beheer}/itemhistoriek/{id:int}"
 
 @if (_item != null)
 {
-<div class="mb-2">
-    <a href="@(UserId == null ? $"/itemlijst/{_item.Product.Id}" : $"/gebruiker/{UserId}")" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-    <h3 class="d-inline">@_item.Product.Description</h3>
-</div>
+    <div class="mb-2">
+        @if (SupplierId == null)
+        {
+            <a href="@(UserId == null ? $"{(Beheer == null ? null : "beheer")}/itemlijst/{_item.Product.Id}" : $"/gebruiker/{UserId}")" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        }
+        else
+        {
+            <a href="/leverancier/@(SupplierId)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        }
+
+        <h3 class="d-inline">@_item.Product.Description</h3>
+    </div>
 
 <div class="mb-2">
     <BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />

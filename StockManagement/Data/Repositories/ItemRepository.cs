@@ -106,7 +106,7 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<IList<Item>> GetBySupplierAsync(int id)
         {
-            return await _session.Query<Item>().Where(i => i.Supplier.Id == id).ToListAsync();
+            return await _session.QueryOver<Item>().Where(i => i.Supplier.Id == id).Left.JoinQueryOver(i => i.ADUser).ListAsync();
         }
 
         public bool ItemExists(int id)

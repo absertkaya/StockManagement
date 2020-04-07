@@ -21,9 +21,12 @@ namespace StockManagement.Pages.OverviewPages
     {
         [Parameter]
         public int Id { get; set; }
-
+        [Parameter]
+        public int? SupplierId { get; set; }
         [Parameter]
         public string? UserId { get; set; }
+        [Parameter]
+        public string Beheer { get; set; }
 
         [Inject]
         public IItemRepository Repository { get; set; }
