@@ -252,6 +252,9 @@ namespace StockManagement.Data
                                     aduser = new ADUser(user);
                                     newUsers.Add(aduser);
                                     Repo.Save(aduser);
+                                } else
+                                {
+                                    aduser = newUsers.First(u => u.Id == user.Id);
                                 }
                             } else
                             {

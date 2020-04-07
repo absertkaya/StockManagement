@@ -45,6 +45,7 @@ namespace StockManagement.Pages.OverviewPages
         protected BlobsComponent _blobsComponent;
         protected Item _item;
         protected IList<ItemUser> _itemusers;
+        protected bool imageUploadOpen;
 
         protected override async Task OnInitializedAsync()
         {
@@ -59,6 +60,11 @@ namespace StockManagement.Pages.OverviewPages
             }
 
             
+        }
+
+        protected void ToggleImageUpload()
+        {
+            imageUploadOpen = !imageUploadOpen;
         }
 
         protected async Task Clear()

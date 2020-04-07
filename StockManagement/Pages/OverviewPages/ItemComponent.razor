@@ -43,10 +43,13 @@
             <th style="width: 25%">Factuurdatum</th>
             <td>@Item.InvoiceDate?.ToString("dd/MM/yyyy")</td>
         </tr>
-        <tr>
-            <th style="width: 25%">Status</th>
-            <td>@Item.ItemStatus.ToString()</td>
-        </tr>
+        @if (Item.ItemStatus != ItemStatus.INSTOCK && Item.ItemStatus != ItemStatus.OUTSTOCK)
+        {
+            <tr>
+                <th style="width: 25%">Status</th>
+                <td>@Item.ItemStatus.ToString()</td>
+            </tr>
+        }
         <tr>
             <th style="width: 25%">Opmerkingen</th>
             <td>@Item.Comment</td>

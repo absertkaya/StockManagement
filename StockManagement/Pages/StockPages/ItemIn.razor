@@ -27,42 +27,47 @@
                     }
                 </select>
             </div>
+            @if (_selectedCategory != null)
+            {
+                <div class="form-group">
+                    <label for="product">Product</label>
+                    <select id="product" class="form-control" @bind="_productNumber">
 
-            <div class="form-group">
-                <label for="product">Product</label>
-                <select id="product" class="form-control" @bind="_productNumber">
-                    <option value="" selected hidden>Kies een product</option>
-                    @if (_products != null)
-                    {
-                        @foreach (Product product in _products)
+                        @if (_products != null)
                         {
-                            <option value=@product.ProductNumber>@product.Description</option>
+                            <option value="" selected hidden>Kies een product</option>
+                            @foreach (Product product in _products)
+                            {
+                                <option value=@product.ProductNumber>@product.Description</option>
+                            }
                         }
-                    }
-                </select>
+                    </select>
+                </div>
+            }
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="supplier">Leverancier</label>
+                    <select id="supplier" class="form-control" @bind="_selectedSupplier">
+                        <option value="" selected hidden>Kies een leverancier</option>
+                        @if (_suppliers != null)
+                        {
+                            @foreach (Supplier supplier in _suppliers)
+                            {
+                                <option value=@supplier.Id>@supplier.SupplierName</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="deliverydate">Leverdatum</label>
+                    <InputDate class="form-control" @bind-Value="_item.DeliveryDate" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="invoicedate">Factuurdatum</label>
+                    <InputDate class="form-control" @bind-Value="_item.InvoiceDate" />
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="supplier">Leverancier</label>
-                <select id="supplier" class="form-control" @bind="_selectedSupplier">
-                    <option value="" selected hidden>Kies een leverancier</option>
-                    @if (_suppliers != null)
-                    {
-                        @foreach (Supplier supplier in _suppliers)
-                        {
-                            <option value=@supplier.Id>@supplier.SupplierName</option>
-                        }
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="deliverydate">Leverdatum</label>
-                <InputDate class="form-control" @bind-Value="_item.DeliveryDate" />
-            </div>
-            <div class="form-group">
-                <label for="invoicedate">Factuurdatum</label>
-                <InputDate class="form-control" @bind-Value="_item.InvoiceDate" />
-            </div>
         }
         else
         {

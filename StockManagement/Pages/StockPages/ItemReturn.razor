@@ -3,64 +3,74 @@
 @using StockManagement.Domain
 @using StockManagement.Pages.ReuseableComponents
 
-<div class="border p-2 form-group">
-    @if (!_hideSettings)
-    {
-        <div class="btn-group">
-            <button class="btn btn-outline-primary active btn-sm" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
-        </div>
+    <div class="border p-2 form-group">
+        @if (!_hideSettings)
+        {
+            <div class="btn-group">
+                <button class="btn btn-outline-primary active btn-sm" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
+            </div>
 
 
-        <div class="form-group">
-            <label for="category">Category</label>
-            <select id="category" class="form-control" value="@_selectedCategory" @onchange="FetchProducts">
-                <option value="" selected hidden>Kies een categorie</option>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" class="form-control" value="@_selectedCategory" @onchange="FetchProducts">
+                    <option value="" selected hidden>Kies een categorie</option>
 
-                @if (_categories != null)
-                {
-                    @foreach (Category cat in _categories)
+                    @if (_categories != null)
                     {
-                        <option value=@cat.Id>@cat.CategoryName</option>
+                        @foreach (Category cat in _categories)
+                        {
+                            <option value=@cat.Id>@cat.CategoryName</option>
 
+                        }
                     }
-                }
-            </select>
-        </div>
+                </select>
+            </div>
+            @if (_selectedCategory != null)
+            {
+                <div class="form-group">
+                    <label for="product">Product</label>
+                    <select id="product" class="form-control" value="_selectedProduct" @onchange="FetchItems">
+                        <option value="" selected hidden>Kies een product</option>
+                        @if (_products != null)
+                        {
+                            @foreach (Product product in _products)
+                            {
+                                <option value=@product.ProductNumber>@product.Description</option>
+                            }
+                        }
+                    </select>
+                </div>
+            }
 
-        <div class="form-group">
-            <label for="product">Product</label>
-            <select id="product" class="form-control" value="_selectedProduct" @onchange="FetchItems">
-                <option value="" selected hidden>Kies een product</option>
-                @if (_products != null)
+            @if (_items != null)
+            {
+                @if (_items.Count() != 0)
                 {
-                    @foreach (Product product in _products)
-                    {
-                        <option value=@product.ProductNumber>@product.Description</option>
-                    }
-                }
-            </select>
-        </div>
+                    <div class="form-group">
+                        <label for="product">Items @(Method == "out" ? "in stock" : "uit stock")</label>
+                        <select id="product" class="form-control" value="_selectedItem" @onchange="SelectItem">
+                            <option value="" selected hidden>Kies een item</option>
 
-        <div class="form-group">
-            <label for="product">Items @(Method == "out" ? "in stock" : "uit stock")</label>
-            <select id="product" class="form-control" value="_selectedItem" @onchange="SelectItem">
-                <option value="" selected hidden>Kies een item</option>
-                @if (_items != null)
+                            @foreach (Item item in _items)
+                            {
+                                <option value=@item.SerialNumber>@item.SerialNumber</option>
+                            }
+
+                        </select>
+                    </div>
+                } else
                 {
-                    @foreach (Item item in _items)
-                    {
-                        <option value=@item.SerialNumber>@item.SerialNumber</option>
-                    }
+                    <p>Geen items beschikbaar.</p>
                 }
-            </select>
-        </div>
-    }
-    else
-    {
-        <button class="btn btn-sm btn-outline-primary" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
-    }
+            }
+        }
+        else
+        {
+            <button class="btn btn-sm btn-outline-primary" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
+        }
 
-</div>
+    </div>
 @if (Method == "out")
 {
     <UserSearchBox @ref="userSearch" />

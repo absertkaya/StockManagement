@@ -9,116 +9,123 @@
 
 @if (_item != null)
 {
-    <div class="mb-2">
-        <a href="@(UserId == null ? $"/itemlijst/{_item.Product.Id}" : $"/gebruiker/{UserId}")" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-        <h4 class="d-inline">Upload foto</h4>
+<div class="mb-2">
+    <a href="@(UserId == null ? $"/itemlijst/{_item.Product.Id}" : $"/gebruiker/{UserId}")" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">@_item.Product.Description</h3>
+</div>
+
+<div class="mb-2">
+    <BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />
+</div>
+
+<div class="mb-2">
+    <div class="table-responsive">
+        <table class="table table-sm border">
+            <tr>
+                <th style="width: 25%">S/N</th>
+                <td>@_item.SerialNumber</td>
+            </tr>
+            @if (_item.ADUser != null)
+                {
+            <tr>
+                <th>Gebruiker</th>
+                <td><a href="/gebruiker/@(_item.ADUser.Id)">@_item.ADUser.Mail</a></td>
+            </tr>
+                }
+            <tr>
+                <th style="width: 25%">In stock</th>
+                <td>
+                    @if (_item.ItemStatus == ItemStatus.INSTOCK)
+                        {
+                    <i class="oi oi-circle-check text-success"></i>
+                        }
+                        else
+                        {
+                    <i class="oi oi-circle-x text-danger"></i>
+                        }
+                </td>
+            </tr>
+
+            <tr>
+                <th style="width: 25%">Leverancier</th>
+                <td>@_item.Supplier.SupplierName</td>
+            </tr>
+            <tr>
+                <th style="width: 25%">Leverdatum</th>
+                <td>@_item.DeliveryDate?.ToString("dd/MM/yyyy")</td>
+            </tr>
+            <tr>
+                <th style="width: 25%">Factuurdatum</th>
+                <td>@_item.InvoiceDate?.ToString("dd/MM/yyyy")</td>
+            </tr>
+            @if (_item.ItemStatus != ItemStatus.INSTOCK && _item.ItemStatus != ItemStatus.OUTSTOCK)
+                {
+            <tr>
+                <th style="width: 25%">Status</th>
+                <td>@_item.ItemStatus.ToString()</td>
+            </tr>
+                }
+            <tr>
+                <th style="width: 25%">Opmerkingen</th>
+                <td>@_item.Comment</td>
+            </tr>
+
+
+        </table>
+        <div class="btn-group btn-group-sm">
+            <button @onclick="ToggleImageUpload" class="btn btn-sm btn-primary"><i class="oi oi-camera-slr"></i></button>
+            <a href="/stock/edit/@(_item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+            <button @onclick="@(() => ShowConfirmation(_item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+        </div>
     </div>
 
-    <div class="mb-2">
 
+
+</div>
+@if (imageUploadOpen) {
+    <div class="mb-2">
         <FileUploadComponent @ref="_fileUpload" Container="@("item"+Id)" />
         <div class="pt-1">
             <button class="btn btn-primary" @onclick="Upload">Upload</button>
             <button class="btn btn-secondary" @onclick="Clear">Clear</button>
         </div>
     </div>
-    <BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />
-    <div class="mb-2">
-        <h3>Item</h3>
-
-        <div class="table-responsive">
-            <table class="table table-sm border">
-                <tr>
-                    <th style="width: 25%">S/N</th>
-                    <td>@_item.SerialNumber</td>
-                </tr>
-                @if (_item.ADUser != null)
-                {
-                    <tr>
-                        <th>Gebruiker</th>
-                        <td>@_item.ADUser.Mail</td>
-                    </tr>
-                }
-                <tr>
-                    <th style="width: 25%">In stock</th>
-                    <td>
-                        @if (_item.ItemStatus == ItemStatus.INSTOCK)
-                        {
-                            <i class="oi oi-circle-check text-success"></i>
-                        }
-                        else
-                        {
-                            <i class="oi oi-circle-x text-danger"></i>
-                        }
-                    </td>
-                </tr>
-
-                <tr>
-                    <th style="width: 25%">Leverancier</th>
-                    <td>@_item.Supplier.SupplierName</td>
-                </tr>
-                <tr>
-                    <th style="width: 25%">Leverdatum</th>
-                    <td>@_item.DeliveryDate?.ToString("dd/MM/yyyy")</td>
-                </tr>
-                <tr>
-                    <th style="width: 25%">Factuurdatum</th>
-                    <td>@_item.InvoiceDate?.ToString("dd/MM/yyyy")</td>
-                </tr>
-                <tr>
-                    <th style="width: 25%">Status</th>
-                    <td>@_item.ItemStatus.ToString()</td>
-                </tr>
-                <tr>
-                    <th style="width: 25%">Opmerkingen</th>
-                    <td>@_item.Comment</td>
-                </tr>
-
-
-            </table>
-            <div class="btn-group btn-group-sm">
-                <a href="/stock/edit/@(_item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                <button @onclick="@(() => ShowConfirmation(_item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
-            </div>
-        </div>
-
-
-    </div>
-    <h3>Gebruikshistoriek</h3>
-    @if (_itemusers != null)
+ }
+<h3>Gebruikshistoriek</h3>
+@if (_itemusers != null)
     {
-        @if (_itemusers.Count != 0)
+@if (_itemusers.Count != 0)
         {
 
-            <div class="table-responsive">
-                <table class="table table-sm table-hover">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>Van</th>
-                            <th>Tot</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (ItemUser iu in _itemusers)
+<div class="table-responsive">
+    <table class="table table-sm table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Van</th>
+                <th>Tot</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ItemUser iu in _itemusers)
                         {
-                            <tr @onclick="(() => RowExpand(iu))">
-                                <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
-                                <td class="w-50">@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
-                            </tr>
+            <tr @onclick="(() => RowExpand(iu))">
+                <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
+                <td class="w-50">@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
+            </tr>
                         }
-                    </tbody>
-                </table>
-            </div>
+        </tbody>
+    </table>
+</div>
         }
         else
         {
-            <p>Geen data.</p>
+<p>Geen data.</p>
         }
     }
 }
 else
 {
-    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+<div class="lds-ring"><div></div><div></div><div></div><div></div></div>
 }
 
 

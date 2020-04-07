@@ -3,6 +3,7 @@ using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace StockManagement.Pages.OverviewPages
@@ -25,7 +26,7 @@ namespace StockManagement.Pages.OverviewPages
         protected override async Task OnInitializedAsync()
         {
             _users = await Repository.GetAllAsync<ADUser>();
-            _filteredUsers = new List<ADUser>(_users);
+            _filteredUsers = new List<ADUser>(_users).OrderBy(u => u.FirstName).ThenBy(u => u.LastName);
         }
 
         protected void SortByFirstName()
@@ -59,7 +60,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void Filter()
         {
-            _filteredUsers = _users.Where(u => u.NormalizedSearchInfo.Contains(_filterString.Trim().ToLower()));
+            _filteredUsers = _users.Where(u => u.NormalizedSearchInfo.Contains(Regex.Replace(_filterString.ToLower(), " ", "")));
             StateHasChanged();
         }
 

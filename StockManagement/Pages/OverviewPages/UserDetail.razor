@@ -36,8 +36,8 @@
                     {
                         <tr @onclick="(() => NavigateToItem(item))">
                             <td>@item.Product.Description</td>
-                            <td class="d-none d-md-table-cell">@item.Product.ProductNumber</td>
-                            <td>@item.SerialNumber</td>
+                            <td class="d-none d-md-table-cell">@(item.Product.ProductNumber.Split(" ")[0] == "NOPRODUCTNR" ? "Geen productnummer beschikbaar." : item.Product.ProductNumber)</td>
+                            <td>@(item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : item.SerialNumber)</td>
                         </tr>
                     }
                 </tbody>
@@ -75,7 +75,7 @@ else
                     {
                         <tr @onclick="(() => RowExpand(iu))">
                             <td>@iu.Item.Product.Description</td>
-                            <td>@iu.Item.SerialNumber</td>
+                            <td>@(iu.Item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : iu.Item.SerialNumber)</td>
                             <td class="w-50">@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
                         </tr>
                     }

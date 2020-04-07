@@ -21,7 +21,7 @@ namespace StockManagement.Pages.ReuseableComponents
 
         protected override async Task OnInitializedAsync()
         {
-            await BlobService.SetContainer(Container);
+            BlobService.SetContainerNoCreate(Container);
             await RefreshBlobs();
         }
 
@@ -35,7 +35,11 @@ namespace StockManagement.Pages.ReuseableComponents
         {
             try
             {
-                _uris = await BlobService.GetBlobs();
+                List<string> uris = await BlobService.GetBlobs();
+                if (uris != null)
+                {
+                    _uris = uris;
+                }
             } catch (Exception ex)
             {
                 Telemetry.TrackException(ex);
