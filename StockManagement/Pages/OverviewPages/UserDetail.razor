@@ -13,7 +13,7 @@
         <UserComponent ADUser="_user" />
 
     </div>
-    <a href="/mail/@(Id)" class="btn btn-sm btn-primary"><i class="oi oi-envelope-closed"></i></a>
+    <a href="/mail/@(Id)" class="btn btn-sm btn-primary mb-1"><i class="oi oi-envelope-closed"></i></a>
 }
 
 <h3>Items in gebruik</h3>
@@ -25,6 +25,8 @@
             <table class="table table-sm table-hover">
                 <thead class="thead-dark">
                     <tr>
+                        <th>Omschrijving</th>
+                        <th class="d-none d-md-table-cell">P/N</th>
                         <th>S/N</th>
                     </tr>
                 </thead>
@@ -33,6 +35,8 @@
                     @foreach (Item item in _items)
                     {
                         <tr @onclick="(() => NavigateToItem(item))">
+                            <td>@item.Product.Description</td>
+                            <td class="d-none d-md-table-cell">@item.Product.ProductNumber</td>
                             <td>@item.SerialNumber</td>
                         </tr>
                     }
@@ -61,6 +65,7 @@ else
             <table class="table table-sm table-hover">
                 <thead class="thead-dark">
                     <tr>
+                        <th>Omschrijving</th>
                         <th>S/N</th>
                         <th>Tot</th>
                     </tr>
@@ -69,6 +74,7 @@ else
                     @foreach (ItemUser iu in _itemusers)
                     {
                         <tr @onclick="(() => RowExpand(iu))">
+                            <td>@iu.Item.Product.Description</td>
                             <td>@iu.Item.SerialNumber</td>
                             <td class="w-50">@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
                         </tr>

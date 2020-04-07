@@ -27,9 +27,14 @@ namespace StockManagement.Data
         protected List<GraphUser> _colGraphUsers = new List<GraphUser>();
         public IConfiguration Configuration { get; set; }
 
-        public ExcelReader(IItemRepository repository)
+        private List<ADUser> newUsers = new List<ADUser>();
+
+        private Dictionary<string, GraphUser> userMap = new Dictionary<string, GraphUser>();
+
+        public ExcelReader(IItemRepository repository, IConfiguration config)
         {
             Repo = repository;
+            Configuration = config;
         }
 
         public void ReadAndPopulateDatabase(string path)
@@ -93,8 +98,36 @@ namespace StockManagement.Data
 
         }
 
-        private void ReaderHelper(Stream stream)
+        public void ReadUsers(string path)
         {
+            int rowNr;
+            using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
+            {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    var result = reader.AsDataSet();
+                    rowNr = 0;
+                    foreach (DataTable table in result.Tables)
+                    {
+                        foreach (DataRow row in table.Rows)
+                        {
+                            rowNr++;
+                            if (rowNr < 4)
+                            {
+                                continue;
+                            }
+                            string code = row.ItemArray[0].ToString().ToLower();
+                            string email = row.ItemArray[2].ToString().ToLower();
+                            GraphUser user = _colGraphUsers.FirstOrDefault(u => u.Mail == email);
+                            userMap.Add(code, user);
+                        }
+                    }
+                }
+            }
+        }
+
+            private void ReaderHelper(Stream stream)
+            {
             int rowNr;
             Supplier unknown = new Supplier() { SupplierName = "UNKNOWN" };
             Supplier supplier = unknown;
@@ -200,20 +233,29 @@ namespace StockManagement.Data
                         if (!string.IsNullOrEmpty(loc) && loc != "stock")
                         {
                             locStock = false;
-                            comment += " | Locatie: " + loc;
                         }
 
-                        string u = row.ItemArray[8].ToString().ToUpper();
+                        string u = row.ItemArray[8].ToString().ToLower();
                         ADUser aduser = null;
                         if (!string.IsNullOrEmpty(u))
                         {
-                            comment += " | User: " + u;
-                            GraphUser user = _colGraphUsers.FirstOrDefault(user => (user.GivenName.Substring(0, 1) + user.Surname).ToUpper().Contains(u));
+                            GraphUser user = null;
+                            if (userMap.ContainsKey(u))
+                            {
+                                user = userMap[u];
+                            }
+                             
                             if (user != null)
                             {
-                                aduser = new ADUser(user);
-                                Repo.Save(aduser);
-                                _colGraphUsers.Remove(user);
+                                if (!newUsers.Any(u => u.Id == user.Id))
+                                {
+                                    aduser = new ADUser(user);
+                                    newUsers.Add(aduser);
+                                    Repo.Save(aduser);
+                                }
+                            } else
+                            {
+                                comment += " (User: " + u + ")";
                             }
                         }
 
@@ -239,7 +281,7 @@ namespace StockManagement.Data
                         if (!Repo.ItemDuplicateExists(item.Id, sn, product.Id))
                         {
                             try
-                            {
+                            { 
                                 Repo.Save(item);
                             }
                             catch (Exception exc)

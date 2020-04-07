@@ -60,7 +60,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void NavigateToItem(Item item)
         {
-            NavigationManager.NavigateTo("/itemhistoriek/"+item.Id);
+            NavigationManager.NavigateTo($"/itemhistoriek/{item.Id}/{_user.Id}");
         }
     }
 }
