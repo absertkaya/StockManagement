@@ -7,9 +7,23 @@
     <h3 class="d-inline">Mail</h3>
 </div>
 
-<div class="input-group">
+<div class="form-group input-group">
     <div class="input-group-prepend">
         <span class="input-group-text">To</span>
     </div>
-    <input type="email" id="email" class="form-control" placeholder="example@email.com" />
+    <input type="email" class="form-control" placeholder="example@email.com" @bind="_toAddress"/>
 </div>
+
+<div class="form-group input-group">
+    <div class="input-group-prepend">
+        <span class="input-group-text">Onderwerp</span>
+    </div>
+    <input type="text" class="form-control" placeholder="Onderwerp" @bind="_subject" />
+</div>
+
+<div class="form-group">
+    <textarea class="form-control" rows="20" placeholder="Body" @bind="_body"/>
+</div>
+
+<button class="btn btn-primary" disabled @onclick="Submit">Verzend</button>
+<p class="text-danger">WIP</p>

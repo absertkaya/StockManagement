@@ -17,7 +17,7 @@ namespace StockManagement.Domain.IRepositories
         bool ItemExists(int id);
         Task<int> GetAmountInStockValueAsync(int id);
         int GetAmountInStockValue(int id);
-        Task<IList<Item>> GetItemsByUser(string id);
+        Task<IList<Item>> GetItemsByUserAsync(string id);
         Task<ItemUser> GetLastUse(string userid, int itemid);
         Task<IList<ItemUser>> GetItemUsersByUser(string id);
         Task<IList<ItemUser>> GetItemUsersByItem(int id);

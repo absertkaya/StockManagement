@@ -54,9 +54,9 @@ namespace StockManagement.Data.Repositories
             return await _session.Query<ItemUser>().FirstOrDefaultAsync(i => i.User.Id == userid && i.Item.Id == itemid && i.ToDate == null);
         }
 
-        public virtual async Task<IList<Item>> GetItemsByUser(string id)
+        public virtual async Task<IList<Item>> GetItemsByUserAsync(string id)
         {
-            return await _session.Query<Item>().Where(i => i.ADUser.Id == id).ToListAsync();
+            return await _session.QueryOver<Item>().Where(i => i.ADUser.Id == id).Left.JoinQueryOver(i => i.Product).ListAsync();
         }
 
         public virtual async Task<IList<ItemUser>> GetItemUsersByUser(string id)

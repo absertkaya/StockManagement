@@ -64,7 +64,7 @@ namespace StockManagement.Pages.OverviewPages
                     _items = await Repository.GetBySupplierAsync(_supplier.Id);
                 }
                 _hasHostnames = _items.Any(i => i.Hostname != null);
-                _filteredItems = new List<Item>(_items);
+                _filteredItems = new List<Item>(_items).OrderBy(i => i.SerialNumber);
             } catch (Exception ex)
             {
                 Telemetry.TrackException(ex);

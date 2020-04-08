@@ -37,7 +37,7 @@ namespace StockManagement.Pages.OverviewPages
             {
                 _itemusers = (await Repository.GetItemUsersByUser(Id)).Where(i => i.ToDate != null).ToList();
                 _user = (ADUser)await Repository.GetByIdAsync(typeof(ADUser), Id);
-                _items = await Repository.GetItemsByUser(Id);
+                _items = await Repository.GetItemsByUserAsync(Id);
             }
             catch (Exception ex) {
                 Telemetry.TrackException(ex);
