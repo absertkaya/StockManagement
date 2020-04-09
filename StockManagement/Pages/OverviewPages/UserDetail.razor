@@ -34,10 +34,14 @@
             <table class="table table-sm table-hover">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Omschrijving</th>
-                        <th class="d-none d-md-table-cell">P/N</th>
-                        <th>S/N</th>
-                        <th><button @onclick="ShowConfirmation" class="btn btn-small btn-outline-warning"><i class="oi oi-arrow-circle-right"></i></button></th>
+                        <th width="30%">Omschrijving</th>
+                        <th width="30%" class="d-none d-md-table-cell">P/N</th>
+                        <th width="30%">S/N</th>
+                        <th width="10%">
+                            <div class="btn-group btn-group-sm">
+                                <button @onclick="ShowConfirmation" class="btn btn-sm btn-outline-warning"><i class="oi oi-arrow-circle-right"></i></button>
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -48,7 +52,12 @@
                             <td>@item.Product.Description</td>
                             <td class="d-none d-md-table-cell">@(item.Product.ProductNumber.Split(" ")[0] == "NOPRODUCTNR" ? "Geen productnummer beschikbaar." : item.Product.ProductNumber)</td>
                             <td>@(item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : item.SerialNumber)</td>
-                            <td @onclick:stopPropagation><button class="btn btn-outline-warning" @onclick="(()=>ReturnItem(item))"><i class="oi oi-arrow-circle-right"></i></button></td>
+                            
+                                <td @onclick:stopPropagation>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-sm btn-outline-warning" @onclick="(()=>ReturnItem(item))"><i class="oi oi-arrow-circle-right"></i></button>
+                                    </div>
+                                </td>
                         </tr>
                     }
                 </tbody>
@@ -76,10 +85,10 @@ else
             <table class="table table-sm table-hover">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Omschrijving</th>
-                        <th class="d-none d-md-table-cell">S/N</th>
-                        <th>Van</th>
-                        <th>Tot</th>
+                        <th width="35%">Omschrijving</th>
+                        <th width="35%" class="d-none d-md-table-cell">S/N</th>
+                        <th width="15%">Van</th>
+                        <th width="15%">Tot</th>
                     </tr>
                 </thead>
                 <tbody>
