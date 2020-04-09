@@ -26,7 +26,7 @@ namespace StockManagement.Domain
             set { 
                 if (value == null)
                 {
-                    throw new ArgumentNullException("Item must not be null");
+                    throw new ArgumentNullException("User must not be null");
                 }
                 _user = value; }
         }
@@ -51,8 +51,6 @@ namespace StockManagement.Domain
         {
             Item = item;
             User = user;
-            item.ItemUsers.Add(this);
-            User.ItemUsers.Add(this);
             AssignedBy = assigner;
             FromDate = DateTime.Now;
         }

@@ -54,6 +54,8 @@ namespace StockManagement.Domain
 
             ItemStatus = ItemStatus.OUTSTOCK;
             var iu = new ItemUser(this, user, assigner);
+            ItemUsers.Add(iu);
+            user?.ItemUsers.Add(iu);
             ADUser = user;
             return iu;
         }
@@ -65,19 +67,27 @@ namespace StockManagement.Domain
                 throw new Exception("Can't be returned in this state");
             }
             
-            ItemUser use = ItemUsers.FirstOrDefault(x => x.ToDate == null);
-            if (use == null)
+            ItemUser iu = ItemUsers.FirstOrDefault(x => x.ToDate == null);
+            if (iu == null)
             {
-                use = new ItemUser(this, ADUser, returner);
+                if (ADUser != null)
+                {
+                    iu = new ItemUser(this, ADUser, returner);
+                    ItemUsers.Add(iu);
+                    ADUser?.ItemUsers.Add(iu);
+                }
             }
-            use.Close(returner);
+            if (iu != null)
+            {
+                iu.Close(returner);
+            }
             if (ADUser != null)
             {
                 ADUser.Items.Remove(this);
                 ADUser = null;
             }
             ItemStatus = ItemStatus.INSTOCK;
-            return use;
+            return iu;
         }
     }
 }
