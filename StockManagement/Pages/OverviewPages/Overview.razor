@@ -15,7 +15,7 @@
     <div class="input-group col-10 col-md-6">
         <input class="form-control" type="text" placeholder="Hostname of S/N" @bind="_searchString" @bind:event="oninput" @onkeypress="KeyPress" />
         <div class="input-group-append">
-            <button class="btn btn-info"><i class="oi oi-magnifying-glass" @onclick="NavigateToSearch"></i></button>
+            <button class="btn btn-info"  @onclick="NavigateToSearch"><i class="oi oi-magnifying-glass"></i></button>
         </div>
     </div>
 </div>

@@ -84,7 +84,7 @@
                         <i class="oi oi-eye"></i>
                     </button>
                 </div>
-                <input id="@(_serialScan ? "" : "codeField")" value="@_productNumber" class="form-control" />
+                <input id="@(_serialScan ? "" : "codeField")" @bind="_productNumber" class="form-control" />
 
             </div>
         </div>
@@ -97,7 +97,7 @@
                         <i class="oi oi-eye"></i>
                     </button>
                 </div>
-                <InputText id="@(_serialScan ? "codeField" : "" )" @bind-Value="_serialNumber" class="form-control" />
+                <input id="@(_serialScan ? "codeField" : "" )" @bind="_serialNumber" class="form-control" />
             </div>
         </div>
     </div>

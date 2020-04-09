@@ -24,5 +24,6 @@ namespace StockManagement.Domain.IRepositories
         bool ItemDuplicateExists(int id, string sn, int productId);
         bool ProductDuplicateExists(int id, string pn);
         Task<IList<Item>> GetBySupplierAsync(int id);
+        Task<Item> GetItemByProductAndSerialNumberAsync(string pn, string sn);
     }
 }

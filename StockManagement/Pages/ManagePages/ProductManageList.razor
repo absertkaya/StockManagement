@@ -45,12 +45,12 @@
             <tbody>
                 @foreach (Product prod in _filteredProducts)
                 {
-                    <tr>
-                        <td @onclick="(() => NavigateToProductDetail(prod))">@prod.Description</td>
+                    <tr @onclick="(() => NavigateToProductDetail(prod))">
+                        <td>@prod.Description</td>
                         <td class="d-none d-md-table-cell">@(prod.ProductNumber.Split(" ")[0] == "NOPRODUCTNR" ? "Geen productnummer beschikbaar." : prod.ProductNumber)</td>
                         <td class="w-25 @(prod.AmountInStock == 0 ? "text-danger" : "text-success")">@prod.AmountInStock</td>
                         <td>
-                            <div class="btn-group btn-groep-sm d-flex justify-content-end">
+                            <div class="btn-group btn-groep-sm d-flex justify-content-end" @onclick:stopPropagation>
                                 <a href="/beheer/product/id/@(prod.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
                                 @if (prod.Items.Count == 0)
                                 {

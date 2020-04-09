@@ -25,10 +25,9 @@ namespace StockManagement.Domain
                 _deliveryDate = value; 
             } 
         }
-        [Required]
         public virtual DateTime? InvoiceDate { get; set; }
         public virtual ItemStatus ItemStatus { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Leverancier is verplicht")]
         public virtual Supplier Supplier { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }
 
@@ -53,17 +52,12 @@ namespace StockManagement.Domain
                 throw new Exception("Can't remove in this state");
             }
 
-            if (ADUser != null)
-            {
-                throw new Exception("Item has a user");
-            }
-
             ItemStatus = ItemStatus.OUTSTOCK;
             new ItemUser(this, user, assigner);
             ADUser = user;
         }
 
-        public virtual void ReturnToStock(ADUser returner)
+        public virtual ItemUser ReturnToStock(ADUser returner)
         {
             if (ItemStatus != ItemStatus.OUTSTOCK)
             {
@@ -80,6 +74,7 @@ namespace StockManagement.Domain
                 ADUser.Items.Remove(this);
                 ADUser = null;
             }
+            return use;
         }
     }
 }

@@ -49,7 +49,7 @@
                 {
                     <div class="form-group">
                         <label for="product">Items @(Method == "out" ? "in stock" : "uit stock")</label>
-                        <select id="product" class="form-control" value="_selectedItem" @onchange="SelectItem">
+                        <select id="product" class="form-control" value="@_serialNumber" @onchange="SelectItem">
                             <option value="" selected hidden>Kies een item</option>
 
                             @foreach (Item item in _items)
@@ -85,13 +85,12 @@ else
         <label for="comment">Opmerking</label>
         <textarea class="form-control" id="comment" @bind="_comment" />
     </div>
-    @if (_item != null)
-    {
-        <div class="form-group">
-            <label for="file">Upload</label>
-            <FileUploadComponent @ref="_fileUpload" Container="@("item"+_item.Id)" />
-        </div>
-    }
+
+    <div class="form-group">
+        <label for="file">Upload</label>
+        <FileUploadComponent @ref="_fileUpload"/>
+    </div>
+
 }
 
 <div class="form-group row">
@@ -103,7 +102,7 @@ else
                     <i class="oi oi-eye"></i>
                 </button>
             </div>
-            <input id="@(_serialScan ? "" : "codeField")" value="@_productNumber" class="form-control" />
+            <input id="@(_serialScan ? "" : "codeField")" @bind="_productNumber" class="form-control" />
 
         </div>
     </div>
@@ -116,7 +115,7 @@ else
                     <i class="oi oi-eye"></i>
                 </button>
             </div>
-            <input id="@(_serialScan ? "codeField" : "" )" value="@_serialNumber" class="form-control" />
+            <input id="@(_serialScan ? "codeField" : "" )" @bind="@_serialNumber" class="form-control" />
         </div>
     </div>
 </div>

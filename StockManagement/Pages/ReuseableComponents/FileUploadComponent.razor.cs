@@ -33,6 +33,12 @@ namespace StockManagement.Pages.ReuseableComponents
             return (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList().Count == 0;
         }
 
+        public async Task Upload(string container, string filename)
+        {
+            Container = container;
+            await Upload(filename);
+        }
+
         public async Task Upload(string filename)
         {
             var files = (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList();
@@ -50,6 +56,7 @@ namespace StockManagement.Pages.ReuseableComponents
                     Telemetry.TrackException(ex);
                 }
             }
+            await ClearFile();
         }
     }
 }

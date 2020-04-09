@@ -69,14 +69,22 @@ namespace StockManagement.Pages.StockPages
             Product product = null;
             Supplier supplier = null;
             string serialnr = null;
+
             if (_productNumber != null)
-                product = _products.FirstOrDefault(p => p.ProductNumber == _productNumber);
+            {
+                product = Repository.GetByProductNr(_productNumber);
+            }
+                
             if (_selectedSupplier != null)
+            {
                 supplier = _suppliers.FirstOrDefault(p => p.Id == _selectedSupplier);
+            }
+                
             if (_serialNumber != null) {
                 serialnr = Regex.Replace(_serialNumber, @"\s+", "");
                 _item.SerialNumber = serialnr;
             }
+
             _item.Product = product;
             _item.Supplier = supplier;
 

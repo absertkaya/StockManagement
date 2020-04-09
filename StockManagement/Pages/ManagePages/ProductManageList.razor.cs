@@ -38,7 +38,7 @@ namespace StockManagement.Pages.ManagePages
         public TelemetryClient Telemetry { get; set; }
         protected Category _category;
         private IList<Product> _products;
-        protected IEnumerable<Product> _filteredProducts;
+        protected IList<Product> _filteredProducts;
         protected string _filterString = "";
 
         protected bool _deleteFailProduct;
@@ -83,11 +83,11 @@ namespace StockManagement.Pages.ManagePages
         {
             if (!sortProductNumberDesc)
             {
-                _filteredProducts = _filteredProducts.OrderBy(p => p.ProductNumber);
+                _filteredProducts = _filteredProducts.OrderBy(p => p.ProductNumber).ToList();
             }
             else
             {
-                _filteredProducts = _filteredProducts.OrderByDescending(p => p.ProductNumber);
+                _filteredProducts = _filteredProducts.OrderByDescending(p => p.ProductNumber).ToList();
             }
             sortProductNumberDesc = !sortProductNumberDesc;
         }
@@ -96,11 +96,11 @@ namespace StockManagement.Pages.ManagePages
         {
             if (!sortProductNameDesc)
             {
-                _filteredProducts = _filteredProducts.OrderBy(p => p.Description);
+                _filteredProducts = _filteredProducts.OrderBy(p => p.Description).ToList();
             }
             else
             {
-                _filteredProducts = _filteredProducts.OrderByDescending(p => p.Description);
+                _filteredProducts = _filteredProducts.OrderByDescending(p => p.Description).ToList();
             }
             sortProductNameDesc = !sortProductNameDesc;
         }
@@ -109,18 +109,18 @@ namespace StockManagement.Pages.ManagePages
         {
             if (!sortAmountInStockDesc)
             {
-                _filteredProducts = _filteredProducts.OrderBy(p => p.AmountInStock);
+                _filteredProducts = _filteredProducts.OrderBy(p => p.AmountInStock).ToList();
             }
             else
             {
-                _filteredProducts = _filteredProducts.OrderByDescending(p => p.AmountInStock);
+                _filteredProducts = _filteredProducts.OrderByDescending(p => p.AmountInStock).ToList();
             }
             sortAmountInStockDesc = !sortAmountInStockDesc;
         }
 
         protected void Filter()
         {
-            _filteredProducts = _products.Where(p => (p.Description + p.ProductNumber).Trim().ToLower().Contains(_filterString.Trim().ToLower()));
+            _filteredProducts = _products.Where(p => (p.Description + p.ProductNumber).Trim().ToLower().Contains(_filterString.Trim().ToLower())).ToList();
         }
 
         protected void NavigateToProductDetail(Product prod)
@@ -136,6 +136,7 @@ namespace StockManagement.Pages.ManagePages
                 {
                     Repository.Delete(product);
                     _products.Remove(product);
+                    _filteredProducts.Remove(product);
                     _category.Products.Remove(product);
                     Telemetry.TrackEvent("ProductDelete");
                 }

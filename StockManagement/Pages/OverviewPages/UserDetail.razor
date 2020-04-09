@@ -37,6 +37,7 @@
                         <th>Omschrijving</th>
                         <th class="d-none d-md-table-cell">P/N</th>
                         <th>S/N</th>
+                        <th><button @onclick="ShowConfirmation" class="btn btn-small btn-outline-warning"><i class="oi oi-arrow-circle-right"></i></button></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,6 +48,7 @@
                             <td>@item.Product.Description</td>
                             <td class="d-none d-md-table-cell">@(item.Product.ProductNumber.Split(" ")[0] == "NOPRODUCTNR" ? "Geen productnummer beschikbaar." : item.Product.ProductNumber)</td>
                             <td>@(item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : item.SerialNumber)</td>
+                            <td @onclick:stopPropagation><button class="btn btn-outline-warning" @onclick="(()=>ReturnItem(item))"><i class="oi oi-arrow-circle-right"></i></button></td>
                         </tr>
                     }
                 </tbody>

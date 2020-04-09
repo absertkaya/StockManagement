@@ -28,6 +28,11 @@ namespace StockManagement.Data.Repositories
                 .ListAsync();
         }
 
+        public virtual async Task<Item> GetItemByProductAndSerialNumberAsync(string pn, string sn)
+        {
+            return await _session.Query<Item>().FirstOrDefaultAsync(i => i.Product.ProductNumber == pn && i.SerialNumber == sn);
+        }
+
         public virtual async Task<Item> GetItemDetails(int id)
         {
             return await _session.Query<Item>()

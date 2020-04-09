@@ -91,18 +91,18 @@ namespace StockManagement.Pages.StockPages
             _hideSettings = !_hideSettings;
         }
 
-        private void HandleOut(ADUser stockUser)
+        private bool HandleOut(ADUser stockUser)
         {
             if (_item.ItemStatus != ItemStatus.INSTOCK)
             {
                 ToastService.ShowWarning("Item kan niet uit stock gehaald worden met status: " + _item.ItemStatus.ToString());
-                return;
+                return false;
             }
             GraphUser graphUser = userSearch.GetSelectedUser();
             if (graphUser == null)
             {
                 ToastService.ShowWarning("Selecteer een gebruiker.");
-                return;
+                return false;
             }
             ADUser aduser = UserRepository.GetByEmail(graphUser.Mail);
             if (aduser == null)
@@ -114,6 +114,7 @@ namespace StockManagement.Pages.StockPages
                 } catch (Exception ex)
                 {
                     Telemetry.TrackException(ex);
+                    return false;
                 }
             }
             _item.RemoveFromStock(aduser, stockUser);
@@ -126,17 +127,18 @@ namespace StockManagement.Pages.StockPages
             {
                 Telemetry.TrackException(ex);
                 ToastService.ShowError("Kon item niet uit stock halen.");
+                return false;
             }
-
+            return true;
         }
 
-        private async Task HandleReturn(ADUser stockUser)
+        private async Task<bool> HandleReturn(ADUser stockUser)
         {
             if (_item.ItemStatus != ItemStatus.OUTSTOCK)
             {
                 Telemetry.TrackEvent("InvalidIn");
                 ToastService.ShowWarning("Item kan niet geretourneerd worden met status: " + _item.ItemStatus.ToString());
-                return;
+                return false;
             }
 
             _item.ReturnToStock(stockUser);
@@ -154,20 +156,23 @@ namespace StockManagement.Pages.StockPages
                 {
                     try
                     {
-                        await _fileUpload.Upload("item" + _item.Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
+                        await _fileUpload.Upload("item" + _item?.Id,"item" + _item.Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
                     }
                     catch (Exception ex)
                     {
+                        
                         Telemetry.TrackException(ex);
                         ToastService.ShowWarning("Kon bestand niet uploaden.");
+                        return false;
                     }
                 }
             } catch (Exception ex)
             {
                 Telemetry.TrackException(ex);
                 ToastService.ShowError("Kon item niet in stock plaatsen.");
+                return false;
             }
-
+            return true;
         }
 
         protected async Task Submit()
@@ -186,28 +191,35 @@ namespace StockManagement.Pages.StockPages
                     ToastService.ShowWarning("Selecteer of scan een serienummer.");
                     return;
                 }
-                try
+
+
+                _item = await Repository.GetItemByProductAndSerialNumberAsync(_productNumber, _serialNumber);            
+                if (_item == null)
                 {
-                    _item = _items.First(i => i.SerialNumber == _serialNumber);
-                } catch (Exception ex)
-                {
-                    Telemetry.TrackException(ex);
-                    ToastService.ShowError("Item bestaat niet.");
+                    ToastService.ShowWarning("Item bestaat niet.");
                     return;
                 }
             }
 
             if (Method == "out")
             {
-                HandleOut(stockUser);
+                var res = HandleOut(stockUser);
+                if (!res)
+                {
+                    return;
+                }
+
             } else
             {
-                await HandleReturn(stockUser);
+               var res = await HandleReturn(stockUser);
+                if (!res)
+                {
+                    return;
+                }
             }
 
             _item = null;
-            _serialNumber = _items.FirstOrDefault()?.SerialNumber;
-            StateHasChanged();
+            _serialNumber = null;
         }
     }
 }
