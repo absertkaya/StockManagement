@@ -45,7 +45,7 @@ namespace StockManagement.Domain
             ItemUsers = new List<ItemUser>();
         }
 
-        public virtual void RemoveFromStock(ADUser user, ADUser assigner)
+        public virtual ItemUser RemoveFromStock(ADUser user, ADUser assigner)
         {
             if (ItemStatus.INSTOCK != ItemStatus)
             {
@@ -53,8 +53,9 @@ namespace StockManagement.Domain
             }
 
             ItemStatus = ItemStatus.OUTSTOCK;
-            new ItemUser(this, user, assigner);
+            var iu = new ItemUser(this, user, assigner);
             ADUser = user;
+            return iu;
         }
 
         public virtual ItemUser ReturnToStock(ADUser returner)
@@ -63,17 +64,19 @@ namespace StockManagement.Domain
             {
                 throw new Exception("Can't be returned in this state");
             }
-            ItemStatus = ItemStatus.INSTOCK;
+            
             ItemUser use = ItemUsers.FirstOrDefault(x => x.ToDate == null);
-            if (use != null)
+            if (use == null)
             {
-                use.Close(returner);
+                use = new ItemUser(this, ADUser, returner);
             }
+            use.Close(returner);
             if (ADUser != null)
             {
                 ADUser.Items.Remove(this);
                 ADUser = null;
             }
+            ItemStatus = ItemStatus.INSTOCK;
             return use;
         }
     }
