@@ -60,8 +60,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void Filter()
         {
-            _filteredUsers = _users.Where(u => u.NormalizedSearchInfo.Contains(Regex.Replace(_filterString.ToLower(), " ", "")));
-            StateHasChanged();
+            _filteredUsers = _users.Where(u => Regex.Replace(u.NormalizedSearchInfo, " ", "").Contains(Regex.Replace(_filterString.ToLower(), " ", "")));
         }
 
         protected void NavigateToUserDetail(ADUser user)

@@ -23,6 +23,10 @@ namespace StockManagement.Data.Mappers
             HasMany(x => x.ItemUsers)
                 .Inverse()
                 .Cascade.All();
+            HasMany(x => x.MobileSubscriptions)
+                .Inverse()
+                .Cascade
+                .Delete();
         }
     }
 }

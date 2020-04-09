@@ -7,10 +7,10 @@ namespace StockManagement.Domain.IRepositories
     {
         Task<IList<Product>> GetByCategoryAsync(int id);
         IList<Product> GetByCategory(int id);
-        Task<Item> GetItemWithUser(int id);
+        Task<Item> GetItemDetails(int id);
         IList<Item> GetByProduct(int id);
         Task<IList<Item>> GetByProductAsync(int id);
-        Item GetBySerialNr(string serialnr);
+        Task<IList<Item>> GetBySerialNrAsync(string serialnr);
         Product GetByProductNr(string productnr);
         Product GetByProductName(string name);
         bool GetItemInStock(int id);

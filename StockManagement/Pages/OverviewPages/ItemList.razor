@@ -27,61 +27,26 @@
             <h3 class="d-inline">@_supplier.SupplierName</h3>
         }
     </div>
-    @if (_items != null)
+    @if (_filteredItems != null)
     {
         <div class="mb-1 row">
             <div class="input-group col-sm-6">
-                <input class="form-control" type="text" @bind="_filterString" @onkeydown="Filter" />
+                <input class="form-control" type="text" @bind="_filterString" @bind:event="oninput" @onkeyup="Filter" />
                 <div class="input-group-append">
-                    <select class="form-control" @bind=@_selectedStatus>
+                    <select class="form-control" @onchange="SelectStatus">
                         <option hidden selected value="">Status</option>
-                        <option value="@ItemStatus.INSTOCK">In stock</option>
-                        <option value="@ItemStatus.OUTSTOCK">Uit stock</option>
-                        <option value="@ItemStatus.STOLEN">Gestolen</option>
-                        <option value="@ItemStatus.INACTIVE">End-of-life</option>
-                        <option value="@ItemStatus.DEFECTIVE">Defective</option>
+                        <option value="0">In stock</option>
+                        <option value="1">Uit stock</option>
+                        <option value="2">Gestolen</option>
+                        <option value="3">End-of-life</option>
+                        <option value="4">Defective</option>
                     </select>
                     <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
                 </div>
             </div>
         </div>
 
-        <div class="table-responsive">
-            <table class="table table-sm table-hover">
-                <thead class="thead-dark">
-                    <tr>
-                        @if (_hasHostnames) {
-                            <th @onclick="SortByHostname">Hostname</th>
-                        }
-                        <th @onclick="SortBySerialNumber">S/N</th>
-                        <th class="d-none d-md-table-cell" @onclick="SortByUser">Gebruiker</th>
-                        <th @onclick="SortByInStock">In stock</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (Item item in _filteredItems)
-                    {
-                        <tr @onclick="(() => NavigateToItemHistory(item))">
-                            @if (_hasHostnames) {
-                                <td>@item.Hostname</td>
-                            }
-                            <td>@(item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : item.SerialNumber)</td>
-                            <td class="d-none d-md-table-cell">@(item.ADUser?.FirstName + " " + item.ADUser?.LastName)</td>
-                            <td>
-                                @if (item.ItemStatus == ItemStatus.INSTOCK)
-                                {
-                                    <i class="oi oi-circle-check text-success"></i>
-                                }
-                                else
-                                {
-                                    <i class="oi oi-circle-x text-danger"></i>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+        <ItemListComponent Items="_filteredItems" Route="@Route" SupplierId="SupplierId" />
     }
 }
 else

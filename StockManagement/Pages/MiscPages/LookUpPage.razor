@@ -1,0 +1,29 @@
+﻿@inherits LookUpPageBase
+@using StockManagement.Pages.OverviewPages
+@page "/zoek"
+@page "/zoek/{param}"
+
+<div class="mb-2">
+    <a href="/" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">Zoek item</h3>
+</div>
+
+<div class="mb-1 row">
+    <div class="input-group col-sm-6">
+        <input class="form-control" type="text" @bind="_searchString" @bind:event="oninput" @onkeypress="KeyPress" />
+        <div class="input-group-append">
+            <button class="btn btn-primary btn-sm" @onclick="Search">Zoek</button>
+        </div>
+    </div>
+</div>
+@if (!searching)
+{
+    @if (_foundItems != null)
+    {
+        <ItemListComponent Items="_foundItems" />
+    }
+}
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+}

@@ -3,6 +3,7 @@ using Blazored.Toast.Services;
 using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;
@@ -26,9 +27,10 @@ namespace StockManagement.Pages.OverviewPages
         [Inject]
         public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject]
-        private IUserRepository UserRepository { get; set; }
-        [Inject]
         public NavigationManager NavigationManager { get; set; }
+
+        protected string _searchString;
+
         protected IList<Category> _categories;
 
         protected override async Task OnInitializedAsync()
@@ -41,7 +43,19 @@ namespace StockManagement.Pages.OverviewPages
                 Telemetry.TrackException(ex);
                 ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
             }
-             
+        }
+
+        protected void KeyPress(KeyboardEventArgs e)
+        {
+            if (e.Key == "Enter")
+            {
+                NavigateToSearch();
+            }
+        }
+
+        protected void NavigateToSearch()
+        {
+            NavigationManager.NavigateTo("/zoek/"+_searchString);
         }
     }
 }

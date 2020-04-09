@@ -1,6 +1,6 @@
 ﻿@using StockManagement.Domain
 
-<div class="table-responsive border border-dark">
+<div class="table-responsive border">
     <table class="table table-sm">
         <tr>
             <th style="width: 16.66%">Email</th>
@@ -26,6 +26,21 @@
             <th style="width: 16.66%">Functie</th>
             <td>@ADUser.OfficeRole</td>
         </tr>
+        @if (ADUser.MobileSubscriptions != null && ADUser.MobileSubscriptions.Count != 0)
+        {
+            <tr>
+                <th>GSM-Abonnementen</th>
+            </tr>
+            @foreach (MobileSubscription sub in ADUser.MobileSubscriptions)
+            {
+                <tr>
+                    <th style="width: 16.66%">GSM</th>
+                    <td style="width: 16.66%">@sub.MobileNumber</td>
+                    <th style="width: 16.66%">Type</th>
+                    <td style="width: 16.66%">@sub.SubscriptionType</td>
+                </tr>
+            }
+        }
     </table>
 </div>
 

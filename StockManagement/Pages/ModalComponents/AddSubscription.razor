@@ -1,0 +1,158 @@
+﻿@using StockManagement.Domain
+@using StockManagement.Domain.IRepositories
+
+<EditForm EditContext="_editContext" OnSubmit="Submit">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="number">GSM</label>
+        <InputText class="form-control" id="number" @bind-Value="_sub.MobileNumber" placeholder="04........." />
+    </div>
+    <div class="form-group">
+        <label for="type">Abonnementtype</label>
+        <div class="row">
+            <div class="col-6">
+                <InputSelect id="type" @bind-Value="_sub.SubscriptionType" class="form-control">
+                    <option value="" selected disabled>Kies een optie</option>
+                    <option value="Zen">Zen</option>
+                    <option value="Intense">Intense</option>
+                    <option value="IPad">IPad</option>
+                    <option value="Intense">Intense</option>
+                    <option value="Lite">Lite</option>
+                </InputSelect>
+            </div>
+            <div class="col-6">
+                <InputText @bind-Value="_sub.SubscriptionType" class="form-control" placeholder="..of Typ hier" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="account">Account</label>
+
+        <div class="input-group">
+            <select id="type" value="@_selectedAccount" @onchange="FireAccountChange" class="form-control">
+                @if (_accounts != null && _accounts.Count != 0)
+                {
+                    <option value="" selected disabled>Kies een optie</option>
+                    @foreach (MobileAccount acc in _accounts)
+                    {
+                        <option value="@acc.Id">@acc.AccountName</option>
+                    }
+                    /**/
+                }
+                else
+                {
+                    <option value="" selected disabled>Geen accounts beschikbaar</option>
+                }
+            </select>
+            <div class="input-group-append">
+                <button type="button" @onclick="SwitchAddMode" class="btn btn-secondary btn-sm"><i class="oi @(_addMode ? "oi-minus" : "oi-plus")"></i></button>
+            </div>
+        </div>
+    </div>
+    @if (_addMode)
+    {
+<div class="border p-2">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-6">
+                <label for="name">Accountnaam</label>
+                <input class="form-control" id="name" @bind="_acc.AccountName" />
+            </div>
+            <div class="col-6">
+                <label for="nr">Accountnummer</label>
+                <div class="input-group">
+                    <input class="form-control" id="nr" @bind="_acc.AccountNumber" />
+                    <div class="input-group-append">
+                        <button type="button" @onclick="SubmitAccount" class="btn btn-sm btn-secondary"><i class="oi oi-check"></i></button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    @if (_accError)
+    {
+        <div>
+            <p class="text-danger">Een account heeft verplicht een naam en nummer.</p>
+        </div>
+
+    }
+</div>
+
+
+    }
+    <ValidationSummary />
+</EditForm>
+
+@code {
+    [CascadingParameter]
+    private BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter]
+    public ADUser User { get; set; }
+
+    [Inject]
+    private IUserRepository UserRepository { get; set; }
+
+    protected IList<MobileAccount> _accounts = new List<MobileAccount>();
+
+    protected bool _addMode;
+    protected bool _accError;
+
+    protected int? _selectedAccount;
+
+    protected MobileSubscription _sub = new MobileSubscription();
+    protected MobileAccount _acc = new MobileAccount();
+    protected EditContext _editContext;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _accounts = await UserRepository.GetAllMobileAccounts();
+        }
+        catch (Exception ex)
+        {
+            BlazoredModal.Close();
+        }
+    }
+
+    protected void FireAccountChange(ChangeEventArgs e)
+    {
+        _selectedAccount = int.Parse(e.Value.ToString());
+        _sub.MobileAccount = _accounts.FirstOrDefault(a => a.Id == (int)_selectedAccount);
+    }
+
+    protected override void OnInitialized()
+    {
+        _editContext = new EditContext(_sub);
+    }
+
+    protected void SwitchAddMode()
+    {
+        _addMode = !_addMode;
+    }
+
+    protected void SubmitAccount()
+    {
+        _accError = false;
+        if (!string.IsNullOrWhiteSpace(_acc.AccountName) && !string.IsNullOrWhiteSpace(_acc.AccountNumber))
+        {
+            UserRepository.Save(_acc);
+            _accounts.Add(_acc);
+            _selectedAccount = _acc.Id;
+            _sub.MobileAccount = _acc;
+            _addMode = false;
+        }
+        else
+        {
+            _accError = true;
+        }
+    }
+
+    protected void Submit()
+    {
+        BlazoredModal.Close();
+    }
+}

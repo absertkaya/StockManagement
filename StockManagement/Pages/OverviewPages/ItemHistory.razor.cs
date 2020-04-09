@@ -54,7 +54,7 @@ namespace StockManagement.Pages.OverviewPages
         {
             try
             {
-                _item = await Repository.GetItemWithUser(Id);
+                _item = await Repository.GetItemDetails(Id);
                 _itemusers = (await Repository.GetItemUsersByItem(Id))?.OrderByDescending(i => i.ToDate).ToList();
             } catch (Exception ex)
             {
@@ -100,10 +100,10 @@ namespace StockManagement.Pages.OverviewPages
             try
             {
                 Repository.Delete(item);
-                item.Supplier.Items.Remove(item);
-                item.Product.Items.Remove(item);
+                item.Supplier?.Items.Remove(item);
+                item.Product?.Items.Remove(item);
                 Telemetry.TrackEvent("ItemDelete");
-                NavigationManager.NavigateTo("/itemlijst/" + item.Product.Id);
+                NavigationManager.NavigateTo($"{Beheer}/itemlijst/" + item.Product?.Id);
             }
             catch (Exception ex)
             {

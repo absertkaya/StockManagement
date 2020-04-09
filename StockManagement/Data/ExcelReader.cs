@@ -112,13 +112,13 @@ namespace StockManagement.Data
                         foreach (DataRow row in table.Rows)
                         {
                             rowNr++;
-                            if (rowNr < 4)
+                            if (rowNr < 3)
                             {
                                 continue;
                             }
                             string code = row.ItemArray[0].ToString().ToLower();
                             string email = row.ItemArray[2].ToString().ToLower();
-                            GraphUser user = _colGraphUsers.FirstOrDefault(u => u.Mail == email);
+                            GraphUser user = _colGraphUsers.FirstOrDefault(u => u.Mail.ToLower() == email);
                             userMap.Add(code, user);
                         }
                     }
@@ -126,13 +126,41 @@ namespace StockManagement.Data
             }
         }
 
-            private void ReaderHelper(Stream stream)
+        public void ReadSubscriptions(string path)
+        {
+            int rowNr;
+            using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
             {
+                using (var reader = ExcelReaderFactory.CreateReader(stream))
+                {
+                    var result = reader.AsDataSet();
+                    rowNr = 0;
+                    foreach (DataTable table in result.Tables)
+                    {
+                        foreach (DataRow row in table.Rows)
+                        {
+                            rowNr++;
+                            if (rowNr < 3)
+                            {
+                                continue;
+                            }
+                            string mobile = row.ItemArray[0].ToString().ToLower();
+                            //string fullname = 
+                            //GraphUser user = _colGraphUsers.FirstOrDefault(u => u.Mail.ToLower() == email);
+                            
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ReaderHelper(Stream stream)
+        {
             int rowNr;
             Supplier unknown = new Supplier() { SupplierName = "UNKNOWN" };
             Supplier supplier = unknown;
             List<string> products = new List<string>();
-            List<Supplier> suppliers = new List<Supplier>() { unknown};
+            List<Supplier> suppliers = new List<Supplier>() { unknown };
             Repo.Save(supplier);
             using (var reader = ExcelReaderFactory.CreateReader(stream))
             {
@@ -165,19 +193,22 @@ namespace StockManagement.Data
                         try
                         {
                             delivery = DateTime.Parse(row.ItemArray[4].ToString());
-                        } catch (Exception exc)
+                        }
+                        catch (Exception exc)
                         {
                             delivery = null;
                         }
-                        
+
                         string supplierName = row.ItemArray[5].ToString().Trim().ToLower();
                         if (string.IsNullOrWhiteSpace(supplierName))
                         {
                             supplier = unknown;
-                        } else if (suppliers.Any(s => s.SupplierName == supplierName))
+                        }
+                        else if (suppliers.Any(s => s.SupplierName == supplierName))
                         {
                             supplier = suppliers.First(s => s.SupplierName == supplierName);
-                        } else
+                        }
+                        else
                         {
                             supplier = new Supplier() { SupplierName = supplierName };
                             Repo.Save(supplier);
@@ -187,7 +218,8 @@ namespace StockManagement.Data
                         try
                         {
                             invoice = DateTime.Parse(row.ItemArray[6].ToString());
-                        } catch (Exception exc)
+                        }
+                        catch (Exception exc)
                         {
                             invoice = null;
                         }
@@ -232,7 +264,7 @@ namespace StockManagement.Data
                                 product = Repo.GetByProductName(desc);
                             }
                         }
-                        
+
                         DateTime? outstockdate;
                         try
                         {
@@ -259,7 +291,7 @@ namespace StockManagement.Data
                             {
                                 user = userMap[u];
                             }
-                             
+
                             if (user != null)
                             {
                                 if (!newUsers.Any(u => u.Id == user.Id))
@@ -267,11 +299,13 @@ namespace StockManagement.Data
                                     aduser = new ADUser(user);
                                     newUsers.Add(aduser);
                                     Repo.Save(aduser);
-                                } else
+                                }
+                                else
                                 {
                                     aduser = newUsers.First(u => u.Id == user.Id);
                                 }
-                            } else
+                            }
+                            else
                             {
                                 comment += " (User: " + u + ")";
                             }
@@ -279,7 +313,7 @@ namespace StockManagement.Data
 
                         bool instock = outstockdate == null && locStock;
                         ItemStatus status = instock ? ItemStatus.INSTOCK : ItemStatus.OUTSTOCK;
-                        if(stolen)
+                        if (stolen)
                         {
                             status = ItemStatus.STOLEN;
                         }
@@ -304,7 +338,7 @@ namespace StockManagement.Data
                         if (!Repo.ItemDuplicateExists(item.Id, sn, product.Id))
                         {
                             try
-                            { 
+                            {
                                 Repo.Save(item);
                             }
                             catch (Exception exc)

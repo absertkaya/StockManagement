@@ -28,6 +28,7 @@ namespace StockManagement.Domain
         [Required]
         public virtual DateTime? InvoiceDate { get; set; }
         public virtual ItemStatus ItemStatus { get; set; }
+        [Required]
         public virtual Supplier Supplier { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }
 

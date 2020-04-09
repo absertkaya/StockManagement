@@ -16,6 +16,8 @@ namespace StockManagement.Domain
         public virtual IList<Item> Items { get; set; }
         public virtual IList<ItemUser> ItemUsers { get; set; }
 
+        public virtual IList<MobileSubscription> MobileSubscriptions { get; set; }
+
         public virtual StockRole? StockRole { get; set; }
 
         public virtual string NormalizedSearchInfo => FirstName.ToLower() + LastName.ToLower() + Mail;
@@ -25,6 +27,7 @@ namespace StockManagement.Domain
         {
             Items = new List<Item>();
             ItemUsers = new List<ItemUser>();
+            MobileSubscriptions = new List<MobileSubscription>();
         }
 
         public ADUser(GraphUser user) : this()
@@ -38,7 +41,5 @@ namespace StockManagement.Domain
             MobilePhone = user.MobilePhone;
             Office = user.OfficeLocation.ToString();
         }
-
-
     }
 }

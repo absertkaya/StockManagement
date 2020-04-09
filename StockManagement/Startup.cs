@@ -69,7 +69,7 @@ namespace StockManagement
             
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IItemRepository repo, IConfiguration config)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)//, IItemRepository repo, IConfiguration config)
         {
             if (env.IsDevelopment())
             {
@@ -98,7 +98,7 @@ namespace StockManagement
             //var excl = new ExcelReader(repo, config);
             //excl.ApiCall("https://graph.microsoft.com/v1.0/users?$top=999").Wait();
             //excl.ReadUsers("C:\\Users\\Administrator\\Desktop\\VGDGebruikers.xlsx");
-            //excl.ReadAndPopulateDatabase("C:\\Users\\Administrator\\Desktop\\Stock Overzicht.xlsx");
+            //excl.ReadAndPopulateDatabase("C:\\Users\\Administrator\\Desktop\\Stock Overzicht.xlsx"); 
         } 
     }
 }

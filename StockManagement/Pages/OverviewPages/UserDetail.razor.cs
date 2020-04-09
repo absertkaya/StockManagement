@@ -5,6 +5,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
+using StockManagement.Pages.ModalComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace StockManagement.Pages.OverviewPages
     {
         [Inject]
         public IItemRepository Repository { get; set; }
+        [Inject]
+        private IUserRepository UserRepository { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
@@ -36,7 +39,7 @@ namespace StockManagement.Pages.OverviewPages
             try
             {
                 _itemusers = (await Repository.GetItemUsersByUser(Id)).Where(i => i.ToDate != null).ToList();
-                _user = (ADUser)await Repository.GetByIdAsync(typeof(ADUser), Id);
+                _user = await UserRepository.GetUserDetailsAsync(Id);
                 _items = await Repository.GetItemsByUserAsync(Id);
             }
             catch (Exception ex) {
@@ -44,6 +47,14 @@ namespace StockManagement.Pages.OverviewPages
                 ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
             }
 
+        }
+
+        protected void AddSubscription()
+        {
+            var parameters = new ModalParameters();
+            parameters.Add("User", _user);
+
+            ModalService.Show<AddSubscription>("Abonnement", parameters);
         }
 
         protected void RowExpand(ItemUser iu)

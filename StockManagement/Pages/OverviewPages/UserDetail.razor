@@ -9,11 +9,20 @@
 
 @if (_user != null)
 {
-    <div class="mb-1">
-        <UserComponent ADUser="_user" />
-
+    <div class="row mb-1">
+        <div class="d-none d-sm-block col-sm-3 col-lg-1">
+            <img class="img-fluid" src="/images/person.jpg" />
+        </div>
+        <div class="col-sm-9 col-lg-11">
+            <div class="mb-1">
+                <UserComponent ADUser="_user" />
+            </div>
+            <div class="btn-group btn-group-sm">
+                <a href="/mail/@(Id)" class="btn btn-sm btn-primary"><i class="oi oi-envelope-closed"></i></a>
+                <button class="btn btn-secondary" @onclick="AddSubscription"><i class="oi oi-plus"></i></button>
+            </div>
+        </div>
     </div>
-    <a href="/mail/@(Id)" class="btn btn-sm btn-primary mb-1"><i class="oi oi-envelope-closed"></i></a>
 }
 
 <h3>Items in gebruik</h3>
@@ -66,17 +75,19 @@ else
                 <thead class="thead-dark">
                     <tr>
                         <th>Omschrijving</th>
-                        <th>S/N</th>
+                        <th class="d-none d-md-table-cell">S/N</th>
+                        <th>Van</th>
                         <th>Tot</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (ItemUser iu in _itemusers)
                     {
-                        <tr @onclick="(() => RowExpand(iu))">
-                            <td>@iu.Item.Product.Description</td>
-                            <td>@(iu.Item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : iu.Item.SerialNumber)</td>
-                            <td class="w-50">@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
+                        <tr @onclick="(() => NavigateToItem(iu.Item))">
+                            <td>@iu.Item?.Product.Description</td>
+                            <td class="d-none d-md-table-cell">@(iu.Item?.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : iu.Item.SerialNumber)</td>
+                            <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
+                            <td>@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
                         </tr>
                     }
                 </tbody>
