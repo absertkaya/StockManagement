@@ -1,4 +1,5 @@
 ﻿using Blazored.Modal;
+using Blazored.Modal.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
@@ -98,8 +99,7 @@ namespace StockManagement.Pages.ModalComponents
             if (_editContext.Validate())
             {
                 UserRepository.Save(_sub);
-                ADUser.AddSubscription(_sub);
-                BlazoredModal.Close();
+                BlazoredModal.Close(ModalResult.Ok<MobileSubscription>(_sub));
             }
 
         }

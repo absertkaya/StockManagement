@@ -85,12 +85,18 @@ namespace StockManagement.Pages.OverviewPages
             _itemusers.Insert(0, iu);
         }
 
-        protected void AddSubscription()
+        protected async Task AddSubscription()
         {
             var parameters = new ModalParameters();
             parameters.Add("ADUser", _user);
 
-            ModalService.Show<AddSubscription>("Abonnement", parameters);
+            var modal = ModalService.Show<AddSubscription>("Abonnement", parameters);
+            var res = await modal.Result;
+
+            if (!res.Cancelled)
+            {
+                _user.AddSubscription((MobileSubscription)res.Data);
+            }
         }
 
         protected void RowExpand(ItemUser iu)
