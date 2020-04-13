@@ -2,10 +2,8 @@
     goBack: function () {
         window.history.go(-1);
     },
-    dataTable: function (table) {
-        $(document).ready(function () {
-            $(table).DataTable();
-        });
+    toggleTooltips: function () {
+        $('[data-toggle="tooltip"]').tooltip()
     },
     quagga: function () {
         Quagga.offProcessed();

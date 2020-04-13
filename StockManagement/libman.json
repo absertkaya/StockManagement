@@ -16,6 +16,13 @@
         "js/jquery.dataTables.min.js",
         "css/jquery.dataTables.min.css"
       ]
+    },
+    {
+      "library": "popper.js@1.16.1",
+      "destination": "wwwroot/lib/popper.js/",
+      "files": [
+        "popper.min.js"
+      ]
     }
   ]
 }

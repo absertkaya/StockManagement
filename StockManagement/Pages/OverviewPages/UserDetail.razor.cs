@@ -77,7 +77,6 @@ namespace StockManagement.Pages.OverviewPages
             }
         }
 
-
         protected void ReturnItem(Item item)
         {
             var iu = item.ReturnToStock(_loggedInUser);
@@ -89,7 +88,7 @@ namespace StockManagement.Pages.OverviewPages
         protected void AddSubscription()
         {
             var parameters = new ModalParameters();
-            parameters.Add("User", _user);
+            parameters.Add("ADUser", _user);
 
             ModalService.Show<AddSubscription>("Abonnement", parameters);
         }
@@ -104,6 +103,15 @@ namespace StockManagement.Pages.OverviewPages
             };
             
             ModalService.Show<ItemHistoryComponent>("History",parameters, opts);
+        }
+
+        protected void DeleteSubscription(MobileSubscription sub)
+        {
+            if (_user.MobileSubscriptions != null && _user.MobileSubscriptions.Contains(sub))
+            {
+                UserRepository.Delete(sub);
+                _user.MobileSubscriptions.Remove(sub);
+            }
         }
 
         protected void NavigateToItem(Item item)

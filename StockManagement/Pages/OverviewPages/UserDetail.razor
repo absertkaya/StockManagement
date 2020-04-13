@@ -15,7 +15,65 @@
         </div>
         <div class="col-sm-9 col-lg-11">
             <div class="mb-1">
-                <UserComponent ADUser="_user" />
+                <div class="table-responsive border mb-2">
+                    <table class="table table-sm">
+                        <tr>
+                            <th style="width: 16.66%">Email</th>
+                            <td>@_user.Mail</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 16.66%">Voornaam</th>
+                            <td>@_user.FirstName</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 16.66%">Naam</th>
+                            <td>@_user.LastName</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 16.66%">GSM</th>
+                            <td>@_user.MobilePhone</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 16.66%">Kantoor</th>
+                            <td>@_user.Office</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 16.66%">Functie</th>
+                            <td>@_user.OfficeRole</td>
+                        </tr>
+                        <tr>
+                            @if (_user.MobileSubscriptions != null && _user.MobileSubscriptions.Count != 0)
+                            {
+                                <th>
+                                    GSM-Abonnementen
+                                </th>
+                                <td>
+                                    <table class="table table-responsive table-borderless">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 16.66%">GSM</th>
+                                                <th style="width: 16.66%">Type</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (MobileSubscription sub in _user.MobileSubscriptions)
+                                            {
+                                                <tr>
+                                                    <td style="width: 16.66%">@sub.MobileNumber</td>
+                                                    <td style="width: 16.66%">@sub.SubscriptionType</td>
+                                                    <td style="width:5%"><i class="oi oi-delete text-danger" @onclick="( () => DeleteSubscription(sub))"></i></td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
+
+                            }
+                        </tr>
+
+                    </table>
+                </div>
             </div>
             <div class="btn-group btn-group-sm">
                 <a href="/mail/@(Id)" class="btn btn-sm btn-primary"><i class="oi oi-envelope-closed"></i></a>

@@ -51,7 +51,7 @@ namespace StockManagement.Pages.MailPages
             }
 
             _body = $"Beste [Placeholder],\n\n" +
-                    $"Volgende zaken verwachten we van collega {aduser.FirstName} {aduser.LastName}\n\n" +
+                    $"Volgende zaken verwachten we van collega {aduser.FirstName} {aduser.LastName}:\n\n" +
                     itemsString +
                     $"\nAlvast bedankt om dit na te gaan bij uitdienst.\n\n" +
                     $"Met vriendelijke groeten";

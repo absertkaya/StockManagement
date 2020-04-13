@@ -41,5 +41,14 @@ namespace StockManagement.Domain
             MobilePhone = user.MobilePhone;
             Office = user.OfficeLocation.ToString();
         }
+
+        public virtual void AddSubscription(MobileSubscription sub)
+        {
+            if (!MobileSubscriptions.Contains(sub))
+            {
+                MobileSubscriptions.Add(sub);
+            }
+            
+        }
     }
 }
