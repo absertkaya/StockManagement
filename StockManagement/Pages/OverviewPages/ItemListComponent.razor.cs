@@ -40,6 +40,7 @@ namespace StockManagement.Pages.OverviewPages
         protected override void OnParametersSet()
         {
             _hasHostnames = Items.Any(i => i.Hostname != null);
+            Items = Items.OrderBy(i => i.Hostname);
         }
 
         protected void SortBySerialNumber()

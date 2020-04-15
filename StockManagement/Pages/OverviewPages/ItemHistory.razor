@@ -38,7 +38,7 @@
                 {
                     <tr>
                         <th>Gebruiker</th>
-                        <td><a href="/gebruiker/@(_item.ADUser.Id)">@_item.ADUser.Mail</a></td>
+                        <td><a href="/gebruiker/@(_item.ADUser.Id)/@(_item.Id)">@($"{_item.ADUser.FirstName} {_item.ADUser.LastName}")</a></td>
                     </tr>
                 }
                 <tr>
@@ -142,7 +142,7 @@
                         @foreach (ItemUser iu in _itemusers)
                         {
                             <tr @onclick="(() => RowExpand(iu))">
-                                <td><a href="/gebruiker/@(iu.User.Id)" @onclick:stopPropagation>@iu.User.Mail</a></td>
+                                <td><a href="/gebruiker/@(iu.User.Id)/" @onclick:stopPropagation>@iu.User.Mail</a></td>
                                 <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
                                 <td>@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
                             </tr>

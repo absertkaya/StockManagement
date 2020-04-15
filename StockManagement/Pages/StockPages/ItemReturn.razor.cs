@@ -59,10 +59,10 @@ namespace StockManagement.Pages.StockPages
             _categories = await Repository.GetAllAsync<Category>();
         }
 
-        protected void FetchProducts(ChangeEventArgs e)
+        protected async Task FetchProducts(ChangeEventArgs e)
         {
             _selectedCategory = int.Parse(e.Value.ToString());
-            _products = Repository.GetByCategory((int)_selectedCategory);
+            _products = await Repository.GetByCategoryAsync((int)_selectedCategory);
         }
 
         protected void FetchItems(ChangeEventArgs e)

@@ -30,6 +30,8 @@ namespace StockManagement.Pages.OverviewPages
         public TelemetryClient Telemetry { get; set; }
         [Parameter]
         public string Id { get; set; }
+        [Parameter]
+        public int? ItemId { get; set; }
         [CascadingParameter]
         protected Task<AuthenticationState> AuthenticationStateTask { get; set; }
 

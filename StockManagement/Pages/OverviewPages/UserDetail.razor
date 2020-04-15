@@ -1,9 +1,10 @@
 ﻿@inherits UserDetailBase
 
 @page "/gebruiker/{id}"
+@page "/gebruiker/{id}/{itemId:int}" 
 @using StockManagement.Domain
 <div class="mb-2">
-    <a href="/gebruikers" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <a href="@(ItemId == null ? "/gebruikers" : $"/itemhistoriek/{ItemId}/{Id}")" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
     <h3 class="d-inline">Gebruiker</h3>
 </div>
 

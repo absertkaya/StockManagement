@@ -48,7 +48,7 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<TEntity>> GetAllAsync<TEntity>() where TEntity : class
         {
 
-            return await _session.Query<TEntity>().ToListAsync();
+            return await _session.QueryOver<TEntity>().ListAsync();
         }
 
         public virtual IList<TEntity> GetAll<TEntity>() where TEntity : class
