@@ -11,19 +11,20 @@
     <div class="input-group-prepend">
         <span class="input-group-text">To</span>
     </div>
-    <input type="email" class="form-control" placeholder="example@email.com" @bind="_toAddress"/>
+    <input type="email" class="form-control" placeholder="example@email.com" @bind="_toAddress" @bind:event="oninput" @onkeyup="FireStringChange"/>
 </div>
 
 <div class="form-group input-group">
     <div class="input-group-prepend">
         <span class="input-group-text">Onderwerp</span>
     </div>
-    <input type="text" class="form-control" placeholder="Onderwerp" @bind="_subject" />
+    <input type="text" class="form-control" placeholder="Onderwerp" @bind="_subject" @bind:event="oninput" @onkeyup="FireStringChange"/>
 </div>
 
 <div class="form-group">
-    <textarea class="form-control" rows="20" placeholder="Body" @bind="_body"/>
+    <textarea class="form-control" rows="20" placeholder="Body" @bind="_body" @bind:event="oninput" @onkeyup="FireStringChange"/>
 </div>
 
-<button class="btn btn-primary" @onclick="Submit">Verzend</button>
-<p class="text-danger">WIP</p>
+<a href="@MailToString" class="btn btn-primary">Verzend</a>
+
+

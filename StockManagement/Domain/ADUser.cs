@@ -20,7 +20,7 @@ namespace StockManagement.Domain
 
         public virtual StockRole? StockRole { get; set; }
 
-        public virtual string NormalizedSearchInfo => FirstName.ToLower() + LastName.ToLower() + Mail;
+        public virtual string NormalizedSearchInfo => FirstName.ToLower() + LastName.ToLower() + Mail.ToLower();
         
 
         public ADUser()
@@ -36,10 +36,10 @@ namespace StockManagement.Domain
             DisplayName = user.DisplayName;
             FirstName = user.GivenName;
             LastName = user.Surname;
-            OfficeRole = user.JobTitle;
+            OfficeRole = user.JobTitle == null ? "" : user.JobTitle;
             Mail = user.Mail;
             MobilePhone = user.MobilePhone;
-            Office = user.OfficeLocation.ToString();
+            Office = user.OfficeLocation == null ? "" : user.OfficeLocation.ToString();
         }
 
         public virtual void AddSubscription(MobileSubscription sub)

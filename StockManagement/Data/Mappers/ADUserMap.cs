@@ -14,7 +14,7 @@ namespace StockManagement.Data.Mappers
             Map(x => x.Mail).Not.Nullable();
             Map(x => x.MobilePhone);
             Map(x => x.Office).Not.Nullable();
-            Map(x => x.OfficeRole).Not.Nullable();
+            Map(x => x.OfficeRole);
             Map(x => x.StockRole);
             HasMany(x => x.Items)
                 .Inverse()

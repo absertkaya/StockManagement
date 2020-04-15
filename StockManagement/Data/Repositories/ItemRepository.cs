@@ -35,11 +35,12 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<Item> GetItemDetails(int id)
         {
-            return await _session.Query<Item>()
-                .Fetch(x => x.ADUser)
-                .Fetch(x => x.Product)
-                .Fetch(x => x.Supplier)
-                .FirstOrDefaultAsync(i => i.Id == id);
+            return await _session.QueryOver<Item>()
+                .Fetch(SelectMode.Fetch, x => x.ADUser)
+                .Fetch(SelectMode.Fetch, x => x.Product)
+                .Fetch(SelectMode.Fetch, x => x.Supplier)
+                .Where(i => i.Id == id)
+                .SingleOrDefaultAsync();
         }
 
         public virtual bool GetItemInStock(int id)

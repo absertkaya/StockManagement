@@ -27,9 +27,9 @@ namespace StockManagement.Data
         protected List<GraphUser> _colGraphUsers = new List<GraphUser>();
         public IConfiguration Configuration { get; set; }
 
-        private List<ADUser> newUsers = new List<ADUser>();
+        private IList<ADUser> newUsers = new List<ADUser>();
 
-        private Dictionary<string, GraphUser> userMap = new Dictionary<string, GraphUser>();
+        private Dictionary<string, ADUser> userMap = new Dictionary<string, ADUser>();
 
         public ExcelReader(IItemRepository repository, IConfiguration config)
         {
@@ -39,6 +39,7 @@ namespace StockManagement.Data
 
         public void ReadAndPopulateDatabase(string path)
         {
+            
             using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
             {
                 ReaderHelper(stream);
@@ -93,13 +94,14 @@ namespace StockManagement.Data
             }
 
             _colGraphUsers = _colGraphUsers
-              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && u.OfficeLocation != null && u.JobTitle != null)
+              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null)
               .ToList();
 
         }
 
         public void ReadUsers(string path)
         {
+            newUsers = Repo.GetAll<ADUser>();
             int rowNr;
             using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
             {
@@ -118,7 +120,7 @@ namespace StockManagement.Data
                             }
                             string code = row.ItemArray[0].ToString().ToLower();
                             string email = row.ItemArray[2].ToString().ToLower();
-                            GraphUser user = _colGraphUsers.FirstOrDefault(u => u.Mail.ToLower() == email);
+                            ADUser user = newUsers.FirstOrDefault(u => u.Mail.ToLower() == email);
                             userMap.Add(code, user);
                         }
                     }
@@ -126,8 +128,36 @@ namespace StockManagement.Data
             }
         }
 
+        public void ReadUsers()
+        {
+            _colGraphUsers.ForEach(u => {
+                var user = new ADUser(u);
+                newUsers.Add(user);
+                });
+        }
+
+        public void PersistUsers()
+        {
+
+            newUsers.ToList().ForEach(x => {
+                if (x.OfficeRole == null)
+                {
+                    x.OfficeRole = "";
+                }
+
+                if (x.Office == null)
+                {
+                    x.Office = "";
+                }
+                    Repo.Save(x);
+                });
+        }
+
+        private List<MobileAccount> accounts = new List<MobileAccount>();
+
         public void ReadSubscriptions(string path)
         {
+            newUsers = Repo.GetAll<ADUser>();
             int rowNr;
             using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
             {
@@ -140,14 +170,46 @@ namespace StockManagement.Data
                         foreach (DataRow row in table.Rows)
                         {
                             rowNr++;
-                            if (rowNr < 3)
+                            if (rowNr < 4)
                             {
                                 continue;
                             }
-                            string mobile = row.ItemArray[0].ToString().ToLower();
-                            //string fullname = 
-                            //GraphUser user = _colGraphUsers.FirstOrDefault(u => u.Mail.ToLower() == email);
                             
+                            string mobilenr = row.ItemArray[0].ToString().ToLower();
+
+                            string accnr = row.ItemArray[1].ToString();
+                            string accname = row.ItemArray[2].ToString(); 
+                            string fullname = row.ItemArray[3].ToString().ToLower();
+                            string type = row.ItemArray[4].ToString();
+                            ADUser user = newUsers.FirstOrDefault(u => Regex.Replace(u.NormalizedSearchInfo.ToLower(), " ", "").Contains(Regex.Replace(fullname, " ", "")));
+                            if (user == null)
+                            {
+                                user = userMap.GetValueOrDefault(fullname);
+                            }
+
+                            MobileAccount acc = accounts.FirstOrDefault(a => a.AccountNumber == accnr);
+                            if (acc == null)
+                            {
+                                acc = new MobileAccount()
+                                {
+                                    AccountName = accname,
+                                    AccountNumber = accnr
+                                };
+                                accounts.Add(acc);
+                                Repo.Save(acc);
+                            }
+                            
+
+                            MobileSubscription sub = new MobileSubscription()
+                            {
+                                MobileNumber = mobilenr,
+                                SubscriptionType = type,
+                                MobileAccount = acc,
+                                User = user
+                            };
+                            acc.MobileSubscriptions.Add(sub);
+                            if (user != null)
+                                Repo.Save(sub);
                         }
                     }
                 }
@@ -286,29 +348,20 @@ namespace StockManagement.Data
                         ADUser aduser = null;
                         if (!string.IsNullOrEmpty(u))
                         {
-                            GraphUser user = null;
+                            
                             if (userMap.ContainsKey(u))
                             {
-                                user = userMap[u];
+                                aduser = userMap[u];
+                            } else
+                            {
+                                aduser = newUsers.FirstOrDefault(c => c.NormalizedSearchInfo.ToLower().Contains(u));
                             }
 
-                            if (user != null)
-                            {
-                                if (!newUsers.Any(u => u.Id == user.Id))
-                                {
-                                    aduser = new ADUser(user);
-                                    newUsers.Add(aduser);
-                                    Repo.Save(aduser);
-                                }
-                                else
-                                {
-                                    aduser = newUsers.First(u => u.Id == user.Id);
-                                }
-                            }
-                            else
+                            if (aduser == null)
                             {
                                 comment += " (User: " + u + ")";
                             }
+
                         }
 
                         bool instock = outstockdate == null && locStock;

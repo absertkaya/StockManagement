@@ -44,14 +44,7 @@
                 <tr>
                     <th style="width: 25%">In stock</th>
                     <td>
-                        @if (_item.ItemStatus == ItemStatus.INSTOCK)
-                        {
-                            <i class="oi oi-circle-check text-success"></i>
-                        }
-                        else
-                        {
-                            <i class="oi oi-circle-x text-danger"></i>
-                        }
+                        <ItemStatusComponent ItemStatus="_item.ItemStatus"/>
                     </td>
                 </tr>
 
@@ -67,13 +60,6 @@
                     <th style="width: 25%">Factuurdatum</th>
                     <td>@_item.InvoiceDate?.ToString("dd/MM/yyyy")</td>
                 </tr>
-                @if (_item.ItemStatus != ItemStatus.INSTOCK && _item.ItemStatus != ItemStatus.OUTSTOCK)
-                {
-                    <tr>
-                        <th style="width: 25%">Status</th>
-                        <td>@_item.ItemStatus.ToString()</td>
-                    </tr>
-                }
                 @if (_item.Imei != null)
                 {
                     <tr>

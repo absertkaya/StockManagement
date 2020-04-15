@@ -8,6 +8,7 @@ namespace StockManagement.Domain
     public class Item
     {
         private DateTime? _deliveryDate;
+        private string _serialNumber;
 
         public virtual int Id { get; set; }
         [Required(ErrorMessage = "Product is verplicht")]
@@ -15,7 +16,15 @@ namespace StockManagement.Domain
         public virtual ADUser ADUser { get; set; }
         public virtual string Comment { get; set; }
         [Required(ErrorMessage = "Serienummer is verplicht")]
-        public virtual string SerialNumber { get; set; }
+        public virtual string SerialNumber { 
+            get {
+                if (!string.IsNullOrWhiteSpace(_serialNumber) && !_serialNumber.StartsWith("NOSERIALNR"))
+                {
+                    return _serialNumber;
+                }
+                return "Geen serienummer beschikbaar.";
+            } set { _serialNumber = value; }
+        }
         [Required]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:MM/dd/yyyy}")]
         public virtual DateTime? DeliveryDate { 

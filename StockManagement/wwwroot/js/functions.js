@@ -35,11 +35,11 @@
                             ]
                         }
                     },
-                    //"code_93_reader",
-                    //"ean_8_reader",
+                    "code_93_reader",
+                    "ean_8_reader",
                     "upc_reader",
                     "upc_e_reader",
-                    //"code_39_reader"
+                    "code_39_reader"
                 ]
             },
             locate: true
@@ -93,12 +93,27 @@
             document.getElementById('codeField').dispatchEvent(new Event("change"))
         });
 
+        let _zoom = 1;
+        let stream = document.getElementById("interactive");
+        stream.onclick = function () {
+            let track = Quagga.CameraAccess.getActiveTrack();
+
+            console.log()
+            if (track && typeof track.getCapabilities === 'function') {
+                var capabilities = track.getCapabilities();
+                if (capabilities.zoom) {
+                    track.applyConstraints({ advanced: [{ zoom: _zoom % 3 }] })
+                    zoom++;
+                }
+                
+            }
+        } 
+
         Quagga.init(state, function (err) {
             if (err) {
                 return console.log(err);
             }
             Quagga.start();
         });
-
     }
 }
