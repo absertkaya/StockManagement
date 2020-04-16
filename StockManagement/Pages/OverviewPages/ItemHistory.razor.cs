@@ -61,8 +61,6 @@ namespace StockManagement.Pages.OverviewPages
                 Telemetry.TrackException(ex);
                 ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
             }
-
-            
         }
 
         protected void ToggleImageUpload()

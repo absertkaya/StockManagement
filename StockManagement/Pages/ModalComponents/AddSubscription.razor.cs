@@ -32,8 +32,10 @@ namespace StockManagement.Pages.ModalComponents
 
         protected int? _selectedAccount;
 
-        protected MobileSubscription _sub;
-        protected MobileAccount _acc = new MobileAccount();
+        [Parameter]
+        public MobileSubscription MobileSubscription { get; set; }
+
+        protected MobileAccount _acc;
         protected EditContext _editContext;
 
         protected override async Task OnInitializedAsync()
@@ -49,17 +51,31 @@ namespace StockManagement.Pages.ModalComponents
             }
         }
 
+        protected bool SelectedAccountHasSubscriptions()
+        {
+            var acc = _accounts?.FirstOrDefault(a => a.Id == _selectedAccount);
+            return acc != null && acc.HasSubscriptions();
+        }
+
         protected override void OnInitialized()
         {
-            _sub = new MobileSubscription();
-            _editContext = new EditContext(_sub);
-            _sub.User = ADUser;
+            if (MobileSubscription == null)
+            {
+                MobileSubscription = new MobileSubscription();
+                _acc = new MobileAccount();
+                MobileSubscription.User = ADUser;
+            } else
+            {
+                _selectedAccount = MobileSubscription.MobileAccount?.Id;
+            }
+
+            _editContext = new EditContext(MobileSubscription);
         }
 
         protected void FireAccountChange(ChangeEventArgs e)
         {
             _selectedAccount = int.Parse(e.Value.ToString());
-            _sub.MobileAccount = _accounts.FirstOrDefault(a => a.Id == (int)_selectedAccount);
+            MobileSubscription.MobileAccount = _accounts.FirstOrDefault(a => a.Id == (int)_selectedAccount);
         }
 
         protected void DeleteAccount()
@@ -83,7 +99,7 @@ namespace StockManagement.Pages.ModalComponents
                 UserRepository.Save(_acc);
                 _accounts.Add(_acc);
                 _selectedAccount = _acc.Id;
-                _sub.MobileAccount = _acc;
+                MobileSubscription.MobileAccount = _acc;
                 _addMode = false;
                 _selectedAccount = _acc.Id;
                 _acc = new MobileAccount();
@@ -98,8 +114,8 @@ namespace StockManagement.Pages.ModalComponents
         {
             if (_editContext.Validate())
             {
-                UserRepository.Save(_sub);
-                BlazoredModal.Close(ModalResult.Ok<MobileSubscription>(_sub));
+                UserRepository.Save(MobileSubscription);
+                BlazoredModal.Close(ModalResult.Ok<MobileSubscription>(MobileSubscription));
             }
 
         }

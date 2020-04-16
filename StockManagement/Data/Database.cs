@@ -26,7 +26,7 @@ namespace StockManagement.Data
                                 .ConnectionString(connectionString))
                                 .Mappings(m => m.FluentMappings.AddFromAssembly(new Database().GetType().Assembly))
                                 .CurrentSessionContext("call")
-                                .ExposeConfiguration(cfg => BuildSchema(cfg, false, true))
+                                .ExposeConfiguration(cfg => BuildSchema(cfg, false, false))
                                 .BuildSessionFactory();
                 }
                 return _sessionFactory;

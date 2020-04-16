@@ -18,11 +18,9 @@ namespace StockManagement.Domain
         [Required(ErrorMessage = "Serienummer is verplicht")]
         public virtual string SerialNumber { 
             get {
-                if (!string.IsNullOrWhiteSpace(_serialNumber) && !_serialNumber.StartsWith("NOSERIALNR"))
-                {
+
                     return _serialNumber;
-                }
-                return "Geen serienummer beschikbaar.";
+
             } set { _serialNumber = value; }
         }
         [Required]

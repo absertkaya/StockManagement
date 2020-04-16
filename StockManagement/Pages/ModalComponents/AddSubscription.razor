@@ -1,95 +1,98 @@
 ﻿@inherits AddSubscriptionBase
 @using StockManagement.Domain
 
-<EditForm EditContext="_editContext" OnSubmit="Submit">
-    <DataAnnotationsValidator />
-    <div class="form-group">
-        <label for="number">GSM</label>
-        <InputText class="form-control" id="number" @bind-Value="_sub.MobileNumber" placeholder="04........." />
-    </div>
-    <div class="form-group">
-        <label for="type">Abonnementtype</label>
-        <div class="row">
-            <div class="col-6">
-                <InputSelect id="type" @bind-Value="_sub.SubscriptionType" class="form-control">
-                    <option value="" selected disabled>Kies een optie</option>
-                    <option value="Zen">Zen</option>
-                    <option value="Intense">Intense</option>
-                    <option value="IPad">IPad</option>
-                    <option value="Intense">Intense</option>
-                    <option value="Lite">Lite</option>
-                </InputSelect>
-            </div>
-            <div class="col-6">
-                <InputText @bind-Value="_sub.SubscriptionType" class="form-control" placeholder="..of Typ hier" />
+@if (MobileSubscription != null)
+{
+    <EditForm EditContext="_editContext" OnSubmit="Submit">
+        <DataAnnotationsValidator />
+        <div class="form-group">
+            <label for="number">GSM</label>
+            <InputText class="form-control" id="number" @bind-Value="MobileSubscription.MobileNumber" placeholder="04........." />
+        </div>
+        <div class="form-group">
+            <label for="type">Abonnementtype</label>
+            <div class="row">
+                <div class="col-6">
+                    <InputSelect id="type" @bind-Value="MobileSubscription.SubscriptionType" class="form-control">
+                        <option value="" selected disabled>Kies een optie</option>
+                        <option value="Zen">Zen</option>
+                        <option value="Intense">Intense</option>
+                        <option value="IPad">IPad</option>
+                        <option value="Intense">Intense</option>
+                        <option value="Lite">Lite</option>
+                    </InputSelect>
+                </div>
+                <div class="col-6">
+                    <InputText @bind-Value="MobileSubscription.SubscriptionType" class="form-control" placeholder="..of Typ hier" />
+                </div>
             </div>
         </div>
-    </div>
-    <div class="form-group">
-        <label for="account">Account</label>
+        <div class="form-group">
+            <label for="account">Account</label>
 
-        <div class="input-group">
-            <select id="type" value="@_selectedAccount" @onchange="FireAccountChange" class="form-control">
-                @if (_accounts != null && _accounts.Count != 0)
-                {
-                    <option value="" selected hidden>Kies een optie</option>
-                    @foreach (MobileAccount acc in _accounts)
+            <div class="input-group">
+                <select id="type" value="@_selectedAccount" @onchange="FireAccountChange" class="form-control">
+                    @if (_accounts != null && _accounts.Count != 0)
                     {
-                        <option value="@acc.Id">@($"{acc.AccountName} - {acc.AccountNumber}")</option>
+                        <option value="" selected hidden>Kies een optie</option>
+                        @foreach (MobileAccount acc in _accounts)
+                        {
+                            <option value="@acc.Id">@($"{acc.AccountName} - {acc.AccountNumber}")</option>
+                        }
+                        /**/
                     }
-                    /**/
-                }
-                else
-                {
-                    <option value="" selected hidden>Geen accounts beschikbaar</option>
-                }
-            </select>
-            <div class="input-group-append">
-                @if (_selectedAccount != null)
-                {
-                    @if (!_accounts.FirstOrDefault(a => a.Id == _selectedAccount).HasSubscriptions())
+                    else
                     {
-                        <button type="button" @onclick="DeleteAccount" class="btn btn-danger btn-sm"><i class="oi oi-trash"></i></button>
+                        <option value="" selected hidden>Geen accounts beschikbaar</option>
                     }
-                }
-                <button type="button" @onclick="SwitchAddMode" class="btn btn-secondary btn-sm"><i class="oi @(_addMode ? "oi-minus" : "oi-plus")"></i></button>
+                </select>
+                <div class="input-group-append">
+                    @if (_selectedAccount != null)
+                    {
+                        @if (SelectedAccountHasSubscriptions())
+                        {
+                            <button type="button" @onclick="DeleteAccount" class="btn btn-danger btn-sm"><i class="oi oi-trash"></i></button>
+                        }
+                    }
+                    <button type="button" @onclick="SwitchAddMode" class="btn btn-secondary btn-sm"><i class="oi @(_addMode ? "oi-minus" : "oi-plus")"></i></button>
+                </div>
             </div>
         </div>
-    </div>
-    @if (_addMode)
-    {
-        <div class="border p-2 form-group">
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-6">
-                        <label for="name">Accountnaam</label>
-                        <input class="form-control" id="name" @bind="_acc.AccountName" />
-                    </div>
-                    <div class="col-6">
-                        <label for="nr">Accountnummer</label>
-                        <div class="input-group">
-                            <input class="form-control" id="nr" @bind="_acc.AccountNumber" />
-                            <div class="input-group-append">
-                                <button type="button" @onclick="SubmitAccount" class="btn btn-sm btn-secondary"><i class="oi oi-check"></i></button>
+        @if (_addMode)
+        {
+            <div class="border p-2 form-group">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-6">
+                            <label for="name">Accountnaam</label>
+                            <input class="form-control" id="name" @bind="_acc.AccountName" />
+                        </div>
+                        <div class="col-6">
+                            <label for="nr">Accountnummer</label>
+                            <div class="input-group">
+                                <input class="form-control" id="nr" @bind="_acc.AccountNumber" />
+                                <div class="input-group-append">
+                                    <button type="button" @onclick="SubmitAccount" class="btn btn-sm btn-secondary"><i class="oi oi-check"></i></button>
+                                </div>
                             </div>
                         </div>
+
+
+                    </div>
+                </div>
+                @if (_accError)
+                {
+                    <div>
+                        <p class="text-danger">Een account heeft verplicht een naam en nummer.</p>
                     </div>
 
-
-                </div>
+                }
             </div>
-            @if (_accError)
-            {
-                <div>
-                    <p class="text-danger">Een account heeft verplicht een naam en nummer.</p>
-                </div>
-
-            }
-        </div>
 
 
 
-    }
-    <button type="submit" class="btn btn-primary">Verzend</button>
-    <ValidationSummary />
-</EditForm>
+        }
+        <button type="submit" class="btn btn-primary">Verzend</button>
+        <ValidationSummary />
+    </EditForm>
+}

@@ -46,9 +46,10 @@
                                         <thead>
                                             <tr>
                                                 <th>GSM</th>
-                                                <th>Account</th>
-                                                <th class="d-none d-md-block">#</th>
+                                                <th class="d-none d-md-table-cell">Account</th>
+                                                <th class="d-none d-md-table-cell">Accountnummer</th>
                                                 <th>Type</th>
+                                                <th></th>
                                                 <th></th>
                                             </tr>
                                         </thead>
@@ -57,10 +58,11 @@
                                             {
                                             <tr>
                                                 <td>@sub.MobileNumber</td>
-                                                <td>@sub.MobileAccount?.AccountName</td>
-                                                <td class="d-none d-md-block">@sub.MobileAccount?.AccountNumber</td>
+                                                <td class="d-none d-md-table-cell">@sub.MobileAccount?.AccountName</td>
+                                                <td class="d-none d-md-table-cell">@sub.MobileAccount?.AccountNumber</td>
                                                 <td>@sub.SubscriptionType</td>
-                                                <td><a><i class="oi oi-delete text-danger" @onclick="( () => DeleteSubscription(sub))"></i></a></td>
+                                                <td><a><i class="oi oi-pencil text-secondary" @onclick="( () => EditSubscription(sub))"></i></a></td>
+                                                <td><a><i class="oi oi-trash text-danger" @onclick="( () => ShowConfirmationDelete(sub))"></i></a></td>
                                             </tr>
                                             }
                                         </tbody>
@@ -76,7 +78,7 @@
             </div>
             <div class="btn-group btn-group-sm">
                 <a href="/mail/@(Id)" class="btn btn-sm btn-primary"><i class="oi oi-envelope-closed"></i></a>
-                <button class="btn btn-secondary" @onclick="AddSubscription"><i class="oi oi-plus"></i></button>
+                <button class="btn btn-success" @onclick="AddSubscription"><i class="oi oi-phone"></i></button>
             </div>
         </div>
     </div>
@@ -96,7 +98,7 @@
                         <th width="30%">S/N</th>
                         <th width="10%">
                             <div class="btn-group btn-group-sm">
-                                <button @onclick="ShowConfirmation" class="btn btn-sm btn-outline-warning"><i class="oi oi-arrow-circle-right"></i></button>
+                                <button @onclick="ShowConfirmationReturn" class="btn btn-sm btn-outline-warning"><i class="oi oi-arrow-circle-right"></i></button>
                             </div>
                         </th>
                     </tr>

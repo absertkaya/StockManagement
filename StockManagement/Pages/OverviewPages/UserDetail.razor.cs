@@ -68,7 +68,7 @@ namespace StockManagement.Pages.OverviewPages
         }
 
 
-        protected async Task ShowConfirmation()
+        protected async Task ShowConfirmationReturn()
         {
             var modal = ModalService.Show<Confirmation>("Retourneer alles");
             var res = await modal.Result;
@@ -76,6 +76,17 @@ namespace StockManagement.Pages.OverviewPages
             if (!res.Cancelled)
             {
                 ReturnAll();
+            }
+        }
+
+        protected async Task ShowConfirmationDelete(MobileSubscription sub)
+        {
+            var modal = ModalService.Show<Confirmation>("Verwijder abonnement");
+            var res = await modal.Result;
+
+            if (!res.Cancelled)
+            {
+                DeleteSubscription(sub);
             }
         }
 
@@ -87,12 +98,27 @@ namespace StockManagement.Pages.OverviewPages
             _itemusers.Insert(0, iu);
         }
 
+        protected async Task EditSubscription(MobileSubscription sub)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add("MobileSubscription", sub);
+            parameters.Add("ADUser", _user);
+
+            var modal = ModalService.Show<AddSubscription>("Edit abonnement", parameters);
+            var res = await modal.Result;
+
+            if (!res.Cancelled)
+            {
+                
+            }
+        }
+
         protected async Task AddSubscription()
         {
             var parameters = new ModalParameters();
             parameters.Add("ADUser", _user);
 
-            var modal = ModalService.Show<AddSubscription>("Abonnement", parameters);
+            var modal = ModalService.Show<AddSubscription>("Nieuw abonnement", parameters);
             var res = await modal.Result;
 
             if (!res.Cancelled)

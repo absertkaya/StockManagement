@@ -16,11 +16,9 @@ namespace StockManagement.Domain
         [Required(ErrorMessage = "Productnummer is verplicht")]
         public virtual string ProductNumber { 
             get {
-                if (!string.IsNullOrWhiteSpace(_productNumber) && !_productNumber.StartsWith("NOPRODUCTNR"))
-                {
+
                     return _productNumber;
-                }
-                return "Geen productnummer beschikbaar.";
+
             } 
             set { _productNumber = value; } }
         public virtual IList<Item> Items { get; set; }

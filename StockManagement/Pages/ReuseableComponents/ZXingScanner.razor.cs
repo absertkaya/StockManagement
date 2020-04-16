@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using ZXing;
 
 namespace StockManagement.Pages.ReuseableComponents
@@ -33,6 +35,16 @@ namespace StockManagement.Pages.ReuseableComponents
                 int receivedBytes = 0;
                 using (var stream = await file.OpenReadAsync())
                 {
+                    var client = new HttpClient();
+                    var queryString = HttpUtility.ParseQueryString(string.Empty);
+                    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "{66327faf73744d00b20f9cf2d504726c}");
+
+                    queryString["language"] = "unk";
+                    queryString["detectOrientation"] = "true";
+                    var uri = "https://stockmanagementvisualsearch.cognitiveservices.azure.com/bing/v7.0" + queryString;
+
+
+
                     using (MemoryStream ms = new MemoryStream())
                     {
                         byte[] buffer = new byte[bufferSize];

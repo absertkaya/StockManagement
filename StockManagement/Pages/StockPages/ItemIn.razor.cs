@@ -42,16 +42,12 @@ namespace StockManagement.Pages.StockPages
         protected QuaggaScanner _scanner;
         protected string _comment;
 
-        protected override void OnInitialized()
-        {
-            _editContext = new EditContext(_item);
-
-        }
 
         protected override async Task OnInitializedAsync()
         {
             _categories = await Repository.GetAllAsync<Category>();
             _suppliers = await Repository.GetAllAsync<Supplier>();
+            _editContext = new EditContext(_item);
         }
 
         protected void FetchProducts(ChangeEventArgs e)

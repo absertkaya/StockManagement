@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace StockManagement.Domain
 {
+    //unused until more than 1 stock is needed
     public class Stock
     {
         public virtual int Id { get; set; }
