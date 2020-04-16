@@ -64,10 +64,10 @@ namespace StockManagement.Pages.MailPages
 
             foreach (Item item in _items)
             {
-                itemsString += $"    - {item.Product.Description} {(item.SerialNumber == "Geen serienummer beschikbaar." ? "" : $"(S/N: {item.SerialNumber})")}\n";
+                itemsString += $"    - {item.Product.Description} {(!item.HasSerialNumber() ? "" : $"(S/N: {item.SerialNumber})")}\n";
             }
 
-            _body = $"Beste [Placeholder],\n\n" +
+            _body = $"Beste,\n\n" +
                     $"Volgende zaken verwachten we van collega {aduser.FirstName} {aduser.LastName}:\n\n" +
                     itemsString +
                     $"\nAlvast bedankt om dit na te gaan bij uitdienst.\n\n" +

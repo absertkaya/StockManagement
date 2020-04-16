@@ -97,13 +97,20 @@ else
     <div class="col-6">
         <label>Productnummer</label>
         <div class="input-group">
-            <div class="input-group-prepend">
-                <button @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">
-                    <i class="oi oi-eye"></i>
-                </button>
-            </div>
-            <input id="@(_serialScan ? "" : "codeField")" @bind="_productNumber" class="form-control" />
 
+            @if (!SelectedProductHasProductNumber())
+            {
+                <input id="@(_serialScan ? "" : "codeField")" @bind="_productNumber" disabled class="form-control" />
+            }
+            else
+            {
+                <div class="input-group-prepend">
+                    <button @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">
+                        <i class="oi oi-eye"></i>
+                    </button>
+                </div>
+                <input id="@(_serialScan ? "" : "codeField")" @bind="_productNumber" class="form-control" />
+            }
         </div>
     </div>
 
@@ -121,4 +128,7 @@ else
 </div>
 
 <QuaggaScanner @ref="_scanner" />
-<button class="btn btn-outline-primary w-100" @onclick="Submit"><i class="oi oi-arrow-top"></i>@(Method == "out" ? "Haal uit" : "Retourneer")<i class="oi oi-arrow-top"></i></button>
+<div class="mb-2">
+    <button class="btn btn-outline-primary w-100" @onclick="Submit"><i class="oi oi-arrow-top"></i>@(Method == "out" ? "Haal uit" : "Retourneer")<i class="oi oi-arrow-top"></i></button>
+</div>
+

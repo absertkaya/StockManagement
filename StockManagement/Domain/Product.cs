@@ -29,6 +29,11 @@ namespace StockManagement.Domain
             Items = new List<Item>();
         }
 
+        public virtual bool HasProductNumber()
+        {
+            return !ProductNumber.StartsWith("NOPRODUCTNR");
+        }
+
         public virtual bool HasItem(string serialNumber)
         {
             return Items.Any(i => i.SerialNumber == serialNumber);

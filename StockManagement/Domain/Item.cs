@@ -52,6 +52,11 @@ namespace StockManagement.Domain
             ItemUsers = new List<ItemUser>();
         }
 
+        public virtual bool HasSerialNumber()
+        {
+            return !SerialNumber.StartsWith("NOSERIALNR");
+        } 
+
         public virtual ItemUser RemoveFromStock(ADUser user, ADUser assigner)
         {
             if (ItemStatus.INSTOCK != ItemStatus)

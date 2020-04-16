@@ -79,6 +79,16 @@ namespace StockManagement.Pages.StockPages
             }
         }
 
+        protected bool SelectedProductHasProductNumber() {
+            var p = _products?.FirstOrDefault(p => p.ProductNumber == _productNumber);
+            bool res = p == null || p.HasProductNumber();
+            if (!res)
+            {
+                _serialScan = true;
+            }
+            return res;
+        }
+
         protected void SelectItem(ChangeEventArgs e)
         {
             _serialNumber = e.Value.ToString();

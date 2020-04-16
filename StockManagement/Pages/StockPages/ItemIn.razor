@@ -5,106 +5,105 @@
 @using StockManagement.Pages.ReuseableComponents
 @using StockManagement.Domain
 <h3>Plaats nieuw in stock</h3>
-@if (_item != null)
-{
-    <EditForm EditContext="_editContext" OnSubmit="Submit">
-        <DataAnnotationsValidator />
-        <div class="border p-2 form-group">
-            @if (!_hideSettings)
-            {
-                <button type="button" class="btn btn-outline-primary active btn-sm" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
 
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <select id="category" class="form-control" value="@_selectedCategory" @onchange="FetchProducts">
-                        <option value="" selected hidden>Kies een categorie</option>
+<EditForm EditContext="_editContext" OnSubmit="Submit">
+    <DataAnnotationsValidator />
+    <div class="border p-2 form-group">
+        @if (!_hideSettings)
+        {
+            <button type="button" class="btn btn-outline-primary active btn-sm" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
 
-                        @if (_categories != null)
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" class="form-control" value="@_selectedCategory" @onchange="FetchProducts">
+                    <option value="" selected hidden>Kies een categorie</option>
+
+                    @if (_categories != null)
+                    {
+                        @foreach (Category cat in _categories)
                         {
-                            @foreach (Category cat in _categories)
+                            <option value=@cat.Id>@cat.CategoryName</option>
+                        }
+                    }
+                </select>
+            </div>
+            @if (_selectedCategory != null)
+            {
+                <div class="form-group">
+                    <label for="product">Product</label>
+                    <select id="product" class="form-control" @bind="_productNumber">
+
+                        @if (_products != null)
+                        {
+                            <option value="" selected hidden>Kies een product</option>
+                            @foreach (Product product in _products)
                             {
-                                <option value=@cat.Id>@cat.CategoryName</option>
+                                <option value=@product.ProductNumber>@product.Description</option>
                             }
                         }
                     </select>
                 </div>
-                @if (_selectedCategory != null)
-                {
-                    <div class="form-group">
-                        <label for="product">Product</label>
-                        <select id="product" class="form-control" @bind="_productNumber">
-
-                            @if (_products != null)
+            }
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="supplier">Leverancier</label>
+                    <select id="supplier" class="form-control" @bind="_selectedSupplier">
+                        <option value="" selected hidden>Kies een leverancier</option>
+                        @if (_suppliers != null)
+                        {
+                            @foreach (Supplier supplier in _suppliers)
                             {
-                                <option value="" selected hidden>Kies een product</option>
-                                @foreach (Product product in _products)
-                                {
-                                    <option value=@product.ProductNumber>@product.Description</option>
-                                }
+                                <option value=@supplier.Id>@supplier.SupplierName</option>
                             }
-                        </select>
-                    </div>
-                }
-                <div class="form-row">
-                    <div class="form-group col-md-4">
-                        <label for="supplier">Leverancier</label>
-                        <select id="supplier" class="form-control" @bind="_selectedSupplier">
-                            <option value="" selected hidden>Kies een leverancier</option>
-                            @if (_suppliers != null)
-                            {
-                                @foreach (Supplier supplier in _suppliers)
-                                {
-                                    <option value=@supplier.Id>@supplier.SupplierName</option>
-                                }
-                            }
-                        </select>
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="deliverydate">Leverdatum</label>
-                        <InputDate class="form-control" @bind-Value="_item.DeliveryDate" />
-                    </div>
-                    <div class="form-group col-md-4">
-                        <label for="invoicedate">Factuurdatum</label>
-                        <InputDate class="form-control" @bind-Value="_item.InvoiceDate" />
-                    </div>
+                        }
+                    </select>
                 </div>
-
-            }
-            else
-            {
-                <button type="button" class="btn btn-outline-primary btn-sm" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
-            }
-
-        </div>
-        <div class="form-group row">
-            <div class="col-6">
-                <label>Productnummer</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <button type="button" @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">
-                            <i class="oi oi-eye"></i>
-                        </button>
-                    </div>
-                    <input id="@(_serialScan ? "" : "codeField")" @bind="_productNumber" class="form-control" />
-
+                <div class="form-group col-md-4">
+                    <label for="deliverydate">Leverdatum</label>
+                    <InputDate class="form-control" @bind-Value="_item.DeliveryDate" />
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="invoicedate">Factuurdatum</label>
+                    <InputDate class="form-control" @bind-Value="_item.InvoiceDate" />
                 </div>
             </div>
 
-            <div class="col-6">
-                <label>Serienummer</label>
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <button type="button" @onclick="(() => _serialScan = true)" class="btn @(_serialScan ? "btn-secondary" : "btn-outline-secondary") input-group-prepend">
-                            <i class="oi oi-eye"></i>
-                        </button>
-                    </div>
-                    <input id="@(_serialScan ? "codeField" : "" )" @bind="_serialNumber" class="form-control" />
+        }
+        else
+        {
+            <button type="button" class="btn btn-outline-primary btn-sm" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
+        }
+
+    </div>
+    <div class="form-group row">
+        <div class="col-6">
+            <label>Productnummer</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <button type="button" @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">
+                        <i class="oi oi-eye"></i>
+                    </button>
                 </div>
+                <input id="@(_serialScan ? "" : "codeField")" @bind="_productNumber" class="form-control" />
+
             </div>
         </div>
-        <QuaggaScanner @ref="_scanner" />
-        <ValidationSummary />
-        <button type="submit" class="btn btn-outline-primary w-100"><i class="oi oi-arrow-bottom"></i>Plaats<i class="oi oi-arrow-bottom"></i></button>
-    </EditForm>
-}
+
+        <div class="col-6">
+            <label>Serienummer</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <button type="button" @onclick="(() => _serialScan = true)" class="btn @(_serialScan ? "btn-secondary" : "btn-outline-secondary") input-group-prepend">
+                        <i class="oi oi-eye"></i>
+                    </button>
+                </div>
+                <input id="@(_serialScan ? "codeField" : "" )" @bind="_serialNumber" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <QuaggaScanner @ref="_scanner" />
+    <ValidationSummary />
+    <button type="submit" class="btn btn-outline-primary w-100"><i class="oi oi-arrow-bottom"></i>Plaats<i class="oi oi-arrow-bottom"></i></button>
+</EditForm>
+
 

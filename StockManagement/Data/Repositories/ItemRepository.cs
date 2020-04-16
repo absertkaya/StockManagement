@@ -18,7 +18,10 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<IList<Product>> GetByCategoryAsync(int id)
         {
-            return await _session.Query<Product>().Where(p => p.Category.Id == id).OrderBy(p => p.Description).ToListAsync();
+            return await _session.QueryOver<Product>()
+                .Where(p => p.Category.Id == id)
+                .OrderBy(p => p.Description).Asc
+                .ListAsync();
         }
 
         public virtual async Task<IList<Item>> GetBySerialNrAsync(string serialnr)
@@ -30,22 +33,26 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<Item> GetItemByProductAndSerialNumberAsync(string pn, string sn)
         {
-            return await _session.Query<Item>().FirstOrDefaultAsync(i => i.Product.ProductNumber == pn && i.SerialNumber == sn);
+            return await _session.QueryOver<Item>()
+                .Where(i => i.Product.ProductNumber == pn && i.SerialNumber == sn)
+                .SingleOrDefaultAsync();
         }
 
         public virtual async Task<Item> GetItemDetails(int id)
         {
-            return await _session.Query<Item>()
-                .Fetch(x => x.ADUser)
-                .Fetch(x => x.Product)
-                .Fetch( x => x.Supplier)
-                .FirstOrDefaultAsync(i => i.Id == id);
+            return await _session.QueryOver<Item>()
+                .Fetch(SelectMode.FetchLazyProperties, x => x.ADUser)
+                .Fetch(SelectMode.FetchLazyProperties, x => x.Product)
+                .Fetch(SelectMode.FetchLazyProperties, x => x.Supplier)
+                .Where(i => i.Id == id)
+                .SingleOrDefaultAsync();
         }
 
         public virtual bool GetItemInStock(int id)
         {
-            Item item = _session.Query<Item>()
-                .FirstOrDefault(i => i.Id == id);
+            Item item = _session.QueryOver<Item>()
+                .Where(i => i.Id == id)
+                .SingleOrDefault();
             return item?.ItemStatus == ItemStatus.INSTOCK;
         }
 
@@ -58,8 +65,9 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<IList<Item>> GetByProductAsync(int productid)
         {
-            return await _session.QueryOver<Item>().Where(i => i.Product.Id == productid)
-                .Left.JoinQueryOver(i => i.ADUser)
+            return await _session.QueryOver<Item>()
+                .Fetch(SelectMode.FetchLazyProperties, i => i.ADUser)
+                .Where(i => i.Product.Id == productid)
                 .ListAsync();
         }
 
@@ -71,39 +79,39 @@ namespace StockManagement.Data.Repositories
 
         public virtual async Task<IList<Item>> GetItemsByUserAsync(string id)
         {
-            return await _session.Query<Item>()
-                .Where(i => i.ADUser.Id == id).Fetch(i => i.ADUser)
-                .Fetch(i => i.Product)
-                .ToListAsync();
+            return await _session.QueryOver<Item>()
+                .Fetch(SelectMode.FetchLazyProperties, i => i.Product)
+                .Fetch(SelectMode.FetchLazyProperties, i => i.ADUser)
+                .Where(i => i.ADUser.Id == id)
+                .ListAsync();
         }
 
         public virtual async Task<IList<ItemUser>> GetItemUsersByUser(string id)
         {
-            return await _session.Query<ItemUser>()
+            return await _session.QueryOver<ItemUser>()
+                .Fetch(SelectMode.FetchLazyProperties, i => i.User)
+                .Fetch(SelectMode.FetchLazyProperties, i => i.Item)
                 .Where(i => i.User.Id == id)
-                .Fetch(i => i.User).Fetch(i => i.Item)
-                .ThenFetch(i => i.Product)
-                .OrderByDescending(i => i.ToDate)
-                .ToListAsync();
+                .OrderBy(i => i.ToDate).Desc
+                .ListAsync();
         }
 
         public virtual async Task<IList<ItemUser>> GetItemUsersByItem(int id)
         {
-            return await _session.Query<ItemUser>()
+            return await _session.QueryOver<ItemUser>()
+                .Fetch(SelectMode.FetchLazyProperties, i => i.User)
+                .Fetch(SelectMode.FetchLazyProperties, i => i.Item)
                 .Where(i => i.Item.Id == id)
-                .Fetch(i => i.User)
-                .Fetch(i => i.Item)
-                .ThenFetch(i => i.Product)
-                .OrderByDescending(i => i.ToDate)
-                .ToListAsync();
+                .OrderBy(i => i.ToDate).Desc
+                .ListAsync();
         }
 
         public virtual IList<Product> GetByCategory(int id)
         {
-            return _session.Query<Product>()
+            return _session.QueryOver<Product>()
                 .Where(p => p.Category.Id == id)
-                .OrderBy(p => p.Description)
-                .ToList();
+                .OrderBy(p => p.Description).Desc
+                .List();
         }
 
         public virtual bool ItemDuplicateExists(int id, string sn, int productId)
@@ -147,8 +155,9 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<Item>> GetBySupplierAsync(int id)
         {
             return await _session.QueryOver<Item>()
+                .Fetch(SelectMode.FetchLazyProperties, i => i.Supplier.Id == id)
                 .Where(i => i.Supplier.Id == id)
-                .Left.JoinQueryOver(i => i.ADUser)
+
                 .ListAsync();
         }
 

@@ -81,6 +81,11 @@ namespace StockManagement.Pages.OverviewPages
             NavigationManager.NavigateTo("/itemhistoriek/"+Id, true);
         }
 
+        protected void NavigateToUser(string id)
+        {
+            NavigationManager.NavigateTo($"/gebruiker/{id}/{_item.Id}");
+        }
+
         protected void RowExpand(ItemUser iu)
         {
             var parameters = new ModalParameters();

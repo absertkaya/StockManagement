@@ -124,7 +124,7 @@ namespace StockManagement.Data
                             userMap.Add(code, user);
                         }
                     }
-                }
+                } 
             }
         }
 
@@ -354,7 +354,7 @@ namespace StockManagement.Data
                                 aduser = userMap[u];
                             } else
                             {
-                                aduser = newUsers.FirstOrDefault(c => c.NormalizedSearchInfo.ToLower().Contains(u));
+                                aduser = newUsers.FirstOrDefault(c => Regex.Replace(c.FirstName+c.LastName, " ", "").ToLower().Contains(Regex.Replace(u, " ", "")));
                             }
 
                             if (aduser == null)
@@ -365,10 +365,18 @@ namespace StockManagement.Data
                         }
 
                         bool instock = outstockdate == null && locStock;
+
+
+
                         ItemStatus status = instock ? ItemStatus.INSTOCK : ItemStatus.OUTSTOCK;
                         if (stolen)
                         {
                             status = ItemStatus.STOLEN;
+                        }
+
+                        if (aduser == null && locStock == false && status == ItemStatus.OUTSTOCK)
+                        {
+                            comment += " (Locatie: " + loc + ")";
                         }
 
                         Item item = new Item()
@@ -376,8 +384,8 @@ namespace StockManagement.Data
                             Product = product,
                             SerialNumber = sn,
                             Supplier = supplier,
-                            DeliveryDate = delivery == null ? DateTime.Now : (DateTime)delivery,
-                            InvoiceDate = invoice == null ? DateTime.Now : (DateTime)invoice,
+                            DeliveryDate = delivery == null ? new DateTime() : (DateTime)delivery,
+                            InvoiceDate = invoice == null ? new DateTime() : (DateTime)invoice,
                             Comment = comment,
                             ItemStatus = status,
                             License = lic,
@@ -388,11 +396,26 @@ namespace StockManagement.Data
                             ADUser = aduser
                         };
 
+
+
                         if (!Repo.ItemDuplicateExists(item.Id, sn, product.Id))
                         {
                             try
                             {
+                                if (outstockdate != null && status == ItemStatus.OUTSTOCK && aduser != null)
+                                {
+                                    ItemUser iu = new ItemUser
+                                    {
+                                        Item = item,
+                                        User = aduser,
+                                        AssignedBy = aduser,
+                                        FromDate = outstockdate == null ? new DateTime() : (DateTime)outstockdate
+                                    };
+                                    item.ItemUsers.Add(iu);
+                                    
+                                }
                                 Repo.Save(item);
+                                
                             }
                             catch (Exception exc)
                             {
@@ -403,7 +426,5 @@ namespace StockManagement.Data
                 }
             }
         }
-
-
     }
 }
