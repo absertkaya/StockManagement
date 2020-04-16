@@ -95,13 +95,13 @@ namespace StockManagement
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-            //var excl = new ExcelReader(repo, config);
+            var excl = new ExcelReader(repo, config);
             //excl.ApiCall("https://graph.microsoft.com/v1.0/users?$top=999").Wait();
             //excl.ReadUsers();
             //excl.PersistUsers();
             //excl.ReadSubscriptions("C:\\Users\\Administrator\\Desktop\\GSM Nummers.xlsx");
             //excl.ReadUsers("C:\\Users\\Administrator\\Desktop\\VGDGebruikers.xlsx");
-            //excl.ReadAndPopulateDatabase("C:\\Users\\Administrator\\Desktop\\Stock Overzicht.xlsx"); 
-        } 
+            //excl.ReadAndPopulateDatabase("C:\\Users\\Administrator\\Desktop\\Stock Overzicht.xlsx");  
+        }
     }
 }

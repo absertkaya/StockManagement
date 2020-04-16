@@ -94,7 +94,7 @@ namespace StockManagement.Data
             }
 
             _colGraphUsers = _colGraphUsers
-              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null)
+              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && (u.JobTitle != null && u.OfficeLocation != null || u.JobTitle == null && u.OfficeLocation != null || u.JobTitle != null && u.OfficeLocation == null))
               .ToList();
 
         }

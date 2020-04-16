@@ -130,7 +130,7 @@ namespace StockManagement.Pages.ReuseableComponents
             }
 
             _colGraphUsers = _colGraphUsers
-              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && u.OfficeLocation != null && u.JobTitle != null)
+              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && (u.JobTitle != null && u.OfficeLocation != null || u.JobTitle == null && u.OfficeLocation != null || u.JobTitle != null && u.OfficeLocation == null))
               .ToList();
 
             await JSRuntime.InvokeVoidAsync("console.log", _colGraphUsers);
