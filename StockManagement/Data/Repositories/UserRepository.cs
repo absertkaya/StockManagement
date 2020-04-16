@@ -28,7 +28,7 @@ namespace StockManagement.Data.Repositories
         public async Task<ADUser> GetUserDetailsAsync(string id)
         {
             return await _session.QueryOver<ADUser>()
-                .Fetch(SelectMode.Fetch, x => x.MobileSubscriptions)
+                
                 .Where(x => x.Id == id)
                 .SingleOrDefaultAsync();
         }

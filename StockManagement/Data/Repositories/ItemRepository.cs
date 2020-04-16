@@ -41,7 +41,7 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<Item> GetItemDetails(int id)
         {
             return await _session.QueryOver<Item>()
-                .Fetch(SelectMode.Fetch, x => x.ADUser)
+                
                 .Fetch(SelectMode.Fetch, x => x.Product)
                 .Fetch(SelectMode.Fetch, x => x.Supplier)
                 .Where(i => i.Id == id)
@@ -66,7 +66,7 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<Item>> GetByProductAsync(int productid)
         {
             return await _session.QueryOver<Item>()
-                .Fetch(SelectMode.Fetch, i => i.ADUser)
+                
                 .Where(i => i.Product.Id == productid)
                 .ListAsync();
         }
@@ -81,7 +81,7 @@ namespace StockManagement.Data.Repositories
         {
             return await _session.QueryOver<Item>()
                 .Fetch(SelectMode.Fetch, i => i.Product)
-                .Fetch(SelectMode.Fetch, i => i.ADUser)
+                
                 .Where(i => i.ADUser.Id == id)
                 .ListAsync();
         }
@@ -89,7 +89,7 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<ItemUser>> GetItemUsersByUser(string id)
         {
             return await _session.QueryOver<ItemUser>()
-                .Fetch(SelectMode.Fetch, i => i.User)
+                
                 .Fetch(SelectMode.Fetch, i => i.Item)
                 .Where(i => i.User.Id == id)
                 .OrderBy(i => i.ToDate).Desc
@@ -99,7 +99,7 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<ItemUser>> GetItemUsersByItem(int id)
         {
             return await _session.QueryOver<ItemUser>()
-                .Fetch(SelectMode.Fetch, i => i.User)
+                
                 .Fetch(SelectMode.Fetch, i => i.Item)
                 .Where(i => i.Item.Id == id)
                 .OrderBy(i => i.ToDate).Desc

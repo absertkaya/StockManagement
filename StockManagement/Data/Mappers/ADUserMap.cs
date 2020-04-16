@@ -24,7 +24,6 @@ namespace StockManagement.Data.Mappers
                 .Inverse()
                 .Cascade.All();
             HasMany(x => x.MobileSubscriptions)
-                .Fetch.Join()
                 .Inverse()
                 .Cascade
                 .Delete();
