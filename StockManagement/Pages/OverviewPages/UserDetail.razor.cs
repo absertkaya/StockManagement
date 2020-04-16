@@ -68,7 +68,7 @@ namespace StockManagement.Pages.OverviewPages
         }
 
 
-        protected async Task ShowConfirmationReturn()
+        protected async Task ShowConfirmationReturnAll()
         {
             var modal = ModalService.Show<Confirmation>("Retourneer alles");
             var res = await modal.Result;
@@ -76,6 +76,17 @@ namespace StockManagement.Pages.OverviewPages
             if (!res.Cancelled)
             {
                 ReturnAll();
+            }
+        }
+
+        protected async Task ShowConfirmationReturnOne(Item item)
+        {
+            var modal = ModalService.Show<Confirmation>("Retourneer item");
+            var res = await modal.Result;
+
+            if (!res.Cancelled)
+            {
+                ReturnItem(item);
             }
         }
 

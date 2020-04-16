@@ -141,11 +141,14 @@
                     <tbody>
                         @foreach (ItemUser iu in _itemusers)
                         {
+                            @if (iu.User != null) {
                             <tr @onclick="(() => NavigateToUser(iu.User.Id))">
-                                <td><a href="/gebruiker/@(iu.User.Id)/" @onclick:stopPropagation>@($"{_item.ADUser.FirstName} {_item.ADUser.LastName}")</a></td>
+                                <td><a href="/gebruiker/@(iu.User.Id)/" @onclick:stopPropagation>@($"{iu.User.FirstName} {iu.User.LastName}")</a></td>
                                 <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
                                 <td>@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
                             </tr>
+                            }
+
                         }
                     </tbody>
                 </table>
