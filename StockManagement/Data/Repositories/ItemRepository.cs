@@ -19,7 +19,7 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<Product>> GetByCategoryAsync(int id)
         {
             return await _session.QueryOver<Product>()
-                .Where(p => p.Category.Id == id)
+                .Where(p => p.Category.Id == id) 
                 .OrderBy(p => p.Description).Asc
                 .ListAsync();
         }
@@ -41,9 +41,9 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<Item> GetItemDetails(int id)
         {
             return await _session.QueryOver<Item>()
-                .Fetch(SelectMode.FetchLazyProperties, x => x.ADUser)
-                .Fetch(SelectMode.FetchLazyProperties, x => x.Product)
-                .Fetch(SelectMode.FetchLazyProperties, x => x.Supplier)
+                .Fetch(SelectMode.Fetch, x => x.ADUser)
+                .Fetch(SelectMode.Fetch, x => x.Product)
+                .Fetch(SelectMode.Fetch, x => x.Supplier)
                 .Where(i => i.Id == id)
                 .SingleOrDefaultAsync();
         }
@@ -66,7 +66,7 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<Item>> GetByProductAsync(int productid)
         {
             return await _session.QueryOver<Item>()
-                .Fetch(SelectMode.FetchLazyProperties, i => i.ADUser)
+                .Fetch(SelectMode.Fetch, i => i.ADUser)
                 .Where(i => i.Product.Id == productid)
                 .ListAsync();
         }
@@ -80,8 +80,8 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<Item>> GetItemsByUserAsync(string id)
         {
             return await _session.QueryOver<Item>()
-                .Fetch(SelectMode.FetchLazyProperties, i => i.Product)
-                .Fetch(SelectMode.FetchLazyProperties, i => i.ADUser)
+                .Fetch(SelectMode.Fetch, i => i.Product)
+                .Fetch(SelectMode.Fetch, i => i.ADUser)
                 .Where(i => i.ADUser.Id == id)
                 .ListAsync();
         }
@@ -89,8 +89,8 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<ItemUser>> GetItemUsersByUser(string id)
         {
             return await _session.QueryOver<ItemUser>()
-                .Fetch(SelectMode.FetchLazyProperties, i => i.User)
-                .Fetch(SelectMode.FetchLazyProperties, i => i.Item)
+                .Fetch(SelectMode.Fetch, i => i.User)
+                .Fetch(SelectMode.Fetch, i => i.Item)
                 .Where(i => i.User.Id == id)
                 .OrderBy(i => i.ToDate).Desc
                 .ListAsync();
@@ -99,8 +99,8 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<ItemUser>> GetItemUsersByItem(int id)
         {
             return await _session.QueryOver<ItemUser>()
-                .Fetch(SelectMode.FetchLazyProperties, i => i.User)
-                .Fetch(SelectMode.FetchLazyProperties, i => i.Item)
+                .Fetch(SelectMode.Fetch, i => i.User)
+                .Fetch(SelectMode.Fetch, i => i.Item)
                 .Where(i => i.Item.Id == id)
                 .OrderBy(i => i.ToDate).Desc
                 .ListAsync();
@@ -155,7 +155,7 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<Item>> GetBySupplierAsync(int id)
         {
             return await _session.QueryOver<Item>()
-                .Fetch(SelectMode.FetchLazyProperties, i => i.Supplier.Id == id)
+                .Fetch(SelectMode.Fetch, i => i.Supplier.Id == id)
                 .Where(i => i.Supplier.Id == id)
 
                 .ListAsync();
