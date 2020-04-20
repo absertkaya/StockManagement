@@ -27,19 +27,10 @@
                     decoder: {
                 readers: [
                     "code_128_reader",
-                    {
-                        format: "ean_reader",
-                        config: {
-                            supplements: [
-                                'ean_5_reader', 'ean_2_reader'
-                            ]
-                        }
-                    },
-                    "code_93_reader",
+                    "ean_reader",
                     "ean_8_reader",
                     "upc_reader",
-                    "upc_e_reader",
-                    "code_39_reader"
+                    "upc_e_reader"
                 ]
             },
             locate: true
@@ -97,8 +88,6 @@
         let stream = document.getElementById("interactive");
         stream.onclick = function () {
             let track = Quagga.CameraAccess.getActiveTrack();
-
-            console.log()
             if (track && typeof track.getCapabilities === 'function') {
                 var capabilities = track.getCapabilities();
                 if (capabilities.zoom) {

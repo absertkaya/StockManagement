@@ -1,0 +1,29 @@
+﻿@using Blazor.FileReader 
+<input @bind="_code" />
+<input type="file" @ref="_fileUpload" />
+
+@code {
+    protected string _code;
+    protected ElementReference _fileUpload;
+
+    [Inject]
+    public IFileReaderService FileReaderService { get; set; }
+
+    public async Task Upload(string filename)
+    {
+        var files = (await FileReaderService.CreateReference(_fileUpload).EnumerateFilesAsync()).ToList();
+        foreach (var file in files)
+        {
+            try
+            {
+                var fi = await file.ReadFileInfoAsync();
+
+            }
+            catch (Exception ex)
+            {
+                
+            }
+        }
+        
+    }
+} 

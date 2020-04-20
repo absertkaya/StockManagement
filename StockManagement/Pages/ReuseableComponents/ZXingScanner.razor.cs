@@ -1,5 +1,6 @@
 ﻿using Blazor.FileReader;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using SixLabors.ImageSharp;
 using System;
 using System.Collections.Generic;
@@ -19,12 +20,13 @@ namespace StockManagement.Pages.ReuseableComponents
 
         [Inject]
         public IFileReaderService FileReader { get; set; }
-
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
         public ElementReference input { get; set; }
 
         public string res { get; set; }
 
-         
+
 
         public async Task Decode()
         {
@@ -43,8 +45,6 @@ namespace StockManagement.Pages.ReuseableComponents
                     queryString["detectOrientation"] = "true";
                     var uri = "https://stockmanagementvisualsearch.cognitiveservices.azure.com/bing/v7.0" + queryString;
 
-
-
                     using (MemoryStream ms = new MemoryStream())
                     {
                         byte[] buffer = new byte[bufferSize];
@@ -61,6 +61,11 @@ namespace StockManagement.Pages.ReuseableComponents
                             var reader = new ZXing.ImageSharp.BarcodeReader<SixLabors.ImageSharp.PixelFormats.Rgba32>();
 
                             res = reader.Decode(image)?.Text;
+                        }
+
+                        if (res == null)
+                        {
+
                         }
                     }
                     
