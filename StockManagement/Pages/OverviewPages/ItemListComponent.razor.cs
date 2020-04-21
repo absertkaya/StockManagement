@@ -43,6 +43,8 @@ namespace StockManagement.Pages.OverviewPages
             Items = Items.OrderBy(i => i.Hostname);
         }
 
+
+
         protected void SortBySerialNumber()
         {
             if (!sortSerialNumberDesc)

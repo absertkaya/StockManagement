@@ -57,6 +57,11 @@ namespace StockManagement.Domain
             return !SerialNumber.StartsWith("NOSERIALNR");
         } 
 
+        public virtual bool IsStolenOrLost()
+        {
+            return ItemStatus == ItemStatus.STOLEN || ItemStatus == ItemStatus.LOST;
+        }
+
         public virtual ItemUser RemoveFromStock(ADUser user, ADUser assigner)
         {
             if (ItemStatus.INSTOCK != ItemStatus)

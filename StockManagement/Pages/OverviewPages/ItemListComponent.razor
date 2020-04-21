@@ -17,7 +17,7 @@
         <tbody>
             @foreach (Item item in Items)
             {
-                <tr @onclick="(() => NavigateToItemHistory(item))">
+                <tr @onclick="(() => NavigateToItemHistory(item))" class="@(item.IsStolenOrLost() ? "bg-danger" : "")">
                     @if (_hasHostnames)
                     {
                         <td>@item.Hostname</td>
