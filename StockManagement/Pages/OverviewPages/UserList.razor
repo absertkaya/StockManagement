@@ -30,11 +30,11 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (ADUser user in _filteredUsers)
+                @foreach (var user in _filteredUsers)
                 {
                     <tr @onclick="(() => NavigateToUserDetail(user))">
-                        <td>@user.FirstName</td>
-                        <td>@user.LastName</td>
+                        <td>@user.GivenName</td>
+                        <td>@user.Surname</td>
                         <td class="d-none d-md-table-cell">@user.Mail</td>
                     </tr>
                 }

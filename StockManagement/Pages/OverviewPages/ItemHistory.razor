@@ -31,7 +31,7 @@
             <table class="table table-sm border">
                 <tr>
                     <th style="width: 25%">S/N</th>
-                    <td>@_item.SerialNumber</td>
+                    <td>@(_item.HasSerialNumber() ? _item.SerialNumber : "Geen serienummer beschikbaar.")</td>
                 </tr>
                 @if (_item.ADUser != null)
                 {

@@ -15,6 +15,11 @@ namespace StockManagement.Data.Repositories
         {
         }
 
+        public bool ADUserExists(string id)
+        {
+            return _session.Query<ADUser>().Any(u => u.Id == id);
+        }
+
         public async Task<IList<MobileAccount>> GetAllMobileAccounts()
         {
             return await _session.Query<MobileAccount>().ToListAsync();

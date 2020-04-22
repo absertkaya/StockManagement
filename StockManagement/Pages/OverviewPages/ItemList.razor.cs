@@ -57,7 +57,8 @@ namespace StockManagement.Pages.OverviewPages
                     _items = await Repository.GetBySupplierAsync(_supplier.Id);
                 }
                 _filteredItems = new List<Item>(_items).OrderBy(i => i.SerialNumber);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Telemetry.TrackException(ex);
                 ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");

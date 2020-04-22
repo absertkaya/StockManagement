@@ -41,11 +41,14 @@ namespace StockManagement.Pages.StockPages
         protected int? _selectedCategory;
         protected int? _selectedProduct;
         protected int? _selectedSupplier;
+        protected int? _selectedUser;
         protected string _comment;
         protected string _serialNumber;
         protected DateTime? _deliveryDate;
         protected DateTime? _invoiceDate;
         protected ItemStatus _selectedStatus;
+
+        private ADUser _initialUser;
 
         protected string _imei;
         protected string _vgdnumber;
@@ -63,7 +66,8 @@ namespace StockManagement.Pages.StockPages
                 _categories = await Repository.GetAllAsync<Category>();
                 _suppliers = await Repository.GetAllAsync<Supplier>();
                 _item = (Item)await Repository.GetByIdAsync(typeof(Item), Id);
-
+                _users = await Repository.GetAllAsync<ADUser>();
+                _initialUser = _item.ADUser;
                 if (_item == null)
                 {
                     NavigationManager.NavigateTo("error");
@@ -134,7 +138,6 @@ namespace StockManagement.Pages.StockPages
                 ToastService.ShowWarning("Selecteer een leverancier.");
                 return;
             }
-
 
             _item.Supplier = _suppliers.First(i => _selectedSupplier == i.Id);
             _item.Comment = _comment;

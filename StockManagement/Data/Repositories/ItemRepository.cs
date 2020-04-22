@@ -155,7 +155,7 @@ namespace StockManagement.Data.Repositories
         public virtual async Task<IList<Item>> GetBySupplierAsync(int id)
         {
             return await _session.QueryOver<Item>()
-                .Fetch(SelectMode.Fetch, i => i.Supplier.Id == id)
+                .Fetch(SelectMode.Fetch, i => i.Supplier.Id)
                 .Where(i => i.Supplier.Id == id)
 
                 .ListAsync();
