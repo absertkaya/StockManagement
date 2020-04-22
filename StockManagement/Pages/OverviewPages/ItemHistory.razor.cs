@@ -24,7 +24,7 @@ namespace StockManagement.Pages.OverviewPages
         [Parameter]
         public int? SupplierId { get; set; }
         [Parameter]
-        public string? UserId { get; set; }
+        public string UserId { get; set; }
         [Parameter]
         public string Beheer { get; set; }
 

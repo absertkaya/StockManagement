@@ -64,16 +64,16 @@ namespace StockManagement.Pages.MailPages
 
             foreach (Item item in _items)
             {
-                itemsString += $"    - {item.Product.Description} {(!item.HasSerialNumber() ? "" : $"(S/N: {item.SerialNumber})")}\n";
+                itemsString += $"    - {item.Product.Description} {(!item.HasSerialNumber() ? "" : $"(S/N: {item.SerialNumber})")}\\n";
             }
 
-            _body = $"Beste,\n\n" +
-                    $"Volgende zaken verwachten we van collega {aduser.FirstName} {aduser.LastName}:\n\n" +
+            _body = $"Beste,\\n\\n" +
+                    $"Volgende zaken verwachten we van collega {aduser.FirstName} {aduser.LastName}:\\n\\n" +
                     itemsString +
-                    $"\nAlvast bedankt om dit na te gaan bij uitdienst.\n\n" +
-                    $"Met vriendelijke groeten\n\n" +
-                    $"{stockUser.FirstName} {stockUser.LastName}\n" +
-                    $"{stockUser.OfficeRole}\n\n";
+                    $"\\nAlvast bedankt om dit na te gaan bij uitdienst.\\n\\n" +
+                    $"Met vriendelijke groeten\\n\\n" +
+                    $"{stockUser.FirstName} {stockUser.LastName}\\n" +
+                    $"{stockUser.OfficeRole}\\n\\n";
 
             MailToString = $"mailto:{_toAddress}?subject={_subject}&body={_body}";
         }

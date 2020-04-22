@@ -103,7 +103,7 @@ namespace StockManagement.Data
         {
             newUsers = Repo.GetAll<ADUser>();
             int rowNr;
-            using (var stream = File.Open(path, FileMode.Open, FileAccess.Read))
+            using (var stream = File.Open(path, FileMode.Open, FileAccess.Read)) 
             {
                 using (var reader = ExcelReaderFactory.CreateReader(stream))
                 {
@@ -118,12 +118,22 @@ namespace StockManagement.Data
                             {
                                 continue;
                             }
+
+                            
                             string code = row.ItemArray[0].ToString().ToLower();
                             string email = row.ItemArray[2].ToString().ToLower();
+                            
                             ADUser user = newUsers.FirstOrDefault(u => u.Mail.ToLower() == email);
+                            if (user == null)
+                            {
+                                string name = Regex.Replace(row.ItemArray[1].ToString().ToLower(), " ", "");
+
+                                user = newUsers.FirstOrDefault(u => Regex.Replace(u.FirstName + u.LastName, " ", "").ToLower().Contains(name));
+                            }
                             userMap.Add(code, user);
                         }
                     }
+                    string meme = "lol";
                 } 
             }
         }
