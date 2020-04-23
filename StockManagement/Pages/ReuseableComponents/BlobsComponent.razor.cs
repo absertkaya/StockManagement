@@ -21,7 +21,7 @@ namespace StockManagement.Pages.ReuseableComponents
 
         protected override async Task OnInitializedAsync()
         {
-            BlobService.SetContainerNoCreate(Container);
+            await BlobService.SetContainerNoCreate(Container);
             await RefreshBlobs();
         }
 

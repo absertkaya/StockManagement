@@ -17,26 +17,36 @@ namespace StockManagement.Data.Services
 {
     public class BlobService : IBlobService
     {
+        private readonly IKeyVaultService _kvService;
+
         public StorageCredentials StorageCredentials { get; set; }
         public CloudStorageAccount StorageAccount { get; set; }
         public CloudBlobClient BlobClient { get; set; }
         public CloudBlobContainer BlobContainer { get; set; }
 
+
         public BlobService(IKeyVaultService keyVaultService)
         {
-            var accountKey = keyVaultService.GetSecret("BlobStorageAccountKey");
+            _kvService = keyVaultService;
+        }
+
+        private async Task CreateBlobClient()
+        {
+            string accountKey = await _kvService.GetSecretAsync("BlobStorageAccountKey");
             StorageCredentials = new StorageCredentials("vgdstockmanagement", accountKey);
             StorageAccount = new CloudStorageAccount(StorageCredentials, true);
             BlobClient = StorageAccount.CreateCloudBlobClient();
         }
 
-        public void SetContainerNoCreate(string containerName)
+        public async Task SetContainerNoCreate(string containerName)
         {
+            await CreateBlobClient();
             BlobContainer = BlobClient.GetContainerReference(containerName);
         }
 
         public async Task SetContainer(string containerName)
-        {          
+        {
+            await CreateBlobClient();
             BlobContainer = BlobClient.GetContainerReference(containerName);
             if (! await BlobContainer.ExistsAsync())
             {

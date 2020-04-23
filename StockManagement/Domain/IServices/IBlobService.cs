@@ -14,6 +14,6 @@ namespace StockManagement.Domain.IServices
         Task UploadBlobToContainer(IFileReference fileName, string blobName);
         Task DeleteContainer();
         Task DeleteBlob(string blobName);
-        void SetContainerNoCreate(string containerName);
+        Task SetContainerNoCreate(string containerName);
     }
 }
