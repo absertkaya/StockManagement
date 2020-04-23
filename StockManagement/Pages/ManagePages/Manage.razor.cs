@@ -24,8 +24,8 @@ namespace StockManagement.Pages.ManagePages
         private IList<Category> _categories;
         private IList<Supplier> _suppliers;
 
-        protected IEnumerable<Category> _sortedCategories;
-        protected IEnumerable<Supplier> _sortedSuppliers;
+        protected IList<Category> _sortedCategories;
+        protected IList<Supplier> _sortedSuppliers;
 
         [Inject] 
         public IItemRepository Repository { get; set; }
@@ -88,10 +88,10 @@ namespace StockManagement.Pages.ManagePages
         {
             if (!sortCategoryDesc)
             {
-                _sortedCategories = _sortedCategories.OrderBy(c => c.CategoryName);
+                _sortedCategories = _sortedCategories.OrderBy(c => c.CategoryName).ToList();
             } else
             {
-                _sortedCategories = _sortedCategories.OrderByDescending(c => c.CategoryName);
+                _sortedCategories = _sortedCategories.OrderByDescending(c => c.CategoryName).ToList();
             }
 
             sortCategoryDesc = !sortCategoryDesc;
@@ -101,11 +101,11 @@ namespace StockManagement.Pages.ManagePages
         {
             if (!sortSupplierDesc)
             {
-                _sortedSuppliers = _sortedSuppliers.OrderBy(c => c.SupplierName);
+                _sortedSuppliers = _sortedSuppliers.OrderBy(c => c.SupplierName).ToList();
             }
             else
             {
-                _sortedSuppliers = _sortedSuppliers.OrderByDescending(c => c.SupplierName);
+                _sortedSuppliers = _sortedSuppliers.OrderByDescending(c => c.SupplierName).ToList();
             }
 
             sortSupplierDesc = !sortSupplierDesc;
@@ -120,6 +120,7 @@ namespace StockManagement.Pages.ManagePages
                 {
                     Repository.Delete(sup);
                     _suppliers.Remove(sup);
+                    _sortedSuppliers.Remove(sup);
                     Telemetry.TrackEvent("SupplierDelete");
                 } catch (Exception ex)
                 {
@@ -142,6 +143,7 @@ namespace StockManagement.Pages.ManagePages
                 {
                     Repository.Delete(cat);
                     _categories.Remove(cat);
+                    _sortedCategories.Remove(cat);
                     Telemetry.TrackEvent("CategoryDelete");
                 }
                 catch (Exception ex)
