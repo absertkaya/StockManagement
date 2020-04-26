@@ -10,6 +10,7 @@ using StockManagement.Domain.IServices;
 using StockManagement.Graph;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace StockManagement.Pages.OverviewPages
@@ -31,13 +32,13 @@ namespace StockManagement.Pages.OverviewPages
 
         protected string _searchString;
 
-        protected IList<Category> _categories;
+        protected IEnumerable<Category> _categories;
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                _categories = await Repository.GetAllAsync<Category>();
+                _categories = (await Repository.GetAllAsync<Category>())?.OrderBy(c => c.CategoryName);
             } catch (Exception ex)
             {
                 Telemetry.TrackException(ex);
