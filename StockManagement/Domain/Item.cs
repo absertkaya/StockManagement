@@ -43,6 +43,7 @@ namespace StockManagement.Domain
         public virtual string License { get; set; }
         public virtual string Carepack { get; set; }
         public virtual string VGDNumber { get; set; }
+        public virtual IList<Item> IncludedItems { get; set; }
 
         public Item()
         {
@@ -50,6 +51,7 @@ namespace StockManagement.Domain
             InvoiceDate = DateTime.Today;
             ItemStatus = ItemStatus.INSTOCK;
             ItemUsers = new List<ItemUser>();
+            IncludedItems = new List<Item>();
         }
 
         public virtual bool HasSerialNumber()
@@ -60,6 +62,22 @@ namespace StockManagement.Domain
         public virtual bool IsNotFaulty()
         {
             return ItemStatus == ItemStatus.INSTOCK || ItemStatus == ItemStatus.OUTSTOCK;
+        }
+
+        public virtual void AddItem(Item item)
+        {
+            if (item != null && !IncludedItems.Any(i => i.Id == item.Id))
+            {
+                IncludedItems.Add(item);
+            }
+        }
+
+        public virtual void RemoveItem(Item item)
+        {
+            if (item != null && IncludedItems.Any(i => i.Id == item.Id))
+            {
+                IncludedItems.Remove(item);
+            }
         }
 
         public virtual ItemUser RemoveFromStock(ADUser user, ADUser assigner)

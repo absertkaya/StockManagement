@@ -226,10 +226,13 @@ namespace StockManagement.Data
             }
         }
 
+
         private void ReaderHelper(Stream stream)
         {
+            Item prevItem = null;
             int rowNr;
             Supplier unknown = new Supplier() { SupplierName = "UNKNOWN" };
+            Category sim = new Category() { CategoryName = "Simkaart" };
             Supplier supplier = unknown;
             List<string> products = new List<string>();
             List<Supplier> suppliers = new List<Supplier>() { unknown };
@@ -406,8 +409,6 @@ namespace StockManagement.Data
                             ADUser = aduser
                         };
 
-
-
                         if (!Repo.ItemDuplicateExists(item.Id, sn, product.Id))
                         {
                             try
@@ -430,6 +431,20 @@ namespace StockManagement.Data
                             catch (Exception exc)
                             {
 
+                            }
+                        }
+
+                        if (cat.CategoryName == "4G Modems")
+                        {
+                            if (item.Product.Description.StartsWith("HUAWEI") || item.Product.Description.StartsWith("TP-LINK"))
+                            {
+                                prevItem = item;
+                            } else
+                            {
+                                item.Product.Category = sim;
+                                Repo.Save(item.Product.Category);
+                                prevItem.AddItem(item);
+                                Repo.Save(prevItem);
                             }
                         }
                     }

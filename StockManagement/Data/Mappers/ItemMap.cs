@@ -26,6 +26,8 @@ namespace StockManagement.Data.Mappers
             HasMany(x => x.ItemUsers)
                 .Inverse()
                 .Cascade.All();
+            HasMany(x => x.IncludedItems)
+                .Cascade.None();
         }
     }
 }

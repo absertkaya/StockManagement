@@ -76,9 +76,12 @@
                     </table>
                 </div>
             </div>
-            <div class="btn-group btn-group-sm">
-                <a href="/mail/@(Id)" class="btn btn-sm btn-primary"><i class="oi oi-envelope-closed"></i></a>
-                <button class="btn btn-success" @onclick="AddSubscription"><i class="oi oi-phone"></i></button>
+            <div class="d-flex justify-content-center">
+                <div class="px-1">
+                    <a href="/mail/@(Id)" class="btn btn-primary"><i class="oi oi-envelope-closed"></i></a>
+                    <button class="btn btn-success" @onclick="AddSubscription"><i class="oi oi-phone"></i></button>
+                </div>
+
             </div>
         </div>
     </div>

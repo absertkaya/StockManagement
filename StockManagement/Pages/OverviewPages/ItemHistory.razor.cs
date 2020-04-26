@@ -68,6 +68,37 @@ namespace StockManagement.Pages.OverviewPages
             imageUploadOpen = !imageUploadOpen;
         }
 
+        protected async Task ShowConfirmationDisassociate(Item item)
+        {
+            var modal = ModalService.Show<Confirmation>("Item uitsluiten");
+            var res = await modal.Result;
+
+            if (!res.Cancelled)
+            {
+                DisassociateItem(item);
+            }
+        }
+
+        protected void DisassociateItem(Item item)
+        {
+            _item.RemoveItem(item);
+            Repository.Save(_item);
+        }
+
+        protected async Task AddIncludedItem()
+        {
+            var parameters = new ModalParameters();
+            parameters.Add("ParentItem", _item);
+
+            var modal = ModalService.Show<AddIncludedItem>("Inbegrepen item", parameters);
+            var res = await modal.Result;
+
+            if (!res.Cancelled)
+            {
+                _item.AddItem((Item)res.Data);
+            }
+        }
+
         protected async Task Clear()
         {
             await _fileUpload.ClearFile();
@@ -117,7 +148,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected async Task ShowConfirmation(Item item)
         {
-            var modal = ModalService.Show<Confirmation>("Delete Confirmation");
+            var modal = ModalService.Show<Confirmation>("Verwijder item");
             var res = await modal.Result;
 
             if (!res.Cancelled)

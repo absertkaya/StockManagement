@@ -1,5 +1,6 @@
 ﻿using Blazored.Modal;
 using Blazored.Modal.Services;
+using Blazored.Toast.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.JSInterop;
@@ -20,12 +21,14 @@ namespace StockManagement.Pages.ModalComponents
         [Parameter]
         public ADUser ADUser { get; set; }
         [Parameter]
+        public MobileSubscription MobileSubscription { get; set; }
+        [Parameter]
         public MobileAccount Account { get; set; }
 
         [Inject]
         private IUserRepository UserRepository { get; set; }
         [Inject]
-        public IJSRuntime JSRuntime { get; set; }
+        public IToastService ToastService { get; set; }
 
         protected IList<MobileAccount> _accounts = new List<MobileAccount>();
 
@@ -35,8 +38,7 @@ namespace StockManagement.Pages.ModalComponents
 
         protected int? _selectedAccount;
 
-        [Parameter]
-        public MobileSubscription MobileSubscription { get; set; }
+
 
         
         protected EditContext _editContext;
@@ -125,6 +127,7 @@ namespace StockManagement.Pages.ModalComponents
             if (_editContext.Validate())
             {
                 UserRepository.Save(MobileSubscription);
+                ToastService.ShowSuccess("Abonnement toegevoegd.");
                 BlazoredModal.Close(ModalResult.Ok<MobileSubscription>(MobileSubscription));
             }
 

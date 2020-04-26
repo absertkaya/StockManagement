@@ -1,0 +1,59 @@
+﻿@inherits AddIncludedItemBase
+
+<div class="form-group">
+    <label for="category">Category</label>
+    <select id="category" class="form-control" value="@_selectedCategory" @onchange="FetchProducts">
+        <option value="" selected hidden>Kies een categorie</option>
+
+        @if (_categories != null)
+        {
+            @foreach (var cat in _categories)
+            {
+                <option value=@cat.Id>@cat.CategoryName</option>
+            }
+        }
+    </select>
+</div>
+
+@if (_selectedCategory != null)
+{
+    <div class="form-group">
+        <label for="product">Product</label>
+        <select id="product" class="form-control" value="@_productNumber" @onchange="FetchItems">
+            <option value="" selected hidden>Kies een product</option>
+            @if (_products != null)
+            {
+                @foreach (var product in _products)
+                {
+                    <option value=@product.ProductNumber>@product.Description</option>
+                }
+            }
+        </select>
+    </div>
+}
+
+@if (_items != null)
+{
+    @if (_items.Count() != 0)
+    {
+        <div class="form-group">
+            <label for="product">Items</label>
+            <select id="product" class="form-control" value="@_serialNumber" @onchange="SelectItem">
+                <option value="" selected hidden>Kies een item</option>
+
+                @foreach (var item in _items)
+                {
+                    <option value=@item.SerialNumber>@item.SerialNumber</option>
+                }
+
+            </select>
+        </div>
+    }
+    else
+    {
+        <p>Geen items beschikbaar.</p>
+    }
+}
+
+<button @onclick="Submit" class="btn btn-primary">Voeg toe</button>
+

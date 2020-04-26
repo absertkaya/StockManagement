@@ -43,7 +43,7 @@
                 <tr>
                     <th style="width: 25%">In stock</th>
                     <td>
-                        <ItemStatusComponent ItemStatus="_item.ItemStatus"/>
+                        <ItemStatusComponent ItemStatus="_item.ItemStatus" />
                     </td>
                 </tr>
 
@@ -100,17 +100,48 @@
                     <td>@_item.Comment</td>
                 </tr>
 
+                @if (_item.IncludedItems != null && _item.IncludedItems.Count != 0)
+                {
+                    <tr>
+                        <td colspan="2">
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>Inbegrepen</th>
+                                        <th class="d-none d-md-table-cell">P/N</th>
+                                        <th>S/N</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in _item.IncludedItems)
+                                    {
+                                        <tr>
+                                            <td>@item.Product.Description</td>
+                                            <td class="d-none d-md-table-cell">@(!item.Product.HasProductNumber() ? "Geen productnummer beschikbaar." : item.Product.ProductNumber)</td>
+                                            <td>@(_item.HasSerialNumber() ? _item.SerialNumber : "Geen serienummer beschikbaar.")</td>
+                                            <td><a><i class="oi oi-trash text-danger" @onclick="( () => ShowConfirmationDisassociate(item))"></i></a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
 
+                    </tr>
+                }
             </table>
-            <div class="btn-group btn-group-sm">
-                <button @onclick="ToggleImageUpload" class="btn btn-sm btn-primary"><i class="oi oi-camera-slr"></i></button>
-                <a href="/stock/edit/@(_item.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
-                <button @onclick="@(() => ShowConfirmation(_item))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
-            </div>
         </div>
 
 
-
+    </div>
+    <div class="d-flex justify-content-center mb-2">
+        <div class="px-1">
+            <button @onclick="ToggleImageUpload" class="btn btn-primary"><i class="oi oi-camera-slr"></i></button>
+            <a href="/stock/edit/@(_item.Id)" class="btn btn-secondary"><i class="oi oi-pencil"></i></a>
+            <button @onclick="AddIncludedItem" class="btn btn-success"><i class="oi oi-plus"></i></button>
+            <button @onclick="@(() => ShowConfirmation(_item))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
+        </div>
     </div>
     @if (imageUploadOpen)
     {
@@ -140,12 +171,13 @@
                     <tbody>
                         @foreach (ItemUser iu in _itemusers)
                         {
-                            @if (iu.User != null) {
-                            <tr @onclick="(() => NavigateToUser(iu.User.Id))">
-                                <td><a href="/gebruiker/@(iu.User.Id)/" @onclick:stopPropagation>@($"{iu.User.FirstName} {iu.User.LastName}")</a></td>
-                                <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
-                                <td>@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
-                            </tr>
+                            @if (iu.User != null)
+                            {
+                                <tr @onclick="(() => NavigateToUser(iu.User.Id))">
+                                    <td><a href="/gebruiker/@(iu.User.Id)/" @onclick:stopPropagation>@($"{iu.User.FirstName} {iu.User.LastName}")</a></td>
+                                    <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
+                                </tr>
                             }
 
                         }

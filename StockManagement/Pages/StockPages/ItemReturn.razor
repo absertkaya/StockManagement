@@ -30,7 +30,7 @@
             {
                 <div class="form-group">
                     <label for="product">Product</label>
-                    <select id="product" class="form-control" value="_selectedProduct" @onchange="FetchItems">
+                    <select id="product" class="form-control" value="@_productNumber" @onchange="FetchItems">
                         <option value="" selected hidden>Kies een product</option>
                         @if (_products != null)
                         {
