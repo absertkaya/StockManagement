@@ -47,12 +47,9 @@
                     }
                 </select>
                 <div class="input-group-append">
-                    @if (_selectedAccount != null)
+                    @if (_selectedAccount != null && _hasSubs == false)
                     {
-                        @if (SelectedAccountHasSubscriptions())
-                        {
-                            <button type="button" @onclick="DeleteAccount" class="btn btn-danger btn-sm"><i class="oi oi-trash"></i></button>
-                        }
+                        <button type="button" @onclick="DeleteAccount" class="btn btn-danger btn-sm"><i class="oi oi-trash"></i></button>
                     }
                     <button type="button" @onclick="SwitchAddMode" class="btn btn-secondary btn-sm"><i class="oi @(_addMode ? "oi-minus" : "oi-plus")"></i></button>
                 </div>
@@ -65,12 +62,12 @@
                     <div class="row">
                         <div class="col-6">
                             <label for="name">Accountnaam</label>
-                            <input class="form-control" id="name" @bind="_acc.AccountName" />
+                            <input class="form-control" id="name" @bind="Account.AccountName" />
                         </div>
                         <div class="col-6">
                             <label for="nr">Accountnummer</label>
                             <div class="input-group">
-                                <input class="form-control" id="nr" @bind="_acc.AccountNumber" />
+                                <input class="form-control" id="nr" @bind="Account.AccountNumber" />
                                 <div class="input-group-append">
                                     <button type="button" @onclick="SubmitAccount" class="btn btn-sm btn-secondary"><i class="oi oi-check"></i></button>
                                 </div>

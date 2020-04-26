@@ -113,7 +113,9 @@ namespace StockManagement.Pages.OverviewPages
         {
             var parameters = new ModalParameters();
             parameters.Add("MobileSubscription", sub);
+            parameters.Add("Account", sub.MobileAccount);
             parameters.Add("ADUser", _user);
+
 
             var modal = ModalService.Show<AddSubscription>("Edit abonnement", parameters);
             var res = await modal.Result;
