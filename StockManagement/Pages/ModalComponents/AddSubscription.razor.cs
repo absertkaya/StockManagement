@@ -79,7 +79,6 @@ namespace StockManagement.Pages.ModalComponents
         {
             _selectedAccount = int.Parse(e.Value.ToString());
             Account = _accounts.FirstOrDefault(a => a.Id == (int)_selectedAccount);
-            MobileSubscription.MobileAccount = Account;
             CheckHasSubs();
         }
 
@@ -106,6 +105,7 @@ namespace StockManagement.Pages.ModalComponents
             _accError = false;
             if (!string.IsNullOrWhiteSpace(Account.AccountName) && !string.IsNullOrWhiteSpace(Account.AccountNumber))
             {
+                MobileSubscription.MobileAccount = Account;
                 UserRepository.Save(Account);
                 _accounts.Add(Account);
                 _selectedAccount = Account.Id;
