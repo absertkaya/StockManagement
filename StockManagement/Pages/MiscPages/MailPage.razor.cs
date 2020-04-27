@@ -125,12 +125,25 @@ namespace StockManagement.Pages.MiscPages
             }
         }
 
-        protected void EditTemplate()
+        protected async Task EditTemplate()
         {
             var template = _templates.FirstOrDefault(t => t.Id == _selectedTemplate);
             var parameters = new ModalParameters();
             parameters.Add("MailTemplate", template);
-            ModalService.Show<AddMailTemplate>("Edit template", parameters);
+            var modal = ModalService.Show<AddMailTemplate>("Edit template", parameters);
+            var res = await modal.Result;
+
+            if (!res.Cancelled)
+            {
+                template = (MailTemplate)res.Data;
+                if (template != null)
+                {
+                    string[] result = template.BuildMail(aduser.FullName, stockUser.FullName, stockUser.OfficeRole, _items);
+                    _subject = result[0];
+                    _body = result[1];
+                    FireStringChange();
+                }
+            }
         }
 
         protected void FireStringChange()

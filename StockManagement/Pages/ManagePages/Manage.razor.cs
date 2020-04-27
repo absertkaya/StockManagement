@@ -158,6 +158,12 @@ namespace StockManagement.Pages.ManagePages
             }
         }
 
+        protected void ChangeVisibility(Category cat)
+        {
+            cat.ToggleVisibility();
+            Repository.Save(cat);
+        }
+
         protected async Task ImportData()
         {
             var files = (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList();

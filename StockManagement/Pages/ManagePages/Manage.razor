@@ -29,6 +29,7 @@
                                 <td @onclick="(() => NavigateToCategory(cat))">@cat.CategoryName</td>
                                 <td>
                                     <div class="btn-group btn-group-sm d-flex justify-content-end">
+                                        <button @onclick="(() => ChangeVisibility(cat))" class="btn btn-sm @(cat.IsVisible ? "btn-primary" : "btn-outline-primary")"><i class="oi oi-eye"></i></button>
                                         <a href="/beheer/categorie/@(cat.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
                                         @if (cat.Products == null || cat.Products.Count == 0)
                                         {

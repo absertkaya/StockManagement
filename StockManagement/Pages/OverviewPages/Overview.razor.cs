@@ -38,7 +38,7 @@ namespace StockManagement.Pages.OverviewPages
         {
             try
             {
-                _categories = (await Repository.GetAllAsync<Category>())?.OrderBy(c => c.CategoryName);
+                _categories = (await Repository.GetAllAsync<Category>())?.Where(c => c.IsVisible).OrderBy(c => c.CategoryName);
             } catch (Exception ex)
             {
                 Telemetry.TrackException(ex);
