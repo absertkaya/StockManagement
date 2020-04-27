@@ -32,64 +32,61 @@
 
             <div class="input-group">
                 <select id="type" value="@_selectedAccount" @onchange="FireAccountChange" class="form-control">
+                    <option value="" selected hidden>Kies een optie</option>
                     @if (_accounts != null && _accounts.Count != 0)
                     {
-                        <option value="" selected hidden>Kies een optie</option>
-                        @foreach (MobileAccount acc in _accounts)
+                    @foreach (MobileAccount acc in _accounts)
                         {
-                            <option value="@acc.Id">@($"{acc.AccountName} - {acc.AccountNumber}")</option>
+                    <option value="@acc.Id">@($"{acc.AccountName} - {acc.AccountNumber}")</option>
                         }
-                        /**/
                     }
-                    else
-                    {
-                        <option value="" selected hidden>Geen accounts beschikbaar</option>
-                    }
+
                 </select>
                 <div class="input-group-append">
                     @if (_selectedAccount != null && _hasSubs == false)
                     {
-                        <button type="button" @onclick="DeleteAccount" class="btn btn-danger btn-sm"><i class="oi oi-trash"></i></button>
+                    <button type="button" @onclick="DeleteAccount" class="btn btn-danger btn-sm"><i class="oi oi-trash"></i></button>
                     }
-                    <button type="button" @onclick="SwitchAddMode" class="btn btn-secondary btn-sm"><i class="oi @(_addMode ? "oi-minus" : "oi-plus")"></i></button>
+                    <button type="button" @onclick="SwitchAddMode" class="btn @(_addMode ? "btn-secondary" : "btn-success") btn-sm"><i class="oi @(_addMode ? "oi-minus" : "oi-plus")"></i></button>
                 </div>
             </div>
         </div>
         @if (_addMode)
         {
-            <div class="border p-2 form-group">
-                <div class="form-group">
-                    <div class="row">
-                        <div class="col-6">
-                            <label for="name">Accountnaam</label>
-                            <input class="form-control" id="name" @bind="Account.AccountName" />
-                        </div>
-                        <div class="col-6">
-                            <label for="nr">Accountnummer</label>
-                            <div class="input-group">
-                                <input class="form-control" id="nr" @bind="Account.AccountNumber" />
-                                <div class="input-group-append">
-                                    <button type="button" @onclick="SubmitAccount" class="btn btn-sm btn-secondary"><i class="oi oi-check"></i></button>
-                                </div>
+        <div class="border p-2 form-group">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="name">Accountnaam</label>
+                        <input class="form-control" id="name" @bind="Account.AccountName" />
+                    </div>
+                    <div class="col-6">
+                        <label for="nr">Accountnummer</label>
+                        <div class="input-group">
+                            <input class="form-control" id="nr" @bind="Account.AccountNumber" />
+                            <div class="input-group-append">
+                                <button type="button" @onclick="SubmitAccount" class="btn btn-sm btn-primary"><i class="oi oi-check"></i></button>
                             </div>
                         </div>
-
-
                     </div>
+
+
                 </div>
-                @if (_accError)
+            </div>
+            @if (_accError)
                 {
-                    <div>
-                        <p class="text-danger">Een account heeft verplicht een naam en nummer.</p>
-                    </div>
+            <div>
+                <p class="text-danger">Een account heeft verplicht een naam en nummer.</p>
+            </div>
 
                 }
-            </div>
+        </div>
 
 
 
         }
-        <button type="submit" class="btn btn-primary">Verzend</button>
         <ValidationSummary />
+        <button type="submit" class="btn btn-primary">Verzend</button>
+
     </EditForm>
 }

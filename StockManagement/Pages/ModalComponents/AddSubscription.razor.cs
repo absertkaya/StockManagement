@@ -38,9 +38,6 @@ namespace StockManagement.Pages.ModalComponents
 
         protected int? _selectedAccount;
 
-
-
-        
         protected EditContext _editContext;
 
         protected override async Task OnInitializedAsync()
@@ -81,6 +78,7 @@ namespace StockManagement.Pages.ModalComponents
         {
             _selectedAccount = int.Parse(e.Value.ToString());
             Account = _accounts.FirstOrDefault(a => a.Id == (int)_selectedAccount);
+            MobileSubscription.MobileAccount = Account;
             CheckHasSubs();
         }
 
@@ -91,14 +89,16 @@ namespace StockManagement.Pages.ModalComponents
             {
                 UserRepository.Delete(acc);
                 _accounts.Remove(acc);
+                Account = new MobileAccount();
+                MobileSubscription.MobileAccount = null;
                 _selectedAccount = null;
             }
-
         }
 
         protected void SwitchAddMode()
         {
             Account = new MobileAccount();
+            _selectedAccount = null;
             _addMode = !_addMode;
         }
 
@@ -109,10 +109,14 @@ namespace StockManagement.Pages.ModalComponents
             {
                 MobileSubscription.MobileAccount = Account;
                 UserRepository.Save(Account);
-                _accounts.Add(Account);
+                if (!_accounts.Any(a => a.Id == Account.Id))
+                {
+                    _accounts.Add(Account);
+                }
                 _selectedAccount = Account.Id;
                 MobileSubscription.MobileAccount = Account;
                 _addMode = false;
+                _hasSubs = false;
                 _selectedAccount = Account.Id;
                 Account = new MobileAccount();
             }
