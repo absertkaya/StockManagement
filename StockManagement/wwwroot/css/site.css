@@ -45,6 +45,8 @@ a, .btn-link {
     animation-delay: -0.15s;
 }
 
+
+
 @keyframes lds-ring {
     0% {
         transform: rotate(0deg);
@@ -303,6 +305,10 @@ app {
         display: none;
     }
 
+    #mailArea {
+        width: 250px;
+    }
+
     .main .top-row.auth {
         justify-content: space-between;
     }
@@ -315,6 +321,10 @@ app {
 @media (min-width: 768px) {
     app {
         flex-direction: row;
+    }
+
+    #mailArea {
+        width: 600px;
     }
 
     .sidebar {

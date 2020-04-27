@@ -106,10 +106,12 @@ namespace StockManagement.Pages.OverviewPages
 
         protected async Task Upload()
         {
-            await _fileUpload.Upload("item"+ Id + DateTime.Now.ToString("ddMMyyyyHHmmss"));
-            await Clear();
-            Telemetry.TrackEvent("ItemImageUpload");
-            NavigationManager.NavigateTo("/itemhistoriek/"+Id, true);
+            if (await _fileUpload.Upload("item"+ Id + DateTime.Now.ToString("ddMMyyyyHHmmss")))
+            {
+                await Clear();
+                Telemetry.TrackEvent("ItemImageUpload");
+                await _blobsComponent.RefreshBlobs();
+            }
         }
 
         protected void NavigateToUser(string id)

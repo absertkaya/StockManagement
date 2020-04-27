@@ -109,21 +109,14 @@ namespace StockManagement.Pages.OverviewPages
             _itemusers.Insert(0, iu);
         }
 
-        protected async Task EditSubscription(MobileSubscription sub)
+        protected void EditSubscription(MobileSubscription sub)
         {
             var parameters = new ModalParameters();
             parameters.Add("MobileSubscription", sub);
             parameters.Add("Account", sub.MobileAccount);
             parameters.Add("ADUser", _user);
+            ModalService.Show<AddSubscription>("Edit abonnement", parameters);
 
-
-            var modal = ModalService.Show<AddSubscription>("Edit abonnement", parameters);
-            var res = await modal.Result;
-
-            if (!res.Cancelled)
-            {
-                
-            }
         }
 
         protected async Task AddSubscription()

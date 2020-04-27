@@ -1,7 +1,9 @@
-﻿using Microsoft.ApplicationInsights;
+﻿using Blazored.Modal.Services;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using StockManagement.Data.Services;
 using StockManagement.Domain.IServices;
+using StockManagement.Pages.ModalComponents;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,8 @@ namespace StockManagement.Pages.ReuseableComponents
         public IBlobService BlobService { get; set; }
         [Inject]
         public TelemetryClient Telemetry { get; set; }
+        [Inject]
+        public IModalService ModalService { get; set; }
         protected List<string> _uris = new List<string>();
 
         protected override async Task OnInitializedAsync()
@@ -33,18 +37,23 @@ namespace StockManagement.Pages.ReuseableComponents
 
         public async Task RefreshBlobs()
         {
-            try
+            List<string> uris = await BlobService.GetBlobs();
+            if (uris != null)
             {
-                List<string> uris = await BlobService.GetBlobs();
-                if (uris != null)
-                {
-                    _uris = uris;
-                }
-            } catch (Exception ex)
-            {
-                Telemetry.TrackException(ex);
+                _uris = uris;
             }
-            
+            StateHasChanged();
+        }
+
+        protected async Task ShowDeleteConfirm(string url)
+        {
+            var modal = ModalService.Show<Confirmation>("Verwijder afbeelding");
+            var res = await modal.Result;
+
+            if (!res.Cancelled)
+            {
+                await Delete(url);
+            }
         }
 
         protected async Task Delete(string uri)

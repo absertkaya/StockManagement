@@ -15,6 +15,7 @@ namespace StockManagement.Data.Mappers
             Id(x => x.Id);
             Map(x => x.Body);
             Map(x => x.Subject);
+            Map(x => x.MailTemplateName);
         }
     }
 }

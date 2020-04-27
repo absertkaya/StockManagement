@@ -39,7 +39,7 @@ namespace StockManagement.Pages.ReuseableComponents
             await Upload(filename);
         }
 
-        public async Task Upload(string filename)
+        public async Task<bool> Upload(string filename)
         {
             var files = (await FileReaderService.CreateReference(inputElement).EnumerateFilesAsync()).ToList();
             foreach (var file in files)
@@ -57,6 +57,7 @@ namespace StockManagement.Pages.ReuseableComponents
                 }
             }
             await ClearFile();
+            return true;
         }
     }
 }
