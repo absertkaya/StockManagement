@@ -1,0 +1,8 @@
+﻿@inherits BingComponentBase
+@page "/bing"
+
+<h3>BingComponent</h3>
+
+<input type="file" @ref="inputElement" />
+<textarea class="form-control" rows="20" @bind="json" />
+<button @onclick="Upload">Upload</button>
