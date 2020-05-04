@@ -1,6 +1,5 @@
 ﻿using Blazor.FileReader;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Azure.CognitiveServices.Search.VisualSearch;
 using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
