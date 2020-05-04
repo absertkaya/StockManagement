@@ -8,7 +8,9 @@ namespace StockManagement.Data.Mappers
         {
             Table("Supplier");
             Id(x => x.Id).GeneratedBy.Increment();
-            Map(x => x.SupplierName);
+            Map(x => x.SupplierName).Not.Nullable();
+            HasMany(x => x.Items)
+                .Inverse();
         }
     }
 }

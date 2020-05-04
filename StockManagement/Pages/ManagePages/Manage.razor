@@ -4,94 +4,99 @@
 @using StockManagement.Domain
 
 <h3>Beheer</h3>
-<div class="form-group">
-    <button class="btn btn-success" @onclick="AddCategory"><i class="oi oi-plus"></i>Categorie</button>
+<div class="btn-group btn-group-sm mb-1">
+    <a href="/beheer/categorie" class="btn btn-success mr-1"><i class="oi oi-plus"></i>Categorie</a>
+    <a href="/beheer/product" class="btn btn-success mr-1"><i class="oi oi-plus"></i>Product</a>
+    <a href="/beheer/leverancier" class="btn btn-success"><i class="oi oi-plus"></i>Leverancier</a>
 </div>
 
-<table class="table table-striped table-responsive">
-    <thead class="thead-dark">
-        <tr>
-            <th>Id</th>
-            <th>Categorienaam</th>
-            <th>Aantal producten</th>
-            <th></th>
-        </tr>
-    </thead>
-
-    @if (_categories != null)
+<div class="row">
+    @if (_sortedCategories != null)
     {
-        @foreach (Category cat in _categories)
-        {
-            <tr>
-                <td>@cat.Id</td>
-                <td>@cat.CategoryName</td>
-                @if (_products != null)
-                {
-                    <td>@GetAmountOfProducts(cat)</td>
-                }
-                <td>
-                    <div>
-                        <button @onclick="@(() => EditCategory(@cat.Id))" class="btn btn-secondary"><i class="oi oi-pencil"></i></button>
-                        <button @onclick="@(() => DeleteCategory(@cat.Id))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
-                    </div>
-                </td>
-            </tr>
-        }
+        <div class="col col-md-6">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th @onclick="SortByCategory">Categorie</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Category cat in _sortedCategories)
+                        {
+                            <tr>
+                                <td @onclick="(() => NavigateToCategory(cat))">@cat.CategoryName</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm d-flex justify-content-end">
+                                        <button @onclick="(() => ChangeVisibility(cat))" class="btn btn-sm @(cat.IsVisible ? "btn-primary" : "btn-outline-primary")"><i class="oi oi-eye"></i></button>
+                                        <a href="/beheer/categorie/@(cat.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                                        @if (cat.Products == null || cat.Products.Count == 0)
+                                        {
+                                            <button @onclick="@(() => DeleteCategory(@cat.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
+                                        }
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col col-md-6">
+            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        </div>
     }
 
-</table>
-@if (_deleteFailCategory)
-{
-    <p class="text-danger">Verwijderen van categorie mislukt</p>
-}
+    @if (_sortedSuppliers != null)
+    {
+        <div class="col col-md-6">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th @onclick="SortBySupplier">Leverancier</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (Supplier sup in _sortedSuppliers)
+                        {
+                            <tr>
+                                <td @onclick="(() => NavigateToSupplier(sup))">@sup.SupplierName</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm d-flex justify-content-end">
+                                        <a href="/beheer/leverancier/@(sup.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                                        @if (sup.Items == null || sup.Items.Count == 0)
+                                        {
+                                            <button @onclick="@(() => DeleteSupplier(sup.Id))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
+                                        }
 
-<div class="form-group">
-    <button class="btn btn-success" @onclick="AddProduct"><i class="oi oi-plus"></i>Product</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="col col-md-6 d-sm-none">
+            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+        </div>
+    }
 </div>
-
-<table class="table table-striped table-responsive">
-    <thead class="thead-dark">
-        <tr>
-            <th>Id</th>
-            <th>Productnaam</th>
-            <th>Productnummer</th>
-            <th>Category</th>
-            <th>Aantal in stock</th>
-            <th></th>
-        </tr>
-    </thead>
-
-    @if (_products != null)
-    {
-        @foreach (Product prod in _products)
-        {
-            <tr>
-                <td>@prod.Id</td>
-                <td>@prod.Description</td>
-                <td>@prod.ProductNumber</td>
-                <td>@prod.Category.CategoryName</td>
-                <td>@prod.AmountInStock</td>
-                <td>
-                    <div>
-                        <button class="btn btn-primary" @onclick="@(() => GetItems(prod.Id))"><i class="oi oi-magnifying-glass"></i></button>
-                        <button @onclick="@(() => EditProduct(@prod.Id))" class="btn btn-secondary"><i class="oi oi-pencil"></i></button>
-                        <button @onclick="@(() => DeleteProduct(@prod.Id))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
-                    </div>
-                </td>
-            </tr>
-        }
-    }
-
-</table>
-@if (_deleteFailProduct)
-{
-    <p class="text-danger">Verwijderen van product mislukt</p>
-}
-@if (_loadFail)
-{
-    <p class="text-danger">Fout bij het inladen van de data. Herlaad de Pagina.</p>
-}
-
-@code {
-
-}

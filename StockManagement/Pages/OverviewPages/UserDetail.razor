@@ -1,99 +1,181 @@
 ﻿@inherits UserDetailBase
 
 @page "/gebruiker/{id}"
+@page "/gebruiker/{id}/{itemId:int}" 
 @using StockManagement.Domain
-@using StockManagement.Domain.IRepositories
+<div class="mb-2">
+    <a href="@(ItemId == null ? "/gebruikers" : $"/itemhistoriek/{ItemId}/{Id}")" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">Gebruiker</h3>
+</div>
 
-<h3>Gebruiker</h3>
+@if (_user != null)
+{
+    <div class="row mb-1">
+        <div class="d-none d-sm-block col-sm-3 col-lg-1">
+            <img class="img-fluid" src="/images/person.jpg" />
+        </div>
+        <div class="col-sm-9 col-lg-11">
+            <div class="mb-1">
+                <div class="table-responsive border mb-2">
+                    <table class="table table-sm">
+                        <tr>
+                            <th style="width: 16.66%">Email</th>
+                            <td>@_user.Mail</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 16.66%">Voornaam</th>
+                            <td>@_user.FirstName</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 16.66%">Naam</th>
+                            <td>@_user.LastName</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 16.66%">Kantoor</th>
+                            <td>@_user.Office</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 16.66%">Functie</th>
+                            <td>@_user.OfficeRole</td>
+                        </tr>
+                        <tr>
+                            @if (_user.MobileSubscriptions != null && _user.MobileSubscriptions.Count != 0)
+                            {
+                                <td colspan="2">
+                                    <table class="table table-borderless">
+                                        <thead>
+                                            <tr>
+                                                <th>GSM</th>
+                                                <th class="d-none d-md-table-cell">Account</th>
+                                                <th class="d-none d-md-table-cell">Accountnummer</th>
+                                                <th>Type</th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (MobileSubscription sub in _user.MobileSubscriptions)
+                                            {
+                                            <tr>
+                                                <td>@sub.MobileNumber</td>
+                                                <td class="d-none d-md-table-cell">@sub.MobileAccount?.AccountName</td>
+                                                <td class="d-none d-md-table-cell">@sub.MobileAccount?.AccountNumber</td>
+                                                <td>@sub.SubscriptionType</td>
+                                                <td><a><i class="oi oi-pencil text-secondary" @onclick="( () => EditSubscription(sub))"></i></a></td>
+                                                <td><a><i class="oi oi-trash text-danger" @onclick="( () => ShowConfirmationDelete(sub))"></i></a></td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </td>
 
-<table class="table table-striped table-responsive">
-    <thead class="thead-dark">
-        <tr>
-            <th>Email</th>
-            <th>Voornaam</th>
-            <th>Familienaam</th>
-            <th>GSM</th>
-            <th>Kantoor</th>
-            <th>Functie</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (_user != null)
-        {
-            <tr>
-                <th>@_user.Mail</th>
-                <td>@_user.FirstName</td>
-                <td>@_user.LastName</td>
-                <td>@_user.MobilePhone</td>
-                <td>@_user.Office</td>
-                <td>@_user.OfficeRole</td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+                            }
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center">
+                <div class="px-1">
+                    <a href="/mail/@(Id)" class="btn btn-primary"><i class="oi oi-envelope-closed"></i></a>
+                    <button class="btn btn-success" @onclick="AddSubscription"><i class="oi oi-phone"></i></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
 
 <h3>Items in gebruik</h3>
+@if (_items != null)
+{
+    @if (_items.Count != 0)
+    {
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th width="30%">Omschrijving</th>
+                        <th width="30%" class="d-none d-md-table-cell">P/N</th>
+                        <th width="30%">S/N</th>
+                        <th width="10%">
+                            <div class="btn-group btn-group-sm">
+                                <button @onclick="ShowConfirmationReturnAll" class="btn btn-sm btn-outline-warning"><i class="oi oi-arrow-circle-right"></i></button>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
 
-<table class="table table-striped table-responsive">
-    <thead class="thead-dark">
-        <tr>
-            <th>Id</th>
-            <th>Serienummer</th>
-            <th>Productnummer</th>
-            <th>Productnaam</th>
-            <th>Van</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (_items != null)
-        {
-            @foreach (Item item in _items)
-            {
-                <tr>
-                    <th>@item.Id</th>
-                    <td>@item.SerialNumber</td>
-                    <td>@item.Product.ProductNumber</td>
-                    <td>@item.Product.Description</td>
-                    @if (_itemusers != null)
+                    @foreach (Item item in _items)
                     {
-                        <td>@(GetFromDate(item))</td>
+                        <tr @onclick="(() => NavigateToItem(item))">
+                            <td>@item.Product.Description</td>
+                            <td class="d-none d-md-table-cell">@(item.Product.ProductNumber.Split(" ")[0] == "NOPRODUCTNR" ? "Geen productnummer beschikbaar." : item.Product.ProductNumber)</td>
+                            <td>@(item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : item.SerialNumber)</td>
+                            
+                                <td @onclick:stopPropagation>
+                                    <div class="btn-group btn-group-sm">
+                                        <button class="btn btn-sm btn-outline-warning" @onclick="(()=>ShowConfirmationReturnOne(item))"><i class="oi oi-arrow-circle-right"></i></button>
+                                    </div>
+                                </td>
+                        </tr>
                     }
-                </tr>
-            }
-
-        }
-    </tbody>
-</table>
-
-<h3>Historiek</h3>
-
-<table class="table table-striped table-responsive">
-    <thead class="thead-dark">
-        <tr>
-            <th>Serienummer</th>
-            <th>Productnummer</th>
-            <th>Productnaam</th>
-            <th>Van</th>
-            <th>Tot</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (_itemusers != null)
-        {
-            @foreach (ItemUser iu in _itemusers)
-            {
-                <tr>
-                    <td>@iu.Item.SerialNumber</td>
-                    <td>@iu.Item.Product.ProductNumber</td>
-                    <td>@iu.Item.Product.Description</td>
-                    <td>@iu.FromDate</td>
-                    <td>@iu.ToDate</td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
-
-@code {
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p>Geen items.</p>
+    }
 
 }
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+}
+<h3>Historiek</h3>
+
+@if (_itemusers != null)
+{
+    @if (_itemusers.Count != 0)
+    {
+
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th width="35%">Omschrijving</th>
+                        <th width="35%" class="d-none d-md-table-cell">S/N</th>
+                        <th width="15%">Van</th>
+                        <th width="15%">Tot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (ItemUser iu in _itemusers)
+                    {
+                        <tr @onclick="(() => NavigateToItem(iu.Item))">
+                            <td>@iu.Item?.Product.Description</td>
+                            <td class="d-none d-md-table-cell">@(iu.Item?.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : iu.Item.SerialNumber)</td>
+                            <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
+                            <td>@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    }
+    else
+    {
+        <p>Geen data.</p>
+    }
+}
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+}
+
+

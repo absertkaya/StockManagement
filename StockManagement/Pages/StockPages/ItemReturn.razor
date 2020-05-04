@@ -1,0 +1,134 @@
+﻿@inherits ItemBase
+
+@using StockManagement.Domain
+@using StockManagement.Pages.ReuseableComponents
+
+    <div class="border p-2 form-group">
+        @if (!_hideSettings)
+        {
+            <div class="btn-group">
+                <button class="btn btn-outline-primary active btn-sm" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
+            </div>
+
+
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" class="form-control" value="@_selectedCategory" @onchange="FetchProducts">
+                    <option value="" selected hidden>Kies een categorie</option>
+
+                    @if (_categories != null)
+                    {
+                        @foreach (Category cat in _categories)
+                        {
+                            <option value=@cat.Id>@cat.CategoryName</option>
+
+                        }
+                    }
+                </select>
+            </div>
+            @if (_selectedCategory != null)
+            {
+                <div class="form-group">
+                    <label for="product">Product</label>
+                    <select id="product" class="form-control" value="@_productNumber" @onchange="FetchItems">
+                        <option value="" selected hidden>Kies een product</option>
+                        @if (_products != null)
+                        {
+                            @foreach (Product product in _products)
+                            {
+                                <option value=@product.ProductNumber>@product.Description</option>
+                            }
+                        }
+                    </select>
+                </div>
+            }
+
+            @if (_items != null)
+            {
+                @if (_items.Count() != 0)
+                {
+                    <div class="form-group">
+                        <label for="product">Items @(Method == "out" ? "in stock" : "uit stock")</label>
+                        <select id="product" class="form-control" value="@_serialNumber" @onchange="SelectItem">
+                            <option value="" selected hidden>Kies een item</option>
+
+                            @foreach (Item item in _items)
+                            {
+                                <option value=@item.SerialNumber>@item.SerialNumber</option>
+                            }
+
+                        </select>
+                    </div>
+                } else
+                {
+                    <p>Geen items beschikbaar.</p>
+                }
+            }
+        }
+        else
+        {
+            <button class="btn btn-sm btn-outline-primary" @onclick="ToggleSettings"><i class="oi oi-cog"></i></button>
+        }
+
+    </div>
+@if (Method == "out")
+{
+    <UserSearchBox @ref="userSearch" />
+}
+else
+{
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" @bind="_isDefective" id="defective" />
+        <label for="defective">Is defect</label>
+    </div>
+    <div class="form-group">
+        <label for="comment">Opmerking</label>
+        <textarea class="form-control" id="comment" @bind="_comment" />
+    </div>
+
+    <div class="form-group">
+        <label for="file">Upload</label>
+        <FileUploadComponent @ref="_fileUpload"/>
+    </div>
+
+}
+
+<div class="form-group row">
+    <div class="col-6">
+        <label>Productnummer</label>
+        <div class="input-group">
+
+            @if (!SelectedProductHasProductNumber())
+            {
+                <input id="@(_serialScan ? "" : "codeField")" @bind="_productNumber" disabled class="form-control" />
+            }
+            else
+            {
+                <div class="input-group-prepend">
+                    <button @onclick="(() => _serialScan = false)" class="btn @(_serialScan ? "btn-outline-secondary" : "btn-secondary") input-group-prepend">
+                        <i class="oi oi-eye"></i>
+                    </button>
+                </div>
+                <input id="@(_serialScan ? "" : "codeField")" @bind="_productNumber" class="form-control" />
+            }
+        </div>
+    </div>
+
+    <div class="col-6">
+        <label>Serienummer</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <button @onclick="(() => _serialScan = true)" class="btn @(_serialScan ? "btn-secondary" : "btn-outline-secondary") input-group-prepend">
+                    <i class="oi oi-eye"></i>
+                </button>
+            </div>
+            <input id="@(_serialScan ? "codeField" : "" )" @bind="@_serialNumber" class="form-control" />
+        </div>
+    </div>
+</div>
+
+<QuaggaScanner @ref="_scanner" />
+<div class="mb-2">
+    <button class="btn btn-outline-primary w-100" @onclick="Submit"><i class="oi oi-arrow-top"></i>@(Method == "out" ? "Haal uit" : "Retourneer")<i class="oi oi-arrow-top"></i></button>
+</div>
+

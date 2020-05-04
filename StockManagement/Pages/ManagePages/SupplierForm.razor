@@ -1,0 +1,17 @@
+﻿@inherits SupplierFormBase
+
+@page "/beheer/leverancier"
+@page "/beheer/leverancier/{id:int}"
+<div class="mb-2">
+    <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">Leverancier</h3>
+</div>
+<EditForm EditContext="@_editContext" OnSubmit="Submit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="suppliername">Leveranciernaam</label>
+        <InputText id="suppliername" class="form-control" @bind-Value="_supplier.SupplierName" />
+    </div>
+    <button class="btn btn-primary" type="submit">Verzend</button>
+</EditForm>

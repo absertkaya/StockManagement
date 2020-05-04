@@ -1,15 +1,26 @@
-﻿@inherits LayoutComponentBase
-
-<div class="sidebar">
-    <NavMenu />
-</div>
-
-<div class="main">
-    <div class="top-row px-4 auth">
-        <LoginDisplay />
+﻿@inherits MainLayoutBase
+@if (authorized)
+{
+    <div class="sidebar">
+        <NavMenu />
     </div>
-    <div class="content px-4">
-        @Body
+
+    <div class="main">
+        <div class="content px-4 auth">
+            @Body
+        </div>
+
     </div>
-</div>
+    <BlazoredToasts />
+    <BlazoredModal />
+}
+else
+{
+    <div class="main">
+        <div class="content px-4">
+            <StockManagement.Pages.AccessDenied/>
+        </div>
+    </div>
+}
+
 

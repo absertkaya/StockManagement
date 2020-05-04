@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
@@ -13,47 +16,71 @@ namespace StockManagement.Pages.ManagePages
         [Parameter]
         public int? Id { get; set; }
 
-        [Inject] public IItemRepository Repository { get; set; }
-        [Inject] public NavigationManager NavigationManager { get; set; }
+
+        [CascadingParameter]
+        protected Task<AuthenticationState> AuthenticationStateTask { get; set; }
+        [Inject]
+        private IUserRepository UserRepository { get; set; }
+
+        [Inject] 
+        public IItemRepository Repository { get; set; }
+        [Inject] 
+        public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
+        [Inject]
+        public TelemetryClient Telemetry { get; set; }
+
 
         protected Category _category = new Category();
         protected EditContext _editContext;
 
-        protected FileUploadComponent _fileUpload; 
+        protected override async Task OnInitializedAsync()
+        {
+            var auth = await AuthenticationStateTask;
+            var stockUser = UserRepository.GetByEmail(auth.User.Identity.Name);
 
-        protected bool _submitFail;
-
-        protected override void OnInitialized()
-        { 
-            if (Id != null)
+            if (stockUser == null || stockUser.StockRole != StockRole.ADMIN)
             {
-                _category = (Category) Repository.GetById(typeof(Category), Id);
+                Telemetry.TrackEvent("AccessDenied");
+                NavigationManager.NavigateTo("/accessdenied");
+                return;
             }
-            _editContext = new EditContext(_category);
+
+            try
+            {
+                if (Id != null)
+                {
+                    _category = (Category)await Repository.GetByIdAsync(typeof(Category), Id);
+                }
+                _editContext = new EditContext(_category);
+            } catch (Exception ex)
+            {
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
+            }
+
         }
 
 
-        protected async Task Submit()
+        protected void Submit()
         {
             if (_editContext.Validate())
             {
                 try
                 {
                     Repository.Save(_category);
-                    await _fileUpload.Upload("category" + _category.Id);
+                    ToastService.ShowSuccess("Categorie " + _category.CategoryName + " toegevoegd.");
+                    Telemetry.TrackEvent("CategorieAdd");
                     NavigationManager.NavigateTo("/beheer");
                 }
                 catch (Exception ex)
                 {
-                    _submitFail = true;
+                    Telemetry.TrackException(ex);
+                    ToastService.ShowError("Kon categorie niet toevoegen.");
                 }
             }
 
-        }
-
-        protected void Back()
-        {
-            NavigationManager.NavigateTo("/beheer");
         }
     }
 }

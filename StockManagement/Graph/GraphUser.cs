@@ -14,5 +14,6 @@
         public string PreferredLanguage { get; set; }
         public string Surname { get; set; }
         public string UserPrincipalName { get; set; }
+        public string FirstAndLastName => GivenName + " " + Surname;
     }
 }

@@ -1,49 +1,62 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Blazor.Extensions.Storage.Interfaces;
+using Blazored.Toast.Services;
+using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;
+using StockManagement.Graph;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace StockManagement.Pages.OverviewPages
 {
     public class OverviewBase : ComponentBase
     {
+        [CascadingParameter]
+        protected Task<AuthenticationState> AuthenticationStateTask { get; set; }
         [Inject]
         public IItemRepository Repository { get; set; }
         [Inject]
+        public TelemetryClient Telemetry { get; set; }
+        [Inject]
+        public IToastService ToastService { get; set; }
+        [Inject]
+        public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+        [Inject]
         public NavigationManager NavigationManager { get; set; }
 
-        [Inject]
-        public IBlobService BlobService { get; set; }
-        protected List<string> _uris;
+        protected string _searchString;
 
-        protected bool _dBError;
-
-        protected IList<Category> _categories;
+        protected IEnumerable<Category> _categories;
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                _categories = await Repository.GetAll<Category>();
-                await BlobService.SetContainer("categories");
-                _uris = await BlobService.GetBlobs();
+                _categories = (await Repository.GetAllAsync<Category>())?.Where(c => c.IsVisible).OrderBy(c => c.CategoryName);
             } catch (Exception ex)
             {
-                _dBError = true;
+                Telemetry.TrackException(ex);
+                ToastService.ShowWarning("Fout bij het inladen van de data, herlaad de pagina.");
             }
         }
 
-        protected void GetProductList(int id)
+        protected void KeyPress(KeyboardEventArgs e)
         {
-            NavigationManager.NavigateTo("/productlijst/" + id);
+            if (e.Key == "Enter")
+            {
+                NavigateToSearch();
+            }
         }
 
-        protected void GetUsers()
+        protected void NavigateToSearch()
         {
-            NavigationManager.NavigateTo("/gebruikers");
+            NavigationManager.NavigateTo("/zoek/"+_searchString);
         }
     }
 }

@@ -1,0 +1,34 @@
+﻿@inherits ItemListComponentBase
+@using StockManagement.Domain
+@using StockManagement.Pages.ReuseableComponents 
+<div class="table-responsive">
+    <table class="table table-sm table-hover">
+        <thead class="thead-dark">
+            <tr>
+                @if (_hasHostnames)
+                {
+                    <th @onclick="SortByHostname">Hostname</th>
+                }
+                <th @onclick="SortBySerialNumber">S/N</th>
+                <th class="d-none d-md-table-cell" @onclick="SortByUser">Gebruiker</th>
+                <th @onclick="SortByInStock">In stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Item item in Items)
+            {
+                <tr @onclick="(() => NavigateToItemHistory(item))" class="@(! item.IsNotFaulty() ? "bg-danger" : "")">
+                    @if (_hasHostnames)
+                    {
+                        <td>@item.Hostname</td>
+                    }
+                    <td>@(item.SerialNumber.Split(" ")[0] == "NOSERIALNR" ? "Geen serienummer beschikbaar." : item.SerialNumber)</td>
+                    <td class="d-none d-md-table-cell">@(item.ADUser?.FirstName + " " + item.ADUser?.LastName)</td>
+                    <td>
+                        <ItemStatusComponent ItemStatus="item.ItemStatus"/>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

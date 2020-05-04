@@ -1,0 +1,92 @@
+﻿@inherits AddSubscriptionBase
+@using StockManagement.Domain
+
+@if (MobileSubscription != null)
+{
+    <EditForm EditContext="_editContext" OnSubmit="Submit">
+        <DataAnnotationsValidator />
+        <div class="form-group">
+            <label for="number">GSM</label>
+            <InputText class="form-control" id="number" @bind-Value="MobileSubscription.MobileNumber" placeholder="04........." />
+        </div>
+        <div class="form-group">
+            <label for="type">Abonnementtype</label>
+            <div class="row">
+                <div class="col-6">
+                    <InputSelect id="type" @bind-Value="MobileSubscription.SubscriptionType" class="form-control">
+                        <option value="" selected disabled>Kies een optie</option>
+                        <option value="Zen">Zen</option>
+                        <option value="Intense">Intense</option>
+                        <option value="IPad">IPad</option>
+                        <option value="Intense">Intense</option>
+                        <option value="Lite">Lite</option>
+                    </InputSelect>
+                </div>
+                <div class="col-6">
+                    <InputText @bind-Value="MobileSubscription.SubscriptionType" class="form-control" placeholder="..of Typ hier" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="account">Account</label>
+
+            <div class="input-group">
+                <select id="type" value="@_selectedAccount" @onchange="FireAccountChange" class="form-control">
+                    <option value="" selected hidden>Kies een optie</option>
+                    @if (_accounts != null && _accounts.Count != 0)
+                    {
+                    @foreach (MobileAccount acc in _accounts)
+                        {
+                    <option value="@acc.Id">@($"{acc.AccountName} - {acc.AccountNumber}")</option>
+                        }
+                    }
+
+                </select>
+                <div class="input-group-append">
+                    @if (_selectedAccount != null && _hasSubs == false)
+                    {
+                    <button type="button" @onclick="DeleteAccount" class="btn btn-danger btn-sm"><i class="oi oi-trash"></i></button>
+                    }
+                    <button type="button" @onclick="SwitchAddMode" class="btn @(_addMode ? "btn-secondary" : "btn-success") btn-sm"><i class="oi @(_addMode ? "oi-minus" : "oi-plus")"></i></button>
+                </div>
+            </div>
+        </div>
+        @if (_addMode)
+        {
+        <div class="border p-2 form-group">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-6">
+                        <label for="name">Accountnaam</label>
+                        <input class="form-control" id="name" @bind="Account.AccountName" />
+                    </div>
+                    <div class="col-6">
+                        <label for="nr">Accountnummer</label>
+                        <div class="input-group">
+                            <input class="form-control" id="nr" @bind="Account.AccountNumber" />
+                            <div class="input-group-append">
+                                <button type="button" @onclick="SubmitAccount" class="btn btn-sm btn-primary"><i class="oi oi-check"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            @if (_accError)
+                {
+            <div>
+                <p class="text-danger">Een account heeft verplicht een naam en nummer.</p>
+            </div>
+
+                }
+        </div>
+
+
+
+        }
+        <ValidationSummary />
+        <button type="submit" class="btn btn-primary">Verzend</button>
+
+    </EditForm>
+}

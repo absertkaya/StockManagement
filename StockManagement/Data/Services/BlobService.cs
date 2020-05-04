@@ -17,22 +17,36 @@ namespace StockManagement.Data.Services
 {
     public class BlobService : IBlobService
     {
-        [Inject]
-        public IConfiguration Configuration { get; set; }
+        private readonly IKeyVaultService _kvService;
+
         public StorageCredentials StorageCredentials { get; set; }
         public CloudStorageAccount StorageAccount { get; set; }
         public CloudBlobClient BlobClient { get; set; }
         public CloudBlobContainer BlobContainer { get; set; }
 
-        public BlobService()
+
+        public BlobService(IKeyVaultService keyVaultService)
         {
-            StorageCredentials = new StorageCredentials("vgdstockmanagement", "0AuSjGeH2gUSYWJ3Pzfsfu4qqqtPN9/T0IGnczh4zdycVLUSlZWn2qoIqiFpfyyDJqB5Cd6aeIFt2jXEjQ5ajg==");
+            _kvService = keyVaultService;
+        }
+
+        private async Task CreateBlobClient()
+        {
+            string accountKey = await _kvService.GetSecretAsync("BlobStorageAccountKey");
+            StorageCredentials = new StorageCredentials("vgdstockmanagement", accountKey);
             StorageAccount = new CloudStorageAccount(StorageCredentials, true);
             BlobClient = StorageAccount.CreateCloudBlobClient();
         }
 
+        public async Task SetContainerNoCreate(string containerName)
+        {
+            await CreateBlobClient();
+            BlobContainer = BlobClient.GetContainerReference(containerName);
+        }
+
         public async Task SetContainer(string containerName)
-        {          
+        {
+            await CreateBlobClient();
             BlobContainer = BlobClient.GetContainerReference(containerName);
             if (! await BlobContainer.ExistsAsync())
             {
@@ -55,13 +69,17 @@ namespace StockManagement.Data.Services
 
         public async Task<List<string>> GetBlobs()
         {
-            List<string> URIs = new List<string>();
-            BlobResultSegment resultSegment = await BlobContainer.ListBlobsSegmentedAsync("", true, BlobListingDetails.All, null, null, null, null);
-            foreach (var blobitem in resultSegment.Results)
+            if (await BlobContainer.ExistsAsync())
             {
-                URIs.Add(blobitem.StorageUri.PrimaryUri.ToString());
+                List<string> URIs = new List<string>();
+                BlobResultSegment resultSegment = await BlobContainer.ListBlobsSegmentedAsync("", true, BlobListingDetails.All, null, null, null, null);
+                foreach (var blobitem in resultSegment.Results)
+                {
+                    URIs.Add(blobitem.StorageUri.PrimaryUri.ToString());
+                }
+                return URIs;
             }
-            return URIs;
+            return null;
         }
 
         public async Task DeleteBlob(string uri)
@@ -69,6 +87,14 @@ namespace StockManagement.Data.Services
             string blobName = uri.Substring(uri.LastIndexOf("/") + 1);
             CloudBlockBlob blob = BlobContainer.GetBlockBlobReference(blobName);
             await blob.DeleteIfExistsAsync();
+        }
+
+        public async Task DeleteContainer()
+        {
+            if (await BlobContainer.ExistsAsync())
+            {
+                await BlobContainer.DeleteAsync();
+            }
         }
     }
 }

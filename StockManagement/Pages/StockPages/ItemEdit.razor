@@ -1,0 +1,119 @@
+﻿@inherits ItemFormInBase
+
+@page "/stock/edit/{id:int}"
+@using StockManagement.Domain;
+@using StockManagement.Pages.ReuseableComponents
+@if (_item != null)
+{
+    <div class="mb-2">
+        <a href="/itemhistoriek/@(_item.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        <h3 class="d-inline">Edit item</h3>
+    </div>
+}
+<div class="form-group">
+    <label for="serialnr">Serienummer</label>
+    <input class="form-control" type="text" @bind="_serialNumber" />
+</div>
+<div class="form-group">
+    <label for="category">Category</label>
+    <select id="category" class="form-control" value="@_selectedCategory" @onchange="FireChange">
+        <option value="" selected hidden>Kies een categorie</option>
+
+        @if (_categories != null)
+        {
+            @foreach (Category cat in _categories)
+            {
+                <option value=@cat.Id>@cat.CategoryName</option>
+            }
+        }
+    </select>
+</div>
+
+<div class="form-group">
+    <label for="product">Product</label>
+    <select id="product" class="form-control" @bind="_selectedProduct">
+        <option value="" selected hidden>Kies een product</option>
+        @if (_products != null)
+        {
+            @foreach (Product product in _products)
+            {
+                <option value=@product.Id>@product.Description</option>
+            }
+        }
+    </select>
+</div>
+
+<div class="form-row">
+    <div class="form-group col-md-4">
+        <label for="supplier">Leverancier</label>
+        <select id="supplier" class="form-control" @bind="_selectedSupplier">
+            <option value="" selected hidden>Kies een leverancier</option>
+            @if (_suppliers != null)
+            {
+                @foreach (Supplier supplier in _suppliers)
+                {
+                    <option value=@supplier.Id>@supplier.SupplierName</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="form-group col-md-4">
+        <label for="deliverydate">Leverdatum</label>
+        <input type="date" class="form-control" @bind="_deliveryDate" />
+    </div>
+    <div class="form-group col-md-4">
+        <label for="invoicedate">Factuurdatum</label>
+        <input type="date" class="form-control" @bind="_invoiceDate" />
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="status">Status</label>
+    <select class="form-control" @bind=_selectedStatus>
+        <option value="" selected hidden>Kies een status</option>
+        <option value="@ItemStatus.INSTOCK">In stock</option>
+        <option value="@ItemStatus.OUTSTOCK">Uit stock</option>
+        <option value="@ItemStatus.STOLEN">Gestolen</option>
+        <option value="@ItemStatus.INACTIVE">End-of-life</option>
+        <option value="@ItemStatus.DEFECTIVE">Defect</option>
+        <option value="@ItemStatus.LOST">Verloren</option>
+    </select>
+</div>
+<h5>Optioneel</h5>
+<div class="border p-2 m-2">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="host">Hostname</label>
+            <input id="host" class="form-control " @bind="_hostname" />
+        </div>
+        <div class="form-group col-md-6">
+            <label for="care">Carepack</label>
+            <input id="care" class="form-control " @bind="_carepack" />
+        </div>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="imei">IMEI</label>
+            <input id="imei" class="form-control " @bind="_imei" />
+        </div>
+        <div class="form-group col-md-4">
+            <label for="vgd">VGD Nummer</label>
+            <input id="vgd" class="form-control " @bind="_vgdnumber" />
+        </div>
+        <div class="form-group col-md-4">
+            <label for="lic">License</label>
+            <input id="lic" class="form-control " @bind="_license" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="comment">Opmerkingen</label>
+        <input id="comment" class="form-control " @bind="_comment" />
+    </div>
+    <div class="form-group">
+        <label>Foto</label>
+        <FileUploadComponent @ref="_fileUpload" Container="@("item"+Id)" />
+    </div>
+</div>
+
+<button class="btn btn-primary" @onclick="Submit">Update</button>
