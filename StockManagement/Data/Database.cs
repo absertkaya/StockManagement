@@ -20,7 +20,7 @@ namespace StockManagement.Data
             {
                 if (_sessionFactory == null)
                 {
-                    var connectionString = KeyVaultService.GetSecret("ConnectionString");
+                    var connectionString = KeyVaultService.GetSecret(Configuration["ConnectionStringName"]);
                     _sessionFactory = Fluently.Configure()
                                 .Database(MsSqlConfiguration.MsSql2012
                                 .ConnectionString(connectionString))
