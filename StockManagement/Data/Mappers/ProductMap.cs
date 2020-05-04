@@ -1,9 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
 using StockManagement.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StockManagement.Data.Mappers
 {
@@ -11,14 +7,12 @@ namespace StockManagement.Data.Mappers
     {
         public ProductMap()
         {
-            Table("ItemDescription");
+            Table("Product");
             Id(x => x.Id).GeneratedBy.Increment();
-            Map(x => x.ProductNumber);
-            Map(x => x.Description);
-            References(x => x.Category);
-            HasMany(x => x.Items)
-                .Inverse()
-                .Cascade.All();
+            Map(x => x.ProductNumber).Unique().Not.Nullable();
+            Map(x => x.Description).Not.Nullable();
+            References(x => x.Category).Not.Nullable();
+            HasMany(x => x.Items).Inverse();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using NHibernate;
+using NHibernate.Linq;
 using StockManagement.Domain.IRepositories;
 using System;
 using System.Collections.Generic;
@@ -10,36 +11,18 @@ namespace StockManagement.Data.Repositories
     public class RepositoryBase : IRepository, IDisposable
     {
         protected ISession _session = null;
-        protected ITransaction _transaction = null;
-        public RepositoryBase()
+
+        public RepositoryBase(Database database)
         {
-            _session = Database.OpenSession();
+            _session = database.OpenSession();
         }
+
         public RepositoryBase(ISession session)
         {
             _session = session;
         }
+
         #region Transaction and Session Management Methods
-        public void BeginTransaction()
-        {
-            _transaction = _session.BeginTransaction();
-        }
-        public void CommitTransaction()
-        {
-            _transaction.Commit();
-            CloseTransaction();
-        }
-        public void RollbackTransaction()
-        {
-            _transaction.Rollback();
-            CloseTransaction();
-            CloseSession();
-        }
-        private void CloseTransaction()
-        {
-            _transaction.Dispose();
-            _transaction = null;
-        }
         private void CloseSession()
         {
             _session.Close();
@@ -51,34 +34,41 @@ namespace StockManagement.Data.Repositories
         public virtual void Save(object obj)
         {
             _session.SaveOrUpdate(obj);
+            _session.Flush();
         }
         public virtual void Delete(object obj)
         {
             _session.Delete(obj);
+            _session.Flush();
         }
-        public virtual async Task<object> GetById(Type objType, object objId)
+        public virtual async Task<object> GetByIdAsync(Type objType, object objId)
         {
             return await _session.GetAsync(objType, objId);
         }
-        public virtual async Task<IList<TEntity>> GetAll<TEntity>() where TEntity : class
+        public virtual async Task<IList<TEntity>> GetAllAsync<TEntity>() where TEntity : class
         {
-            var criteria = _session.CreateCriteria<TEntity>();
-            return await criteria.ListAsync<TEntity>();
+
+            return await _session.QueryOver<TEntity>().ListAsync();
+        }
+
+        public virtual IList<TEntity> GetAll<TEntity>() where TEntity : class
+        {
+            var query = _session.Query<TEntity>();
+            return query.ToList();
         }
         #endregion
         public void Dispose()
         {
-            if (_transaction != null)
-            {
-
-                CommitTransaction();
-            }
             if (_session != null)
             {
-                _session.Flush();
                 CloseSession();
             }
         }
 
+        public object GetById(Type objType, object objId)
+        {
+            return _session.Get(objType, objId);
+        }
     }
+    
 }

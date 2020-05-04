@@ -1,37 +1,47 @@
-﻿using FluentNHibernate.Cfg;
+﻿using Azure.Security.KeyVault.Secrets;
+using FluentNHibernate.Cfg;
 using FluentNHibernate.Cfg.Db;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Configuration;
 using NHibernate;
-using NHibernate.Cfg;
 using NHibernate.Tool.hbm2ddl;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using StockManagement.Domain.IServices;
 
 namespace StockManagement.Data
 {
     public class Database
     {
         private static ISessionFactory _sessionFactory;
-
-        private static ISessionFactory SessionFactory
+        public IConfiguration Configuration { get; set; }
+        public IKeyVaultService KeyVaultService { get; set; }
+        private ISessionFactory SessionFactory
         {
             get
             {
                 if (_sessionFactory == null)
                 {
+                    var connectionString = KeyVaultService.GetSecret(Configuration["ConnectionStringName"]);
                     _sessionFactory = Fluently.Configure()
                                 .Database(MsSqlConfiguration.MsSql2012
-                                .ConnectionString("Server=tcp:vgdtest.database.windows.net,1433;Initial Catalog=StockManagement;Persist Security Info=False;User ID=vgdtest;Password=ugorKGiNOHULOdkq7nAL;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+                                .ConnectionString(connectionString))
                                 .Mappings(m => m.FluentMappings.AddFromAssembly(new Database().GetType().Assembly))
                                 .CurrentSessionContext("call")
-                                .ExposeConfiguration(cfg => BuildSchema(cfg, true, true))
+                                .ExposeConfiguration(cfg => BuildSchema(cfg, false, true))
                                 .BuildSessionFactory();
                 }
                 return _sessionFactory;
             }
         }
-        private static void BuildSchema(NHibernate.Cfg.Configuration config, bool create, bool update)
+
+        public Database(IConfiguration configuration, IKeyVaultService keyVaultService)
+        {
+            Configuration = configuration;
+            KeyVaultService = keyVaultService;
+        }
+
+        private Database() { }
+
+        private void BuildSchema(NHibernate.Cfg.Configuration config, bool create, bool update)
         {
             if (create)
             {
@@ -42,7 +52,7 @@ namespace StockManagement.Data
                 new SchemaUpdate(config).Execute(false, update);
             }
         }
-        public static ISession OpenSession()
+        public ISession OpenSession()
         {
             return SessionFactory.OpenSession();
         }

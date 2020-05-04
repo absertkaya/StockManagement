@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace StockManagement.Domain.IRepositories
@@ -9,7 +8,11 @@ namespace StockManagement.Domain.IRepositories
     {
         void Save(object obj);
         void Delete(object obj);
-        Task<object> GetById(Type objType, object objId);
-        Task<IList<TEntity>> GetAll<TEntity>() where TEntity : class;
+        Task<object> GetByIdAsync(Type objType, object objId);
+
+        object GetById(Type objType, object objId);
+        Task<IList<TEntity>> GetAllAsync<TEntity>() where TEntity : class;
+        IList<TEntity> GetAll<TEntity>() where TEntity : class;
+        void Dispose();
     }
 }

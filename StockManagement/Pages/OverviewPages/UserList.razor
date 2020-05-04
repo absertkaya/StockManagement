@@ -1,0 +1,49 @@
+﻿@inherits UserListBase
+
+@page "/gebruikers"
+
+@using StockManagement.Domain
+@using Blazored.Typeahead
+<div class="mb-2">
+    <a href="/overzicht" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">Gebruikers</h3>
+</div>
+
+<div class="mb-1 row">
+    <div class="input-group col-sm-6">
+        <input class="form-control" type="text" @bind="_filterString" @bind:event="oninput" @onkeyup="Filter"/>
+        <div class="input-group-append">
+            <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+    @if (_filteredUsers != null)
+    {
+        <table id="productList" class="table table-sm table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th @onclick="SortByFirstName">Voornaam</th>
+                    <th @onclick="SortByLastName">Naam</th>
+                    <th class="d-none d-md-table-cell" @onclick="SortByFirstName">Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in _filteredUsers)
+                {
+                    <tr @onclick="(() => NavigateToUserDetail(user))">
+                        <td>@user.GivenName</td>
+                        <td>@user.Surname</td>
+                        <td class="d-none d-md-table-cell">@user.Mail</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    }
+</div>

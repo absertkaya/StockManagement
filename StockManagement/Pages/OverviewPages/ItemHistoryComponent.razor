@@ -1,0 +1,36 @@
+﻿@using StockManagement.Domain
+<div class="table-responsive border @(ItemUser.ToDate != null ? "border-dark" : "border-success")">
+    <table class="table table-sm">
+        <tr>
+            <th style="width: 16.66%">User</th>
+            <td>@ItemUser.User.Mail</td>
+        </tr>
+        <tr>
+            <th style="width: 16.66%">Toewijzer</th>
+            <td>@ItemUser.AssignedBy.Mail</td>
+        </tr>
+        <tr>
+            <th style="width: 16.66%">Van</th>
+            <td>@ItemUser.FromDate.ToString("dd/MM/yyyy")</td>
+        </tr>
+        @if (ItemUser.ToDate != null)
+        {
+            <tr>
+                <th style="width: 16.66%">Tot</th>
+                <td>@(((DateTime)ItemUser.ToDate).ToString("dd/MM/yyyy"))</td>
+            </tr>
+            <tr>
+                <th style="width: 16.66%">Teruglegger</th>
+                <td>@ItemUser.ReturnedBy.Mail</td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+@code {
+    [CascadingParameter]
+    public BlazoredModalInstance BlazoredModal { get; set; }
+    [Parameter]
+    public ItemUser ItemUser { get; set; }
+}

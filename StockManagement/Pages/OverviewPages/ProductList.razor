@@ -1,0 +1,50 @@
+﻿@inherits ProductListBase
+
+@page "/productlijst/{id:int}"
+@using StockManagement.Domain
+@using Blazored.Typeahead
+@if (_filteredProducts != null)
+    {
+<div class="mb-2">
+    <a href="/overzicht" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+    <h3 class="d-inline">@_category</h3>
+</div>
+
+<div class="mb-1 row">
+    <div class="input-group col-sm-6">
+        <input class="form-control" type="text" @bind="_filterString" @bind:event="oninput" @onkeyup="Filter" />
+        <div class="input-group-append">
+            <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+        </div>
+    </div>
+</div>
+
+<div class="table-responsive">
+
+    <table id="productList" class="table table-sm table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th class="w-50" @onclick="SortByProductName">Omschrijving</th>
+                <th class="d-none d-md-table-cell" @onclick="SortByProductNumber">Productnummer</th>
+                <th class="w-25" @onclick="SortByAmountInStock">#</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Product prod in _filteredProducts)
+                    {
+            <tr id="product@(prod.Id)" @onclick="(() => NavigateToProductDetail(prod))">
+                <td class="w-50">@prod.Description</td>
+                <td class="d-none d-md-table-cell">@(!prod.HasProductNumber() ? "Geen productnummer beschikbaar." : prod.ProductNumber)</td>
+                <td class="w-25 @(prod.AmountInStock == 0 ? "text-danger" : "text-success")">@prod.AmountInStock</td>
+            </tr>
+                    }
+        </tbody>
+    </table>
+
+</div>
+    }
+    else
+    {
+
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    }

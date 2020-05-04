@@ -1,0 +1,41 @@
+﻿@inherits OverviewBase
+
+@page "/"
+@page "/overzicht"
+
+@using StockManagement.Domain
+
+<h3>Overzicht</h3>
+
+
+<div class="row mb-2">
+    <div class="d-flex btn-group col-2 col-md-1">
+        <a href="/gebruikers" class="btn btn-info btn-outline"><i class="oi oi-person"></i></a>
+    </div>
+    <div class="input-group col-10 col-md-6">
+        <input class="form-control" type="text" placeholder="Hostname of S/N" @bind="_searchString" @bind:event="oninput" @onkeypress="KeyPress" />
+        <div class="input-group-append">
+            <button class="btn btn-info"  @onclick="NavigateToSearch"><i class="oi oi-magnifying-glass"></i></button>
+        </div>
+    </div>
+</div>
+
+
+<div class="mb-2">
+    @if (_categories != null)
+    {
+        <div class="list-group">
+            @foreach (var cat in _categories)
+            {
+                <a href="/productlijst/@(cat.Id)" class="list-group-item list-group-item-action">
+                    @cat.CategoryName
+                </a>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    }
+</div>
+

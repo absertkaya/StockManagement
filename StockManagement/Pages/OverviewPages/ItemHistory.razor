@@ -1,0 +1,204 @@
+﻿@inherits ItemHistoryBase
+
+@using StockManagement.Domain;
+@using StockManagement.Pages.ReuseableComponents
+@page "/leverancier/{supplierId:int}/itemhistoriek/{id:int}"
+@page "/itemhistoriek/{id:int}/{userId}"
+@page "/itemhistoriek/{id:int}"
+@page "/{beheer}/itemhistoriek/{id:int}"
+
+@if (_item != null)
+{
+    <div class="mb-2">
+        @if (SupplierId == null)
+        {
+            <a href="@(UserId == null ? $"{(Beheer == null ? null : "beheer")}/itemlijst/{_item.Product.Id}" : $"/gebruiker/{UserId}")" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        }
+        else
+        {
+            <a href="/leverancier/@(SupplierId)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        }
+
+        <h3 class="d-inline">@_item.Product.Description</h3>
+    </div>
+
+    <div class="mb-2">
+        <BlobsComponent Container="@("item"+Id)" @ref="_blobsComponent" />
+    </div>
+
+    <div class="mb-2">
+        <div class="table-responsive">
+            <table class="table table-sm border">
+                <tr>
+                    <th style="width: 25%">S/N</th>
+                    <td>@(_item.HasSerialNumber() ? _item.SerialNumber : "Geen serienummer beschikbaar.")</td>
+                </tr>
+                @if (_item.ADUser != null)
+                {
+                    <tr>
+                        <th>Gebruiker</th>
+                        <td><a href="/gebruiker/@(_item.ADUser.Id)/@(_item.Id)">@($"{_item.ADUser.FirstName} {_item.ADUser.LastName}")</a></td>
+                    </tr>
+                }
+                <tr>
+                    <th style="width: 25%">In stock</th>
+                    <td>
+                        <ItemStatusComponent ItemStatus="_item.ItemStatus" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <th style="width: 25%">Leverancier</th>
+                    <td>@_item.Supplier?.SupplierName</td>
+                </tr>
+                <tr>
+                    <th style="width: 25%">Leverdatum</th>
+                    <td>@_item.DeliveryDate?.ToString("dd/MM/yyyy")</td>
+                </tr>
+                <tr>
+                    <th style="width: 25%">Factuurdatum</th>
+                    <td>@_item.InvoiceDate?.ToString("dd/MM/yyyy")</td>
+                </tr>
+                @if (_item.Imei != null)
+                {
+                    <tr>
+                        <th style="width: 25%">IMEI</th>
+                        <td>@_item.Imei</td>
+                    </tr>
+                }
+                @if (_item.Hostname != null)
+                {
+                    <tr>
+                        <th style="width: 25%">Hostname</th>
+                        <td>@_item.Hostname</td>
+                    </tr>
+                }
+                @if (_item.Carepack != null)
+                {
+                    <tr>
+                        <th style="width: 25%">Carepack</th>
+                        <td>@_item.Carepack</td>
+                    </tr>
+                }
+
+                @if (_item.License != null)
+                {
+                    <tr>
+                        <th style="width: 25%">License</th>
+                        <td>@_item.License</td>
+                    </tr>
+                }
+                @if (_item.VGDNumber != null)
+                {
+                    <tr>
+                        <th style="width: 25%">VGD Nummer</th>
+                        <td>@_item.VGDNumber</td>
+                    </tr>
+                }
+                <tr>
+                    <th style="width: 25%">Opmerkingen</th>
+                    <td>@_item.Comment</td>
+                </tr>
+
+                @if (_item.IncludedItems != null && _item.IncludedItems.Count != 0)
+                {
+                    <tr>
+                        <td colspan="2">
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>Inbegrepen</th>
+                                        <th class="d-none d-md-table-cell">P/N</th>
+                                        <th>S/N</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in _item.IncludedItems)
+                                    {
+                                        <tr>
+                                            <td>@item.Product.Description</td>
+                                            <td class="d-none d-md-table-cell">@(!item.Product.HasProductNumber() ? "Geen productnummer beschikbaar." : item.Product.ProductNumber)</td>
+                                            <td>@(_item.HasSerialNumber() ? _item.SerialNumber : "Geen serienummer beschikbaar.")</td>
+                                            <td><a><i class="oi oi-trash text-danger" @onclick="( () => ShowConfirmationDisassociate(item))"></i></a></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+
+                    </tr>
+                }
+            </table>
+        </div>
+
+
+    </div>
+    <div class="d-flex justify-content-center mb-2">
+        <div class="px-1">
+            <button @onclick="ToggleImageUpload" class="btn btn-primary"><i class="oi oi-camera-slr"></i></button>
+            <a href="/stock/edit/@(_item.Id)" class="btn btn-secondary"><i class="oi oi-pencil"></i></a>
+            <button @onclick="AddIncludedItem" class="btn btn-success"><i class="oi oi-plus"></i></button>
+            <button @onclick="@(() => ShowConfirmation(_item))" class="btn btn-danger"><i class="oi oi-trash"></i></button>
+        </div>
+    </div>
+    @if (imageUploadOpen)
+    {
+        <div class="d-flex justify-content-center mb-2">
+            <div class="mb-2">
+                <FileUploadComponent @ref="_fileUpload" Container="@("item"+Id)" />
+                <div class="d-flex justify-content-center">
+                    <div class="p-1">
+                        <button class="btn btn-primary" @onclick="Upload">Upload</button>
+                        <button class="btn btn-secondary" @onclick="Clear">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+            <h3>Gebruikshistoriek</h3>
+            @if (_itemusers != null)
+            {
+                @if (_itemusers.Count != 0)
+                {
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Gebruiker</th>
+                                    <th>Van</th>
+                                    <th>Tot</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (ItemUser iu in _itemusers)
+                                {
+                                    @if (iu.User != null)
+                                    {
+                                        <tr @onclick="(() => NavigateToUser(iu.User.Id))">
+                                            <td><a href="/gebruiker/@(iu.User.Id)/" @onclick:stopPropagation>@($"{iu.User.FirstName} {iu.User.LastName}")</a></td>
+                                            <td>@iu.FromDate.ToString("dd/MM/yyyy")</td>
+                                            <td>@(iu.ToDate?.ToString("dd/MM/yyyy"))</td>
+                                        </tr>
+                                    }
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <p>Geen data.</p>
+                }
+            }
+            }
+            else
+            {
+            <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+            }
+
+
+

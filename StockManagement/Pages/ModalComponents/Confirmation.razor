@@ -1,0 +1,24 @@
+﻿<p>Ben je zeker van deze actie?</p>
+<div>
+    <button @onclick="Ok" class="btn btn-primary">Ja</button>
+    <button @onclick="Cancel" class="btn btn-secondary">Annuleer</button>
+</div>
+
+
+@code {
+
+    [CascadingParameter]
+    private BlazoredModalInstance BlazoredModal { get; set; }
+
+    protected void Ok()
+    {
+
+        BlazoredModal.Close();
+    }
+
+    protected void Cancel()
+    {
+        BlazoredModal.Cancel();
+    }
+
+}

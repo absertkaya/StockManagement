@@ -1,0 +1,75 @@
+﻿@inherits ProductManageListBase
+
+@page "/beheer/productlijst/{id:int}"
+@using Blazored.Typeahead
+@using StockManagement.Domain
+@if (_category != null && _filteredProducts != null)
+{
+    <div class="mb-2">
+        <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+        <h3 class="d-inline">Beheer @_category.CategoryName</h3>
+    </div>
+
+    <div class="mb-1 row">
+        <div class="input-group col-sm-6">
+            <input class="form-control" type="text"  @bind="_filterString" @bind:event="oninput" @onkeyup="Filter"/>
+            <div class="input-group-append">
+                <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+            </div>
+        </div>
+    </div>
+
+}
+
+@if (_filteredProducts != null)
+{
+    <div class="table-responsive">
+        @if (_deleteFailProduct)
+        {
+            <p class="text-danger">Product kon niet worden verwijderd</p>
+        }
+        @if (_hasItems)
+        {
+            <p class="text-danger">Product heeft items, kon niet verwijderd worden.</p>
+        }
+
+        <table class="table table-sm table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th @onclick="SortByProductName">Omschrijving</th>
+                    <th class="d-none d-md-table-cell" @onclick="SortByProductNumber">P/N</th>
+                    <th @onclick="SortByAmountInStock">#</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Product prod in _filteredProducts)
+                {
+                    <tr @onclick="(() => NavigateToProductDetail(prod))">
+                        <td>@prod.Description</td>
+                        <td class="d-none d-md-table-cell">@(prod.ProductNumber.Split(" ")[0] == "NOPRODUCTNR" ? "Geen productnummer beschikbaar." : prod.ProductNumber)</td>
+                        <td class="w-25 @(prod.AmountInStock == 0 ? "text-danger" : "text-success")">@prod.AmountInStock</td>
+                        <td>
+                            <div class="btn-group btn-groep-sm d-flex justify-content-end" @onclick:stopPropagation>
+                                <a href="/beheer/product/id/@(prod.Id)" class="btn btn-sm btn-secondary"><i class="oi oi-pencil"></i></a>
+                                @if (prod.Items.Count == 0)
+                                {
+                                    <button @onclick="@(() => ShowConfirmation(prod))" class="btn btn-sm btn-danger"><i class="oi oi-trash"></i></button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-danger" disabled><i class="oi oi-trash"></i></button>
+                                }
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+}

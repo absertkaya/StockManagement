@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentNHibernate.Mapping;
+﻿using FluentNHibernate.Mapping;
 using StockManagement.Domain;
 namespace StockManagement.Data.Mappers
 {
@@ -12,7 +8,9 @@ namespace StockManagement.Data.Mappers
         {
             Table("Supplier");
             Id(x => x.Id).GeneratedBy.Increment();
-            Map(x => x.SupplierName);
+            Map(x => x.SupplierName).Not.Nullable();
+            HasMany(x => x.Items)
+                .Inverse();
         }
     }
 }

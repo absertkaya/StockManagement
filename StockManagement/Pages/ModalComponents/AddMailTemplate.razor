@@ -1,0 +1,58 @@
+﻿@using StockManagement.Domain 
+@using StockManagement.Domain.IRepositories 
+
+<div class="form-group">
+    <label for="tpn">Templatenaam</label>
+    <input id="tpn" type="text" class="form-control" placeholder="Templatenaam" @bind="MailTemplate.MailTemplateName" />
+</div>
+
+<div class="form-group">
+    <label for="subject">Onderwerp</label>    
+    <input id="subject" type="text" class="form-control" placeholder="Onderwerp" @bind="MailTemplate.Subject"/>
+</div>
+
+<div class="form-group">
+    <textarea id="mailArea" class="form-control"  rows="20" placeholder="**items** => itemlijst, **user** => collega, **me** => stockgebruiker, **role** => rol" @bind="MailTemplate.Body" />
+</div>
+
+<button @onclick="Submit" class="btn btn-primary">Voeg toe</button>
+
+@code {
+
+    [Parameter]
+    public MailTemplate MailTemplate { get; set; }
+    [Inject]
+    public IRepository Repository { get; set; }
+    [Inject]
+    public IToastService ToastService { get; set; }
+    [CascadingParameter]
+    public BlazoredModalInstance BlazoredModal { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if (MailTemplate == null)
+        {
+            MailTemplate = new MailTemplate();
+        }
+    }
+
+    protected void Submit()
+    {
+        try
+        {
+
+            if (!string.IsNullOrWhiteSpace(MailTemplate.MailTemplateName)&& !string.IsNullOrWhiteSpace(MailTemplate.Subject) && !string.IsNullOrWhiteSpace(MailTemplate.Body))
+            {
+                Repository.Save(MailTemplate);
+                ToastService.ShowSuccess("Template toegevoegd.");
+                BlazoredModal.Close(ModalResult.Ok(MailTemplate));
+            } else
+            {
+                ToastService.ShowWarning("Template heeft verplicht een naam, onderwerp en body.");
+            }
+        } catch(Exception ex)
+        {
+            ToastService.ShowError("Kon template niet toevoegen.");
+        }
+    }
+}

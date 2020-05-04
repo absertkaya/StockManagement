@@ -1,0 +1,60 @@
+﻿@inherits ItemListBase
+
+@page "/itemlijst/{id:int}"
+@page "/{route}/itemlijst/{id:int}"
+@page "/leverancier/{SupplierId:int}"
+@using StockManagement.Domain
+
+@if (_supplier != null || _product != null)
+{
+    <div class="mb-2">
+        @if (_supplier == null)
+        {
+
+            @if (Route == "beheer")
+            {
+                <a href="/beheer/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+            }
+            else
+            {
+                <a href="/productlijst/@(_product.Category.Id)" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+            }
+            <h3 class="d-inline">@_product.Description</h3>
+        }
+        else
+        {
+            <a href="/beheer" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
+            <h3 class="d-inline">@_supplier.SupplierName</h3>
+        }
+    </div>
+    @if (_filteredItems != null)
+    {
+        <div class="mb-1 row">
+            <div class="input-group col-sm-6">
+                <input class="form-control" type="text" @bind="_filterString" @bind:event="oninput" @onkeyup="Filter" />
+                <div class="input-group-append">
+                    <select class="form-control" @onchange="SelectStatus">
+                        <option hidden selected value="">Status</option>
+                        <option value="0">In stock</option>
+                        <option value="1">Uit stock</option>
+                        <option value="2">Gestolen</option>
+                        <option value="3">End-of-life</option>
+                        <option value="4">Defect</option>
+                        <option value="5">Verloren</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+                </div>
+            </div>
+        </div>
+
+        <ItemListComponent Items="_filteredItems" Route="@Route" SupplierId="SupplierId" />
+    }
+    else
+    {
+        <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    }
+}
+else
+{
+    <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+}

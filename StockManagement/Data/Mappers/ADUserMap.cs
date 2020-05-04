@@ -1,20 +1,32 @@
 ﻿using FluentNHibernate.Mapping;
 using StockManagement.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace StockManagement.Data.Mappers
 {
-    public class ADUserMap: ClassMap<ADUser>
+    public class ADUserMap : ClassMap<ADUser>
     {
         public ADUserMap()
         {
             Table("ADUser");
-            Id(x => x.Id).GeneratedBy.Increment();
-            Map(x => x.LastName);
-            Map(x => x.FirstName);
+            Id(x => x.Id);
+            Map(x => x.LastName).Not.Nullable();
+            Map(x => x.FirstName).Not.Nullable();
+            Map(x => x.Mail).Not.Nullable();
+            Map(x => x.MobilePhone);
+            Map(x => x.Office).Not.Nullable();
+            Map(x => x.OfficeRole);
+            Map(x => x.StockRole);
+            HasMany(x => x.Items)
+                .Inverse()
+                .Cascade
+                .SaveUpdate();
+            HasMany(x => x.ItemUsers)
+                .Inverse()
+                .Cascade.All();
+            HasMany(x => x.MobileSubscriptions)
+                .Inverse()
+                .Cascade
+                .Delete();
         }
     }
 }

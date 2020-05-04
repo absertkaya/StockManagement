@@ -1,0 +1,31 @@
+﻿@using StockManagement.Domain
+
+@if (ItemStatus == ItemStatus.INSTOCK)
+{
+    <i class="oi oi-circle-check text-success"></i>
+}
+else if (ItemStatus == ItemStatus.STOLEN)
+{
+    <span>Gestolen</span>
+}
+else if (ItemStatus == ItemStatus.INACTIVE)
+{
+    <span>End-of-life</span>
+}
+else if (ItemStatus == ItemStatus.DEFECTIVE)
+{
+    <span>Defect</span>
+}
+else if (ItemStatus == ItemStatus.LOST)
+{
+    <span>Verloren</span>
+}
+else
+{
+    <i class="oi oi-circle-x text-danger"></i>
+}
+
+@code {
+    [Parameter]
+    public ItemStatus ItemStatus { get; set; }
+}
