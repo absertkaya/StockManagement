@@ -5,6 +5,11 @@
     toggleTooltips: function () {
         $('[data-toggle="tooltip"]').tooltip()
     },
+    stopQuagga: function () {
+            
+        Quagga.stop()
+
+    },
     quagga: function () {
         Quagga.offProcessed();
         Quagga.offDetected();

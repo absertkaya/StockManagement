@@ -108,8 +108,7 @@ namespace StockManagement.Pages.StockPages
                 {
                     Telemetry.TrackEvent("AddItemFail");
                     ToastService.ShowError("Duplicate item bestaat al in de databank.");
-                }
-                    
+                }  
             }
         }
     }

@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using StockManagement.Domain.IComponents;
-
+using System;
 using System.Threading.Tasks;
 
 namespace StockManagement.Pages.ReuseableComponents
 {
-    public class QuaggaScannerBase : ComponentBase, IScannerComponent
+    public class QuaggaScannerBase : ComponentBase, IScannerComponent, IDisposable
     {
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
@@ -22,6 +22,11 @@ namespace StockManagement.Pages.ReuseableComponents
         public string GetResult()
         {
             return _code;
+        }
+
+        public void Dispose()
+        {
+            JSRuntime.InvokeVoidAsync("JsFunctions.stopQuagga");
         }
     }
 }

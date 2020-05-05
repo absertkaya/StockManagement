@@ -4,6 +4,7 @@ using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 using StockManagement.Domain;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Domain.IServices;
@@ -29,6 +30,8 @@ namespace StockManagement.Pages.OverviewPages
         public AuthenticationStateProvider AuthenticationStateProvider { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
 
         protected string _searchString;
 

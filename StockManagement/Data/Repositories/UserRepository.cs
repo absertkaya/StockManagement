@@ -38,5 +38,11 @@ namespace StockManagement.Data.Repositories
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<IList<ADUser>> GetUsersWithItems()
+        {
+            return await _session.QueryOver<ADUser>()
+                .Where(u => u.Items != null)
+                .ListAsync();
+        }
     }
 }
