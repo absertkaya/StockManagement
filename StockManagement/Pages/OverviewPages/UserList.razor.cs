@@ -29,8 +29,8 @@ namespace StockManagement.Pages.OverviewPages
         [Inject]
         public IToastService ToastService { get; set; }
 
-        private List<GraphUser> _graphUsers = new List<GraphUser>();
-        protected IEnumerable<GraphUser> _filteredUsers;
+        private List<ADUser> _adUsers = new List<ADUser>();
+        protected IEnumerable<ADUser> _filteredUsers;
         protected ADUser _selectedUser;
         protected string _filterString = "";
 
@@ -39,8 +39,9 @@ namespace StockManagement.Pages.OverviewPages
         
         protected override async Task OnInitializedAsync()
         {
+            _adUsers = (await UserRepository.GetUsersWithItems())?.ToList();
             await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
-            _filteredUsers = new List<GraphUser>(_graphUsers).OrderBy(u => u.GivenName).ThenBy(u => u.Surname);
+            _filteredUsers = new List<ADUser>(_adUsers).OrderBy(u => u.FirstName).ThenBy(u => u.LastName);
         }
 
         private async Task ApiCall(string url)
@@ -82,25 +83,25 @@ namespace StockManagement.Pages.OverviewPages
 
             foreach (JProperty child in result.Properties().Where(p => !p.Name.StartsWith("@")))
             {
-                _graphUsers.AddRange(
-                    child.Value.ToObject<List<GraphUser>>()
-                    );
+                var gulist = child.Value.ToObject<List<GraphUser>>();
+                gulist = gulist
+                    .Where(u => _adUsers.FirstOrDefault(au => u.Id == au.Id) == null)   
+                    .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && (u.JobTitle != null && u.OfficeLocation != null || u.JobTitle == null && u.OfficeLocation != null || u.JobTitle != null && u.OfficeLocation == null))
+                    .ToList();
+                var adulist = gulist.Select(u => new ADUser(u));
+                _adUsers.AddRange(adulist);
             }
-
-            _graphUsers = _graphUsers
-              .Where(u => u.Mail != null && u.GivenName != null && u.Surname != null && (u.JobTitle != null && u.OfficeLocation != null || u.JobTitle == null && u.OfficeLocation != null || u.JobTitle != null && u.OfficeLocation == null))
-              .ToList();
         }
 
         protected void SortByFirstName()
         {
             if (!sortFirstNameDesc)
             {
-                _filteredUsers = _filteredUsers.OrderBy(u => u.GivenName);
+                _filteredUsers = _filteredUsers.OrderBy(u => u.FirstName);
             } 
             else
             {
-                _filteredUsers = _filteredUsers.OrderByDescending(u => u.GivenName);
+                _filteredUsers = _filteredUsers.OrderByDescending(u => u.FirstName);
             }
 
             sortFirstNameDesc = !sortFirstNameDesc;
@@ -110,11 +111,11 @@ namespace StockManagement.Pages.OverviewPages
         {
             if (!sortLastNameDesc)
             {
-                _filteredUsers = _filteredUsers.OrderBy(u => u.Surname);
+                _filteredUsers = _filteredUsers.OrderBy(u => u.LastName);
             }
             else
             {
-                _filteredUsers = _filteredUsers.OrderByDescending(u => u.Surname);
+                _filteredUsers = _filteredUsers.OrderByDescending(u => u.LastName);
             }
 
             sortLastNameDesc = !sortLastNameDesc;
@@ -124,15 +125,14 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void Filter()
         {
-            _filteredUsers = _graphUsers.Where(u => Regex.Replace(u.GivenName + u.Surname + u.Mail, " ", "").ToLower().Contains(Regex.Replace(_filterString.ToLower(), " ", "")));
+            _filteredUsers = _adUsers.Where(u => Regex.Replace(u.FirstName + u.LastName + u.Mail, " ", "").ToLower().Contains(Regex.Replace(_filterString.ToLower(), " ", "")));
         }
 
-        protected void NavigateToUserDetail(GraphUser user)
+        protected void NavigateToUserDetail(ADUser user)
         {
             if (! UserRepository.ADUserExists(user.Id))
             {
-                var aduser = new ADUser(user);
-                UserRepository.Save(aduser);
+                UserRepository.Save(user);
             }
             NavigationManager.NavigateTo("/gebruiker/" + user.Id);
         }

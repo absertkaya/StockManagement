@@ -8,6 +8,7 @@ namespace StockManagement.Domain.IRepositories
         ADUser GetByEmail(string email);
         Task<ADUser> GetUserDetailsAsync(string id);
         Task<IList<MobileAccount>> GetAllMobileAccounts();
+        Task<IList<ADUser>> GetUsersWithItems();
         bool ADUserExists(string id);
     }
 }
