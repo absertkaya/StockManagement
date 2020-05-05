@@ -47,6 +47,7 @@ namespace StockManagement.Pages.StockPages
         protected DateTime? _deliveryDate;
         protected DateTime? _invoiceDate;
         protected ItemStatus _selectedStatus;
+        protected UserSearchBox userSearch;
 
         private ADUser _initialUser;
 
@@ -87,6 +88,7 @@ namespace StockManagement.Pages.StockPages
                     _license = _item.License;
                     _hostname = _item.Hostname;
                     _carepack = _item.Carepack;
+                    _initialUser = _item.ADUser;
                 }
             } catch (Exception ex)
             {
@@ -95,6 +97,16 @@ namespace StockManagement.Pages.StockPages
             }
         }
         
+        public void FireStatusChange(ChangeEventArgs e)
+        {
+            _selectedStatus = (ItemStatus) Enum.Parse(typeof(ItemStatus), e.Value.ToString());
+
+            if (_selectedStatus != ItemStatus.OUTSTOCK)
+            {
+                _item.ADUser = null;
+            }
+        }
+
         public async Task FireChange(ChangeEventArgs e)
         {
             _selectedCategory = int.Parse(e.Value.ToString());
@@ -120,6 +132,8 @@ namespace StockManagement.Pages.StockPages
 
         protected async Task Submit()
         {
+            var auth = AuthenticationStateTask.Result;
+            var stockuser = UserRepository.GetByEmail(auth.User.Identity.Name);
             if (string.IsNullOrWhiteSpace(_serialNumber))
             {
                 ToastService.ShowWarning("Serienummer mag niet leeg zijn.");
@@ -139,11 +153,30 @@ namespace StockManagement.Pages.StockPages
                 return;
             }
 
+            _item.ItemStatus = _selectedStatus;
+            var selectedUser = userSearch.GetSelectedUser();
+            if (_item.ItemStatus == ItemStatus.OUTSTOCK)
+            {
+                if (_initialUser?.Id != selectedUser?.Id)
+                {
+                    _item.ReturnToStock(stockuser);
+                    ADUser newUser = null;
+                    if (! UserRepository.ADUserExists(selectedUser.Id))
+                    {
+                        newUser = new ADUser(selectedUser);
+                    } else
+                    {
+                        newUser = (ADUser) UserRepository.GetById(typeof(ADUser), selectedUser.Id);
+                    }
+                    _item.RemoveFromStock(newUser, stockuser);
+                }
+            }
+
             _item.Supplier = _suppliers.First(i => _selectedSupplier == i.Id);
             _item.Comment = _comment;
             _item.DeliveryDate = _deliveryDate;
             _item.InvoiceDate = _invoiceDate;
-            _item.ItemStatus = _selectedStatus;
+            
             _item.Carepack = string.IsNullOrWhiteSpace(_carepack) ? null : _carepack;
             _item.Hostname = string.IsNullOrWhiteSpace(_hostname) ? null : _hostname;
             _item.Imei = string.IsNullOrWhiteSpace(_imei) ? null : _imei;
