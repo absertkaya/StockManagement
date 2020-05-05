@@ -55,7 +55,7 @@ namespace StockManagement.Pages.OverviewPages
             try
             {
                 _item = await Repository.GetItemDetails(Id);
-                _itemusers = (await Repository.GetItemUsersByItem(Id))?.OrderByDescending(i => i.ToDate).ToList();
+                _itemusers = (await Repository.GetItemUsersByItem(Id))?.OrderByDescending(i => i.FromDate).ToList();
             } catch (Exception ex)
             {
                 Telemetry.TrackException(ex);
