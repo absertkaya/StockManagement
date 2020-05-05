@@ -39,7 +39,7 @@ namespace StockManagement.Pages.OverviewPages
         
         protected override async Task OnInitializedAsync()
         {
-            _adUsers = (await UserRepository.GetUsersWithItems())?.ToList();
+            _adUsers = (await UserRepository.GetUsersWithItems())?.Where(u => u.Items.Count != 0).ToList();
             await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
             _filteredUsers = new List<ADUser>(_adUsers).OrderBy(u => u.FirstName).ThenBy(u => u.LastName);
         }
