@@ -33,7 +33,6 @@ namespace StockManagement.Data.Repositories
         public async Task<ADUser> GetUserDetailsAsync(string id)
         {
             return await _session.QueryOver<ADUser>()
-                
                 .Where(x => x.Id == id)
                 .SingleOrDefaultAsync();
         }
@@ -41,6 +40,7 @@ namespace StockManagement.Data.Repositories
         public async Task<IList<ADUser>> GetUsersWithItems()
         {
             return await _session.QueryOver<ADUser>()
+                
                 .Where(u => u.Items != null)
                 .ListAsync();
         }
