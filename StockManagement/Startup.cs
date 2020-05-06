@@ -102,6 +102,6 @@ namespace StockManagement
             //excl.ReadSubscriptions("C:\\Users\\Administrator\\Desktop\\GSM Nummers.xlsx");
             //excl.ReadUsers("C:\\Users\\Administrator\\Desktop\\VGDGebruikers.xlsx");
             //excl.ReadAndPopulateDatabase("C:\\Users\\Administrator\\Desktop\\Stock Overzicht.xlsx");
-        }
+        } 
     }
 }

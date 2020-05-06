@@ -8,7 +8,7 @@
     stopQuagga: function () {
             
         Quagga.stop()
-
+        console.log("end")
     },
     quagga: function () {
         Quagga.offProcessed();
