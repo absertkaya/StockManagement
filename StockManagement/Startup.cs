@@ -69,7 +69,7 @@ namespace StockManagement
             
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IItemRepository repo, IConfiguration config)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)//, IItemRepository repo, IConfiguration config)
         {
             if (env.IsDevelopment())
             {
@@ -95,7 +95,7 @@ namespace StockManagement
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
-            var excl = new ExcelReader(repo, config);
+            //var excl = new ExcelReader(repo, config);
             //excl.ApiCall("https://graph.microsoft.com/v1.0/users?$top=999").Wait();
             //excl.ReadUsers();
             //excl.PersistUsers();

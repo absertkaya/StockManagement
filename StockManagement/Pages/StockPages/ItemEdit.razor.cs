@@ -50,6 +50,7 @@ namespace StockManagement.Pages.StockPages
         protected UserSearchBox userSearch;
 
         private ADUser _initialUser;
+        private ItemStatus _initialStatus;
 
         protected string _imei;
         protected string _vgdnumber;
@@ -68,13 +69,15 @@ namespace StockManagement.Pages.StockPages
                 _suppliers = await Repository.GetAllAsync<Supplier>();
                 _item = (Item)await Repository.GetByIdAsync(typeof(Item), Id);
                 _users = await Repository.GetAllAsync<ADUser>();
-                _initialUser = _item.ADUser;
+                
                 if (_item == null)
                 {
                     NavigationManager.NavigateTo("error");
                 }
                 else
                 {
+                    _initialUser = _item.ADUser;
+                    _initialStatus = _item.ItemStatus;
                     _selectedCategory = _item.Product.Category.Id;
                     _serialNumber = _item.SerialNumber;
                     await FetchProducts();
@@ -153,6 +156,16 @@ namespace StockManagement.Pages.StockPages
                 return;
             }
 
+            if (_selectedStatus != ItemStatus.OUTSTOCK)
+            {
+                _item.ADUser = null;
+            }
+
+            if (_initialStatus == ItemStatus.OUTSTOCK && _selectedStatus == ItemStatus.INSTOCK)
+            {
+                _item.ReturnToStock(stockuser);
+            }
+
             _item.ItemStatus = _selectedStatus;
             var selectedUser = userSearch.GetSelectedUser();
             if (_item.ItemStatus == ItemStatus.OUTSTOCK && selectedUser != null)
@@ -175,6 +188,7 @@ namespace StockManagement.Pages.StockPages
                 _item.RemoveFromStock(newUser, stockuser);
                 }
             }
+
             _item.Supplier = _suppliers.First(i => _selectedSupplier == i.Id);
             _item.Comment = _comment;
             _item.DeliveryDate = _deliveryDate;
