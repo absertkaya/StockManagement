@@ -68,7 +68,15 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void SelectStatus(ChangeEventArgs e)
         {
-            _selectedStatus = (ItemStatus) int.Parse(e.Value.ToString());
+            bool success = int.TryParse(e.Value.ToString(), out int res);
+
+            if (success)
+            {
+                _selectedStatus = (ItemStatus)res;
+            } else
+            {
+                _selectedStatus = null;
+            }  
             Filter();
         }
 

@@ -34,7 +34,7 @@
                 <input class="form-control" type="text" @bind="_filterString" @bind:event="oninput" @onkeyup="Filter" />
                 <div class="input-group-append">
                     <select class="form-control" @onchange="SelectStatus">
-                        <option hidden selected value="">Status</option>
+                        <option selected value="">Alles</option>
                         <option value="0">In stock</option>
                         <option value="1">Uit stock</option>
                         <option value="2">Gestolen</option>
