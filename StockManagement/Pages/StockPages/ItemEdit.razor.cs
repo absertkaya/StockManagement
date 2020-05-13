@@ -156,17 +156,11 @@ namespace StockManagement.Pages.StockPages
                 return;
             }
 
-            if (_selectedStatus != ItemStatus.OUTSTOCK)
+            if (_initialStatus != _selectedStatus)
             {
-                _item.ADUser = null;
+                _item.ChangeStatus(_selectedStatus, stockuser);
             }
 
-            if (_initialStatus == ItemStatus.OUTSTOCK && _selectedStatus == ItemStatus.INSTOCK)
-            {
-                _item.ReturnToStock(stockuser);
-            }
-
-            _item.ItemStatus = _selectedStatus;
             var selectedUser = userSearch.GetSelectedUser();
             if (_item.ItemStatus == ItemStatus.OUTSTOCK && selectedUser != null)
             {

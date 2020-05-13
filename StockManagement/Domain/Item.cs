@@ -64,6 +64,26 @@ namespace StockManagement.Domain
             return ItemStatus == ItemStatus.INSTOCK || ItemStatus == ItemStatus.OUTSTOCK;
         }
 
+        public virtual void ChangeStatus(ItemStatus newStatus, ADUser stocker)
+        {
+            if (stocker == null)
+            {
+                throw new Exception("stocker can't be null");
+            }
+
+            if (ItemStatus == ItemStatus.OUTSTOCK && newStatus == ItemStatus.INSTOCK)
+            {
+                ReturnToStock(stocker);
+            }
+            
+            if (newStatus != ItemStatus.OUTSTOCK)
+            {
+                ADUser = null;
+            }
+
+            ItemStatus = newStatus;
+        }
+
         public virtual void AddItem(Item item)
         {
             if (item != null && !IncludedItems.Any(i => i.Id == item.Id))
