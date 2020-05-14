@@ -161,25 +161,28 @@ namespace StockManagement.Pages.StockPages
                 _item.ChangeStatus(_selectedStatus, stockuser);
             }
 
-            var selectedUser = userSearch.GetSelectedUser();
-            if (_item.ItemStatus == ItemStatus.OUTSTOCK && selectedUser != null)
+            if (_item.ItemStatus == ItemStatus.OUTSTOCK)
             {
-                if (_initialUser?.Id != selectedUser?.Id)
-                {   
-                _item.ReturnToStock(stockuser);
-                ADUser newUser = null;
-                    
-                    if (!UserRepository.ADUserExists(selectedUser.Id))
+                var selectedUser = userSearch.GetSelectedUser();
+                if (selectedUser != null)
+                {
+                    if (_initialUser?.Id != selectedUser?.Id)
                     {
-                        newUser = new ADUser(selectedUser);
-                        Repository.Save(newUser);
+                        _item.ReturnToStock(stockuser);
+                        ADUser newUser = null;
+
+                        if (!UserRepository.ADUserExists(selectedUser.Id))
+                        {
+                            newUser = new ADUser(selectedUser);
+                            Repository.Save(newUser);
+                        }
+                        else
+                        {
+                            newUser = (ADUser)UserRepository.GetById(typeof(ADUser), selectedUser.Id);
+                        }
+
+                        _item.RemoveFromStock(newUser, stockuser);
                     }
-                    else
-                    {
-                        newUser = (ADUser)UserRepository.GetById(typeof(ADUser), selectedUser.Id);
-                    }
-                    
-                _item.RemoveFromStock(newUser, stockuser);
                 }
             }
 
