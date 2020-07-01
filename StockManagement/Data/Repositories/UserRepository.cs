@@ -11,38 +11,33 @@ namespace StockManagement.Data.Repositories
 {
     public class UserRepository : RepositoryBase, IUserRepository
     {
-        public UserRepository(Database database) : base(database)
+        public UserRepository() : base()
         {
         }
 
         public bool ADUserExists(string id)
         {
-            return _session.Query<ADUser>().Any(u => u.Id == id);
+            return false;
         }
 
         public async Task<IList<MobileAccount>> GetAllMobileAccounts()
         {
-            return await _session.Query<MobileAccount>().ToListAsync();
+            return null;
         }
 
         public ADUser GetByEmail(string email)
         {
-            return _session.Query<ADUser>().FirstOrDefault(u => u.Mail == email);
+            return null;
         }
 
         public async Task<ADUser> GetUserDetailsAsync(string id)
         {
-            return await _session.QueryOver<ADUser>()
-                .Where(x => x.Id == id)
-                .SingleOrDefaultAsync();
+            return null;
         }
 
         public async Task<IList<ADUser>> GetUsersWithItems()
         {
-            return await _session.QueryOver<ADUser>()
-                
-                .Where(u => u.Items != null)
-                .ListAsync();
+            return null;
         }
     }
 }

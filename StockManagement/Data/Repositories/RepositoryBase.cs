@@ -1,4 +1,5 @@
-﻿using NHibernate;
+﻿using Microsoft.WindowsAzure.Storage.Table;
+using NHibernate;
 using NHibernate.Linq;
 using StockManagement.Domain.IRepositories;
 using System;
@@ -10,65 +11,40 @@ namespace StockManagement.Data.Repositories
 {
     public class RepositoryBase : IRepository, IDisposable
     {
-        protected ISession _session = null;
-
-        public RepositoryBase(Database database)
+        public void Delete(object obj)
         {
-            _session = database.OpenSession();
+            
         }
 
-        public RepositoryBase(ISession session)
-        {
-            _session = session;
-        }
-
-        #region Transaction and Session Management Methods
-        private void CloseSession()
-        {
-            _session.Close();
-            _session.Dispose();
-            _session = null;
-        }
-        #endregion
-        #region IRepository Members
-        public virtual void Save(object obj)
-        {
-            _session.SaveOrUpdate(obj);
-            _session.Flush();
-        }
-        public virtual void Delete(object obj)
-        {
-            _session.Delete(obj);
-            _session.Flush();
-        }
-        public virtual async Task<object> GetByIdAsync(Type objType, object objId)
-        {
-            return await _session.GetAsync(objType, objId);
-        }
-        public virtual async Task<IList<TEntity>> GetAllAsync<TEntity>() where TEntity : class
-        {
-
-            return await _session.QueryOver<TEntity>().ListAsync();
-        }
-
-        public virtual IList<TEntity> GetAll<TEntity>() where TEntity : class
-        {
-            var query = _session.Query<TEntity>();
-            return query.ToList();
-        }
-        #endregion
         public void Dispose()
         {
-            if (_session != null)
-            {
-                CloseSession();
-            }
+            
+        }
+
+        public IList<TEntity> GetAll<TEntity>() where TEntity : class
+        {
+            return new List<TEntity>();
+        }
+
+        public async Task<IList<TEntity>> GetAllAsync<TEntity>() where TEntity : class
+        {
+            return new List<TEntity>(); ;
         }
 
         public object GetById(Type objType, object objId)
         {
-            return _session.Get(objType, objId);
+            return new List<object>();
+        }
+
+        public async Task<object> GetByIdAsync(Type objType, object objId)
+        {
+            return new List<object>();
+        }
+
+        public void Save(object obj)
+        {
+            
         }
     }
-    
+
 }

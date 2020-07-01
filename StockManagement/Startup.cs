@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using StockManagement.Data.Services;
 using StockManagement.Data.Repositories;
 using StockManagement.Domain.IRepositories;
 using StockManagement.Graph;
@@ -20,6 +19,7 @@ using Blazored.Modal;
 using StockManagement.Data;
 using Blazored.Toast;
 using Blazored.Toast.Services;
+using StockManagement.Data.Services;
 
 namespace StockManagement
 {
@@ -35,18 +35,6 @@ namespace StockManagement
 
         public void ConfigureServices(IServiceCollection services)
         { 
-            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-                .AddAzureAD(options => Configuration.Bind("AzureAd", options));
-
-            services.AddControllersWithViews(options =>
-            {
-                var policy = new AuthorizationPolicyBuilder()
-                    .RequireAuthenticatedUser()
-                    .Build();
-                
-                options.Filters.Add(new AuthorizeFilter(policy));  
-            });
-
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
             services.AddStorage();
@@ -54,10 +42,8 @@ namespace StockManagement
             services.AddBlazoredToast();
             services.AddScoped<IRepository, RepositoryBase>();
             services.AddScoped<IItemRepository, ItemRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IBlobService, BlobService>();
-            services.AddScoped<Database>();
-            services.AddScoped<IKeyVaultService, KeyVaultService>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddHttpClient<ProtectedApiCallHelper>();
             services.AddApplicationInsightsTelemetry();
             services.AddFileReaderService();

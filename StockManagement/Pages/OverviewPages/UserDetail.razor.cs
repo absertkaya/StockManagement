@@ -135,14 +135,7 @@ namespace StockManagement.Pages.OverviewPages
 
         protected void RowExpand(ItemUser iu)
         {
-            var parameters = new ModalParameters();
-            parameters.Add("ItemUser", iu);
-            var opts = new ModalOptions()
-            {
-                HideHeader = true
-            };
-            
-            ModalService.Show<ItemHistoryComponent>("History",parameters, opts);
+
         }
 
         protected void DeleteSubscription(MobileSubscription sub)
