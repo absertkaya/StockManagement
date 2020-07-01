@@ -62,35 +62,7 @@ namespace StockManagement.Pages.ReuseableComponents
 
         protected async Task ApiCall(string url)
         {
-            try
-            {
-                IConfidentialClientApplication confidentialClientApplication =
-                ConfidentialClientApplicationBuilder
-                    .Create(Configuration["AzureAd:ClientId"])
-                    .WithTenantId(Configuration["AzureAd:TenantId"])
-                    .WithClientSecret(Configuration["AzureAd:ClientSecret"])
-                    .Build();
-                string[] scopes = new string[] { "https://graph.microsoft.com/.default" };
-                AuthenticationResult result = null;
-                result = await confidentialClientApplication.AcquireTokenForClient(scopes)
-                    .ExecuteAsync();
-                var httpClient = new HttpClient();
-                var apiCaller = new ProtectedApiCallHelper(httpClient);
-                var res = await apiCaller
-                    .CallWebApiAndProcessResultASync(
-                        url,
-                        result.AccessToken
-                        );
-                await DisplayUsers(res);
-                if (res.Properties().FirstOrDefault(p => p.Name == "@odata.nextLink") != null)
-                {
-                    await ApiCall(res.Properties().First(p => p.Name == "@odata.nextLink").Value.ToString());
-                }
-            } catch (Exception ex)
-            {
-                Telemetry.TrackException(ex);
-                ToastService.ShowWarning("Fout bij het ophalen van de gebruikers.");
-            }
+            
         }
 
         private async Task SaveToSession()
