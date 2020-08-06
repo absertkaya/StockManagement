@@ -32,7 +32,7 @@
         <tbody>
             @foreach (Product prod in _filteredProducts)
                     {
-            <tr id="product@(prod.Id)" @onclick="(() => NavigateToProductDetail(prod))">
+            <tr @key="prod" id="product@(prod.Id)" @onclick="(() => NavigateToProductDetail(prod))">
                 <td class="w-50">@prod.Description</td>
                 <td class="d-none d-md-table-cell">@(!prod.HasProductNumber() ? "Geen productnummer beschikbaar." : prod.ProductNumber)</td>
                 <td class="w-25 @(prod.AmountInStock == 0 ? "text-danger" : "text-success")">@prod.AmountInStock</td>

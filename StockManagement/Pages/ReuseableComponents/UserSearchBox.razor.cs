@@ -35,36 +35,6 @@ namespace StockManagement.Pages.ReuseableComponents
         protected GraphUser _selectedUser;
 
 
-        protected override async Task OnAfterRenderAsync(bool firstrender)
-        {
-            if (firstrender)
-            {
-                try
-                {
-                    //if (await SessionStorage.GetItem<List<GraphUser>>("graphusers") == null)
-                    //{
-                        await ApiCall("https://graph.microsoft.com/v1.0/users?$top=999");
-                    //    await SaveToSession();
-                    //}
-                    //else
-                    //{
-                    //    _colGraphUsers = await SessionStorage.GetItem<List<GraphUser>>("graphusers");
-                    //}
-
-                    StateHasChanged();
-                } catch (Exception ex)
-                {
-                    Telemetry.TrackException(ex);
-                }
-            }
-            
-        }
-
-        protected async Task ApiCall(string url)
-        {
-            
-        }
-
         private async Task SaveToSession()
         {
             await SessionStorage.SetItem("graphusers", _colGraphUsers);

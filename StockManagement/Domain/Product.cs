@@ -31,6 +31,10 @@ namespace StockManagement.Domain
 
         public virtual bool HasProductNumber()
         {
+            if (ProductNumber == null)
+            {
+                return false;
+            }
             return !ProductNumber.StartsWith("NOPRODUCTNR");
         }
 

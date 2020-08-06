@@ -39,12 +39,12 @@ namespace StockManagement.Pages.OverviewPages
         {
             try
             {
-                _category = ((Category)await Repository.GetByIdAsync(typeof(Category), Id))?.CategoryName;
+                //_category = ((Category)await Repository.GetByIdAsync(typeof(Category), Id))?.CategoryName;
                 _products = await Repository.GetByCategoryAsync(Id);
-                foreach (Product prod in _products)
-                {
-                    prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
-                }
+                //foreach (Product prod in _products)
+                //{
+                //    prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
+                //}
                 _filteredProducts = new List<Product>(_products);
             } catch (Exception ex)
             {

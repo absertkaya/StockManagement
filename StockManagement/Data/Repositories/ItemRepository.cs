@@ -12,13 +12,25 @@ namespace StockManagement.Data.Repositories
 {
     public class ItemRepository : RepositoryBase, IItemRepository
     {
+
         public ItemRepository() : base()
         {
+
         }
 
         public virtual async Task<IList<Product>> GetByCategoryAsync(int id)
         {
-            return null;
+            Category cat = new Category();
+            IList<Product> products = new List<Product>();
+            for (int i = 0; i < 10000; i++)
+            {
+                products.Add(new Product()
+                {
+                    Category = cat,
+                    Description = "Product " + i
+                });
+            }
+            return products;
         }
 
         public virtual async Task<IList<Item>> GetBySerialNrAsync(string serialnr)
