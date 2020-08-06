@@ -7,7 +7,7 @@
     {
 <div class="mb-2">
     <a href="/overzicht" class="btn btn-outline-info"><i class="oi oi-arrow-thick-left"></i></a>
-    <h3 class="d-inline">@_category</h3>
+    <h3 class="d-inline">Voorbeeld key en paging implementatie </h3>
 </div>
 
 <div class="mb-1 row">
@@ -15,6 +15,8 @@
         <input class="form-control" type="text" @bind="_filterString" @bind:event="oninput" @onkeyup="Filter" />
         <div class="input-group-append">
             <button class="btn btn-primary btn-sm" @onclick="Filter">Filter</button>
+            <button class="btn btn-primary btn-sm" @onclick="Previous50">-50</button>
+            <button class="btn btn-primary btn-sm" @onclick="Next50">+50</button>
         </div>
     </div>
 </div>
@@ -30,7 +32,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (Product prod in _filteredProducts)
+            @foreach (Product prod in toRenderList)
                     {
             <tr @key="prod" id="product@(prod.Id)" @onclick="(() => NavigateToProductDetail(prod))">
                 <td class="w-50">@prod.Description</td>

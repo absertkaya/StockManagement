@@ -27,7 +27,8 @@ namespace StockManagement.Pages.OverviewPages
         public int Id { get; set; }
 
         private IEnumerable<Product> _products;
-        protected IEnumerable<Product> _filteredProducts;
+        protected List<Product> _filteredProducts;
+        protected List<Product> toRenderList;
         protected string _filterString = "";
         protected string _category;
 
@@ -46,6 +47,7 @@ namespace StockManagement.Pages.OverviewPages
                 //    prod.AmountInStock = await Repository.GetAmountInStockValueAsync(prod.Id);
                 //}
                 _filteredProducts = new List<Product>(_products);
+                toRenderList = _filteredProducts.GetRange(0, 50);
             } catch (Exception ex)
             {
                 Telemetry.TrackException(ex);
@@ -54,14 +56,38 @@ namespace StockManagement.Pages.OverviewPages
 
         }
 
+        public void Next50()
+        {
+            try
+            {
+                toRenderList = _filteredProducts.GetRange(_filteredProducts.IndexOf(toRenderList[toRenderList.Count - 1]) + 1, 50);
+            }
+            catch (Exception ex)
+            {
+                toRenderList = _filteredProducts.GetRange(0, 50);
+            }
+        }
+
+        public void Previous50()
+        {
+            try
+            {
+                toRenderList = _filteredProducts.GetRange(_filteredProducts.IndexOf(toRenderList[0]) - 50, 50);
+            }
+            catch (Exception ex)
+            {
+                toRenderList = _filteredProducts.GetRange(_filteredProducts.Count - 50, 50);
+            }
+        }
+
         protected void SortByProductNumber()
         {
             if (!sortProductNumberDesc)
             {
-                _filteredProducts = _filteredProducts.OrderBy(p => p.ProductNumber);
+                _filteredProducts = _filteredProducts.OrderBy(p => p.ProductNumber).ToList();
             } else
             {
-                _filteredProducts = _filteredProducts.OrderByDescending(p => p.ProductNumber);
+                _filteredProducts = _filteredProducts.OrderByDescending(p => p.ProductNumber).ToList();
             }
             sortProductNumberDesc = !sortProductNumberDesc;
         }
@@ -70,11 +96,11 @@ namespace StockManagement.Pages.OverviewPages
         {
             if (!sortProductNameDesc)
             {
-                _filteredProducts = _filteredProducts.OrderBy(p => p.Description);
+                _filteredProducts = _filteredProducts.OrderBy(p => p.Description).ToList();
             }
             else
             {
-                _filteredProducts = _filteredProducts.OrderByDescending(p => p.Description);
+                _filteredProducts = _filteredProducts.OrderByDescending(p => p.Description).ToList();
             }
             sortProductNameDesc = !sortProductNameDesc;
         }
@@ -83,11 +109,11 @@ namespace StockManagement.Pages.OverviewPages
         {
             if (!sortAmountInStockDesc)
             {
-                _filteredProducts = _filteredProducts.OrderBy(p => p.AmountInStock);
+                _filteredProducts = _filteredProducts.OrderBy(p => p.AmountInStock).ToList();
             }
             else
             {
-                _filteredProducts = _filteredProducts.OrderByDescending(p => p.AmountInStock);
+                _filteredProducts = _filteredProducts.OrderByDescending(p => p.AmountInStock).ToList();
             }
             sortAmountInStockDesc = !sortAmountInStockDesc;
         }
@@ -95,7 +121,7 @@ namespace StockManagement.Pages.OverviewPages
         protected void Filter()
         {
             _filteredProducts = _products.Where(i => (i.Description.Trim().ToLower() + i.ProductNumber.Trim().ToLower())
-                .Contains(_filterString.Trim().ToLower()));
+                .Contains(_filterString.Trim().ToLower())).ToList();
         }
 
         protected void NavigateToProductDetail(Product product)
